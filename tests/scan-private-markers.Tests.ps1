@@ -166,3 +166,4 @@ if ($failures.Count -gt 0) {
 
 Write-Host ''
 Write-Host 'All scan-private-markers tests passed.'
+exit 0

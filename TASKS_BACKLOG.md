@@ -16,4 +16,4 @@
 
 | ID | タスク名 | 出典 | 優先度 | 規模 | 状態 |
 | --- | --- | --- | --- | --- | --- |
-| T-001 | scanner regression test の成功終了コードを明示して WIP 差分を完了する | git status / `tests/scan-private-markers.Tests.ps1` 未コミット差分 | 高 | S | todo |
+| T-001 | scanner regression test の成功終了コードを明示して WIP 差分を完了する | git status / `tests/scan-private-markers.Tests.ps1` 未コミット差分 | 高 | S | done |
