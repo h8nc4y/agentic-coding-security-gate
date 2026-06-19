@@ -36,14 +36,6 @@ $rules = @(
 $githubUrlPattern = 'https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:\.git)?'
 $findings = New-Object System.Collections.Generic.List[object]
 
-function Test-SelfReferenceLine {
-    param(
-        [string]$RelativePath
-    )
-
-    return $RelativePath -eq 'scripts/scan-private-markers.ps1'
-}
-
 $files = Get-ChildItem -LiteralPath $root -Recurse -File | Where-Object {
     $_.FullName -notmatch '\\.git(\\|$)' -and
     $_.FullName -notmatch '\\node_modules(\\|$)' -and
@@ -62,10 +54,8 @@ foreach ($file in $files) {
 
     foreach ($line in Get-Content -LiteralPath $file.FullName) {
         $lineNumber++
-        $isSelfReference = Test-SelfReferenceLine -RelativePath $relative
-
         foreach ($match in [regex]::Matches($line, $githubUrlPattern)) {
-            if ($match.Value -notmatch $ownRepoUrlPattern -and -not $isSelfReference) {
+            if ($match.Value -notmatch $ownRepoUrlPattern) {
                 $findings.Add([pscustomobject]@{
                     File = $relative
                     Line = $lineNumber
@@ -83,7 +73,7 @@ foreach ($file in $files) {
                 $matched = [regex]::IsMatch($line, $rule.Pattern, 'IgnoreCase')
             }
 
-            if ($matched -and -not $isSelfReference) {
+            if ($matched) {
                 $findings.Add([pscustomobject]@{
                     File = $relative
                     Line = $lineNumber

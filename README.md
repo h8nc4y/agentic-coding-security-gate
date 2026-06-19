@@ -1,5 +1,7 @@
 # agentic-coding-security-gate
 
+[![CI](https://github.com/h8nc4y/agentic-coding-security-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/h8nc4y/agentic-coding-security-gate/actions/workflows/ci.yml)
+
 A Codex-style skill for adding a security gate to agentic coding workflows before an agent publishes, transmits, stores, or executes sensitive or cost-bearing work.
 
 ## What It Solves
@@ -14,6 +16,12 @@ This skill gives agents a compact gate for those moments. It focuses on workflow
 - Agent developers who run GitHub, browser, MCP, plugin, CLI, cloud, or API tools.
 - Reviewers who need public-safe security summaries without leaking private material.
 - Teams that want a reusable checklist for agentic coding safety.
+
+## Prerequisites
+
+- Git for cloning the repository.
+- PowerShell 7+ (`pwsh`) for the bundled marker scan and tests.
+- A Codex-style skills directory such as `~/.agents/skills` for manual installation.
 
 ## Install
 
@@ -49,6 +57,16 @@ Copy-Item -LiteralPath .\SKILL.md -Destination (Join-Path $dest 'SKILL.md')
 
 The overwrite guard is intentional. If a local skill already exists, review it before replacing it.
 
+## Repository Layout
+
+```text
+SKILL.md                         Skill instructions loaded by an agent.
+examples/                        Synthetic examples and templates.
+scripts/scan-private-markers.ps1 Local public-safety marker scan.
+tests/                           Dependency-free scanner regression tests.
+.github/workflows/ci.yml         Pull request and main-branch quality gate.
+```
+
 ## Manual Use
 
 Use the skill before an agent:
@@ -79,7 +97,13 @@ The examples are synthetic. Do not replace placeholders with real secrets, raw l
 
 ## Validation And Scan
 
-Run the bundled marker scan from the repository root:
+Run the dependency-free scanner tests from the repository root:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1
+```
+
+Run the bundled marker scan:
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1
@@ -92,6 +116,15 @@ python path/to/quick_validate.py .
 ```
 
 Optional local checks can include Gitleaks, Semgrep, markdown linting, or a manual review. Report only the checks that actually ran. If a check is unavailable, say it was not checked.
+
+Pull requests run the same bundled scanner tests and marker scan in GitHub Actions.
+
+## Contributing And Security
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening issues or pull requests.
+- Read [SECURITY.md](SECURITY.md) before reporting security-sensitive behavior.
+- Keep public reports synthetic and redact protected values.
+- Do not claim a validation passed unless the exact command ran successfully.
 
 ## Limitations
 

@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    name: Quality gate
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run scanner tests
+        shell: pwsh
+        run: .\tests\scan-private-markers.Tests.ps1
+
+      - name: Run private marker scan
+        shell: pwsh
+        run: .\scripts\scan-private-markers.ps1
