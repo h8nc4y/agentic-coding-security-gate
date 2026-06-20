@@ -23,6 +23,11 @@ This skill gives agents a compact gate for those moments. It focuses on workflow
 - PowerShell 7+ (`pwsh`) for the bundled marker scan and tests.
 - A Codex-style skills directory such as `~/.agents/skills` for manual installation.
 
+PowerShell 7+ is the supported validation runtime. Windows PowerShell 5.1
+(`powershell.exe`) may run simple repository commands, but it is not the
+documented compatibility target; the CI workflow and regression test harness use
+`pwsh`.
+
 ## Install
 
 Clone the repository:
@@ -96,6 +101,12 @@ The examples are synthetic. Do not replace placeholders with real secrets, raw l
 - Treat each environment's active cost, secret, OAuth, and data-handling policy as authoritative.
 
 ## Validation And Scan
+
+Confirm that `pwsh` is available:
+
+```powershell
+pwsh --version
+```
 
 Run the dependency-free scanner tests from the repository root:
 
