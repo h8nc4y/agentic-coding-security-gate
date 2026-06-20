@@ -4,9 +4,14 @@ Thanks for improving `agentic-coding-security-gate`. Keep contributions small, p
 
 ## Local Checks
 
+Use PowerShell 7+ (`pwsh`) for local validation. Windows PowerShell 5.1
+(`powershell.exe`) is not the supported compatibility target for this
+repository's quality gate.
+
 Run these commands from the repository root before opening a pull request:
 
 ```powershell
+pwsh --version
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1
 ```

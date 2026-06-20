@@ -6,6 +6,7 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Clarified that PowerShell 7+ (`pwsh`) is the supported local validation runtime.
 - Added a GitHub Actions quality gate for scanner tests and private marker scanning.
 - Added scanner regression tests that verify redacted findings and script-path coverage.
 - Added contribution and security reporting guidance for public-safe OSS collaboration.
