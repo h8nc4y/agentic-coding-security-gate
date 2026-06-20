@@ -1,6 +1,6 @@
 # HANDOFF
 
-作成日時: 2026/06/20 23:34:29 JST
+作成日時: 2026/06/21 00:03:17 JST
 
 ## リポジトリの目的
 
@@ -8,8 +8,8 @@
 
 ## 現状サマリ
 
-- 現在の作業ブランチは `docs/pwsh-runtime-clarity`。
-- `main` は `origin/main` と一致し、`chore/oss-readiness` は main へ統合済み。
+- `main` は `origin/main` と一致し、T-003 の文書整合は merge 済み。
+- 作業ブランチは残っていない。
 - `TASKS_BACKLOG.md` に doing タスクはない。T-003 は `pwsh` 可用性と README 記載コマンドの確認として完了。
 - open GitHub issues は 0 件。
 - TODO / FIXME コメントは見つかっていない。
@@ -58,13 +58,12 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1
 ```
 
-
 build コマンドは未定義。
 
 ## ブランチ状況
 
 - `main`: `origin/main` と一致。
-- `docs/pwsh-runtime-clarity`: T-003 の文書整合と検証更新を含む作業ブランチ。
+- `docs/pwsh-runtime-clarity`: PR #2 で merge 済み、remote branch は削除済み。
 
 ## 次にやるべき候補
 
