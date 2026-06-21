@@ -73,6 +73,8 @@ Private repository names, local paths, raw logs, and credential-bearing output w
 
 ## Scan Finding Reporting
 
+The bundled marker scan (`scripts/scan-private-markers.ps1`) is best-effort: it covers a fixed set of high-signal private markers and secret prefixes and does not guarantee detection of every secret format. By default it scans git-tracked files so local results match CI checkout. Treat a passing scan as one signal, not proof of safety.
+
 For Gitleaks, Semgrep, marker scans, dependency scans, or manual inspection:
 
 | Report | Do Not Report |

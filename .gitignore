@@ -7,3 +7,7 @@ Thumbs.db
 .test-tmp/
 node_modules/
 __pycache__/
+# Agent-local scratch dirs: ignored here so they are not committed, and kept in
+# sync with the scanner's work-tree fallback exclusions (scan-private-markers.ps1).
+.claude/
+.codex/

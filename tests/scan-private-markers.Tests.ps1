@@ -151,6 +151,121 @@ Use synthetic examples only.
         Assert-Contains -Text $result.Output -Needle 'openai-api-key-prefix' -Message 'Finding should name the marker rule.'
         Assert-NotContains -Text $result.Output -Needle $marker -Message 'Finding output should not replay marker-like values.'
     }
+
+    # --- New (H-B) secret-format regression tests ------------------------
+    # Each case: the scanner must (a) exit 1, (b) name the rule, and
+    # (c) never replay the synthetic value. Values are assembled by
+    # concatenation so this test file does not self-trigger the scanner.
+    function Test-DetectsAndRedacts {
+        param(
+            [Parameter(Mandatory = $true)][string]$Name,
+            [Parameter(Mandatory = $true)][string]$Marker,
+            [Parameter(Mandatory = $true)][string]$Rule
+        )
+
+        Invoke-Test "detects $Name and keeps the value redacted" {
+            New-FixtureFile -RelativePath 'docs/leak.md' -Content "Synthetic credential: $Marker"
+
+            $result = Invoke-Scanner
+
+            Assert-Equal -Actual $result.ExitCode -Expected 1 -Message "$Name should fail the scan."
+            Assert-Contains -Text $result.Output -Needle $Rule -Message "Finding should name the $Name rule."
+            Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Finding should show redaction.'
+            Assert-NotContains -Text $result.Output -Needle $Marker -Message "Finding output should not replay the $Name value."
+        }
+    }
+
+    Test-DetectsAndRedacts -Name 'AWS access key id' `
+        -Marker ('AKIA' + 'ABCDEFGHIJKLMNOP') -Rule 'aws-access-key-id'
+
+    Test-DetectsAndRedacts -Name 'GCP API key' `
+        -Marker ('AIza' + 'SyA0123456789abcdefghijklmnopqrstuvw') -Rule 'gcp-api-key'
+
+    Test-DetectsAndRedacts -Name 'Slack user token' `
+        -Marker ('xo' + 'xp-0000000000-0000000000-abcdefghij') -Rule 'slack-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'Slack app-level token' `
+        -Marker ('xa' + 'pp-1-A000-000-abcdef0123456789') -Rule 'slack-app-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'Stripe live secret key' `
+        -Marker ('sk' + '_live_0123456789abcdefABCDEF') -Rule 'stripe-live-key'
+
+    Test-DetectsAndRedacts -Name 'Stripe live restricted key' `
+        -Marker ('rk' + '_live_0123456789abcdefABCDEF') -Rule 'stripe-live-key'
+
+    Test-DetectsAndRedacts -Name 'RSA PEM private key header' `
+        -Marker ('-----BEGIN ' + 'RSA PRIVATE KEY-----') -Rule 'private-key-block'
+
+    Test-DetectsAndRedacts -Name 'OpenSSH PEM private key header' `
+        -Marker ('-----BEGIN ' + 'OPENSSH PRIVATE KEY-----') -Rule 'private-key-block'
+
+    Test-DetectsAndRedacts -Name 'EC PEM private key header' `
+        -Marker ('-----BEGIN ' + 'EC PRIVATE KEY-----') -Rule 'private-key-block'
+
+    Test-DetectsAndRedacts -Name 'plain PEM private key header' `
+        -Marker ('-----BEGIN ' + 'PRIVATE KEY-----') -Rule 'private-key-block'
+
+    # --- False-positive suppression regression tests ---------------------
+    Invoke-Test 'does not flag a bare Bearer word without a token value' {
+        New-FixtureFile -RelativePath 'docs/usage.md' -Content @"
+# Auth notes
+
+Send the credential using the Bearer scheme described above.
+"@
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Bearer word with no token value should not fail.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
+    Invoke-Test 'flags a Bearer header that carries a token value' {
+        # Assemble the header by concatenation so this test file does not itself
+        # become a scanner finding (the variable holding it is named neutrally).
+        $authValue = ('Bear' + 'er ' + 'abcdef0123456789')
+        New-FixtureFile -RelativePath 'docs/header.md' -Content "Authorization: $authValue"
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Bearer header with a token value should fail.'
+        Assert-Contains -Text $result.Output -Needle 'bearer-token-header' -Message 'Finding should name the header rule.'
+        Assert-NotContains -Text $result.Output -Needle $authValue -Message 'Finding output should not replay the header value.'
+    }
+
+    Invoke-Test 'does not flag documentation-safe placeholder emails' {
+        New-FixtureFile -RelativePath 'docs/contact.md' -Content @"
+# Contact
+
+Reach the demo bot at bot@example.com or maintainer@example.org for synthetic tests.
+"@
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Placeholder emails should not fail.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
+    Invoke-Test 'flags a non-allowlisted real email address' {
+        $email = ('alice' + '@' + 'realcorp.io')
+        New-FixtureFile -RelativePath 'docs/people.md' -Content "Owner: $email"
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Real email should fail.'
+        Assert-Contains -Text $result.Output -Needle 'email-address' -Message 'Finding should name the email rule.'
+        Assert-NotContains -Text $result.Output -Needle $email -Message 'Finding output should not replay the email.'
+    }
+
+    Invoke-Test 'skips binary-extension files instead of line-walking them' {
+        # A .png whose bytes happen to contain a marker prefix must be skipped.
+        $marker = ('s' + 'k-binary-should-be-skipped')
+        New-FixtureFile -RelativePath 'examples/screenshot.png' -Content "binary-ish $marker"
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Binary-extension files should be skipped.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
 } finally {
     Remove-Item -LiteralPath $fixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
 }

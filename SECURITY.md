@@ -23,6 +23,10 @@ Safe public issue content may include:
 
 Unsafe public issue content includes credential values, raw authentication output, production logs, screenshots with private data, customer or tenant identifiers, and local absolute paths.
 
+## Scanner Coverage
+
+The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, Slack, Stripe, and PEM private-key headers) and always redacts matched values, but it does not guarantee detection of every secret format. By default it scans only git-tracked files, so a passing local scan reflects what would actually be published. Use it alongside, not instead of, dedicated secret scanners.
+
 ## Maintainer Handling
 
 Maintainers should reproduce with synthetic fixtures when possible, avoid requesting protected values in public, and document which checks actually ran before closing a report.
