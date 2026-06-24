@@ -34,7 +34,9 @@ $emailAllowlistPattern = '@(?:example\.(?:com|org|net)|test|localhost)$'
 # secret format is caught (see SKILL.md / SECURITY.md). Literal prefixes are
 # assembled by concatenation so this scanner file does not self-trigger.
 $rules = @(
-    @{ Name = 'openai-api-key-prefix'; Pattern = ('s' + 'k-'); Kind = 'literal' },
+    # Require a token-like boundary so ordinary words such as codex-task-* do not
+    # match the short OpenAI key prefix fragment.
+    @{ Name = 'openai-api-key-prefix'; Pattern = ('(?<![A-Za-z0-9_])s' + 'k-[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     @{ Name = 'github-classic-token-prefix'; Pattern = ('g' + 'hp_'); Kind = 'literal' },
     @{ Name = 'github-fine-grained-token-prefix'; Pattern = ('github' + '_pat_'); Kind = 'literal' },
     @{ Name = 'slack-bot-token-prefix'; Pattern = ('xo' + 'xb-'); Kind = 'literal' },

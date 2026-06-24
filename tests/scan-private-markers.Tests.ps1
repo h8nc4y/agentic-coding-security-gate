@@ -152,6 +152,15 @@ Use synthetic examples only.
         Assert-NotContains -Text $result.Output -Needle $marker -Message 'Finding output should not replay marker-like values.'
     }
 
+    Invoke-Test 'does not treat codex task filenames as OpenAI keys' {
+        New-FixtureFile -RelativePath 'TASKS_BACKLOG.md' -Content 'See docs/codex-task-scanner-hardening.md for the synthetic handoff.'
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'The scanner should not flag the sk- fragment inside task-.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
     # --- New (H-B) secret-format regression tests ------------------------
     # Each case: the scanner must (a) exit 1, (b) name the rule, and
     # (c) never replay the synthetic value. Values are assembled by
