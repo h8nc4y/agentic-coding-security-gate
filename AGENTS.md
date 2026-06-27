@@ -111,12 +111,12 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 ---
 
-## §9. 現在の状況サマリ（引き継ぎ時点）
+## §9. 現在の状況サマリ（2026-06-28時点）
 
-- 基準ブランチ: **`main`**。直近のOSS整備一式（CI、スキャナ回帰テスト、`CONTRIBUTING` / `SECURITY` / `.editorconfig`、`TASKS_BACKLOG.md`、`HANDOFF.md`、本 `AGENTS.md`）は `main` に統合済み。
-- 作業ブランチ: 無し（次のタスクから feature ブランチを切る）。
-- 状態: 回帰テスト・marker スキャン ともに緑。open issue・未解決 TODO/FIXME は無し（前回確認時点）。破壊的変更なし。
-- 配布形態: 手動インストール型 skill（`SKILL.md` を `~/.agents/skills/agentic-coding-security-gate/` へコピー）。npm/Marketplace 公開は **Non-Goal**。
+- 基準ブランチ: **`main`**。直近では PR #8 / commit `129c24a` まで統合済みで、scanner hardening、optional validation decision、Anthropic/JWT marker coverage、MCP/cloud boundary example が `main` に反映済み。
+- 作業ブランチ: 無し（次のタスクから feature ブランチを切る）。`main` 直コミットは禁止。
+- 状態: `TASKS_BACKLOG.md` の T-001〜T-005 は完了済み。2026-06-28確認時点で GitHub open issue は 0 件。未解決 TODO/FIXME は前回棚卸し時点で無し。
+- 配布形態: 手動インストール型 skill（`SKILL.md` を user-local skills directory へコピー）。npm/Marketplace 公開は **Non-Goal**。
 
 ---
 
@@ -128,13 +128,14 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 | --- | --- | --- |
 | T-001 | スキャナ回帰テストの成功時 `exit 0` | 済 |
 | T-002 | `chore/oss-readiness` の CI 確認とマージ戦略決定 | **済（main へ統合・ブランチ削除）** |
-| T-003 | 対象環境での `pwsh` 可用性確認 / `pwsh` 前提のドキュメント整合（PowerShell 5.1 方針の明文化） | ToDo |
-| T-004 | markdown lint または skill validator の採否決定（採用なら CI へ追加 → ワークフロー変更はゲート①） | ToDo |
+| T-003 | 対象環境での `pwsh` 可用性確認 / `pwsh` 前提のドキュメント整合（PowerShell 5.1 方針の明文化） | 済 |
+| T-004 | markdown lint または skill validator の採否決定（採用なら CI へ追加 → ワークフロー変更はゲート①） | 済（`docs/VALIDATION_DECISION.md` に任意維持を記録） |
+| T-005 | MCP / cloud boundary の公開安全サマリ例を追加する | 済 |
 
 新規候補（自律的に選んでよい。括弧内は留意ゲート）:
 
 - スキャナのルール拡充: AWS / GCP / JWT 等の接頭辞パターン追加（値は redact のまま）＋対応する回帰テスト追加。
-- `examples/` 拡充: MCP / クラウド境界の「公開安全サマリ」例を追加。
+- `examples/` 拡充: 追加の公開安全サマリ例を作る場合は、合成データだけで新しい境界シナリオに限定する。
 - クロスプラットフォーム検証: scanner を PowerShell 5.1 でも動作確認、または `pwsh` 7+ 前提を明文化。
 - OSS整備の続き: `CODE_OF_CONDUCT.md` / Issue・PR テンプレートの追加。
 - `CHANGELOG` 運用と `0.1.0` リリース準備（**リリース作成・タグ付けはゲート①** → ブリーフを書いて停止）。
