@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/25 13:02 JST
+最終更新: 2026/06/27 21:23 JST
 
 ## リポジトリの目的
 
@@ -9,9 +9,10 @@
 
 ## 現状サマリ
 
-- `main` は PR #4 / commit `aaa8e58` まで取り込み済みで、scanner hardening は完了済み。
+- `main` は PR #7 / commit `0280daa` まで取り込み済みで、scanner hardening と Anthropic/JWT marker coverage は完了済み。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
+- `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
 
@@ -23,11 +24,13 @@
 | backlog 棚卸し | `955eff8` | `TASKS_BACKLOG.md` を追加し、残タスクを整理 |
 | scanner test 成功終了コード明示 | `4aa3564` | `tests/scan-private-markers.Tests.ps1` の成功時に `exit 0` を追加 |
 | scanner hardening | `aaa8e58` | tracked-file scan、credential 形式の検出拡充、text allowlist、best-effort 注記、回帰テストを追加 |
+| MCP/cloud boundary example | このdocs更新 | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 
 ## 未完了 / skip タスク
 
 - T-004: done。`docs/VALIDATION_DECISION.md` に、現時点では必須導入しない判断とrevisit条件を記録済み。
 - 新しい機能実装・依存追加・リリース自動化は未着手。
+- MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
 ## 既知の問題・残懸念
 
@@ -65,5 +68,5 @@ build コマンドは未定義。
 
 ## 次にやるべき候補
 
-1. 公開配布前のrelease/tag準備ブリーフ、またはscannerルール拡充を検討する。
+1. 公開配布前のrelease/tag準備ブリーフ、または追加scannerルール候補の棚卸しを検討する。
 2. release/tag作成とworkflow変更はゲート①のため、実行せずブリーフで停止する。

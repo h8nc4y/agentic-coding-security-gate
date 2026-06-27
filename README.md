@@ -89,6 +89,7 @@ Follow [SKILL.md](SKILL.md): classify the boundary, redact protected material, c
 - [Security checklist](examples/security-checklist.md)
 - [Public issue safe summary](examples/public-issue-safe-summary.md)
 - [Final report template](examples/final-report-template.md)
+- [MCP and cloud boundary safe summary](examples/mcp-cloud-boundary-summary.md)
 
 The examples are synthetic. Do not replace placeholders with real secrets, raw logs, private repository names, customer data, screenshots, or local machine paths.
 

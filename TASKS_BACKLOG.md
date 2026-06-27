@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/06/20 23:34:29 JST
+最終更新: 2026/06/27 21:23 JST
 
 ## Sources
 
@@ -21,5 +21,6 @@
 | T-002 | `chore/oss-readiness` をリモートCIで確認し main への取り込み方針を決める | 未mergeブランチ / 引き継ぎ準備 | 中 | S | done |
 | T-003 | 引き継ぎ先環境で `pwsh` と README 記載の検証コマンドを確認する | README prerequisite / 引き継ぎ準備 | 低 | S | done |
 | T-004 | 必要なら markdown lint または skill validator の導入要否を検討する | README optional validation / 引き継ぎ準備 | 低 | S | done（`docs/VALIDATION_DECISION.md`: 現時点では必須導入せず、任意チェックとして維持。CI追加はゲート①） |
+| T-005 | MCP / cloud boundary の公開安全サマリ例を追加する | AGENTS.md §10 / examples拡充候補 | 中 | S | done |
 
 - 📌 2026-06-25 Codex 整理: 2026-06-21 の scanner hardening 指摘は PR #4 / commit `aaa8e58` で解決済み。履歴用 docs は公開安全な要約へ圧縮し、ローカル横断索引や旧作業ブランチへの依存は残さない。
