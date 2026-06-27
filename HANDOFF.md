@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/27 21:23 JST
+最終更新: 2026/06/28 01:01 JST
 
 ## リポジトリの目的
 
@@ -9,7 +9,7 @@
 
 ## 現状サマリ
 
-- `main` は PR #7 / commit `0280daa` まで取り込み済みで、scanner hardening と Anthropic/JWT marker coverage は完了済み。
+- `main` は PR #8 / merge commit `129c24a` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example は完了済み。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -24,11 +24,13 @@
 | backlog 棚卸し | `955eff8` | `TASKS_BACKLOG.md` を追加し、残タスクを整理 |
 | scanner test 成功終了コード明示 | `4aa3564` | `tests/scan-private-markers.Tests.ps1` の成功時に `exit 0` を追加 |
 | scanner hardening | `aaa8e58` | tracked-file scan、credential 形式の検出拡充、text allowlist、best-effort 注記、回帰テストを追加 |
-| MCP/cloud boundary example | このdocs更新 | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
+| validation decision | `5bd3d18` | `docs/VALIDATION_DECISION.md` に、mandatory markdown lint / external skill validator は現時点では導入しない判断を記録 |
+| Anthropic/JWT marker coverage | `b171619` | private marker scanner と回帰テストへ Anthropic key prefix / compact JWT shape の合成検出を追加 |
+| MCP/cloud boundary example | `1782fc6` | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 
 ## 未完了 / skip タスク
 
-- T-004: done。`docs/VALIDATION_DECISION.md` に、現時点では必須導入しない判断とrevisit条件を記録済み。
+- T-001〜T-005: done。最新状態は `TASKS_BACKLOG.md` が正本。
 - 新しい機能実装・依存追加・リリース自動化は未着手。
 - MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
@@ -40,12 +42,12 @@
 
 ## 最終検証結果
 
-実行日時: 2026/06/25 13:02 JST
+実行日時: 2026/06/27 21:23 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。19 tests passed |
-| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 17 files |
+| scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。21 tests passed |
+| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 21 files |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
@@ -63,7 +65,7 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #4 / commit `aaa8e58` まで反映済み。
+- `main`: PR #8 / merge commit `129c24a` まで反映済み。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。
 
 ## 次にやるべき候補
