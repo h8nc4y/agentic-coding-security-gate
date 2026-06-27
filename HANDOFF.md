@@ -12,7 +12,7 @@
 - `main` は PR #4 / commit `aaa8e58` まで取り込み済みで、scanner hardening は完了済み。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
-- `TASKS_BACKLOG.md` に doing タスクはない。残る候補は T-004 の markdown lint / skill validator 導入判断のみ。
+- T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
 
 ## 完了タスクと commit
@@ -26,7 +26,7 @@
 
 ## 未完了 / skip タスク
 
-- T-004: markdown lint または skill validator を導入する価値があるか、公開配布前に必要なら検討する。
+- T-004: done。`docs/VALIDATION_DECISION.md` に、現時点では必須導入しない判断とrevisit条件を記録済み。
 - 新しい機能実装・依存追加・リリース自動化は未着手。
 
 ## 既知の問題・残懸念
@@ -65,5 +65,5 @@ build コマンドは未定義。
 
 ## 次にやるべき候補
 
-1. 公開配布前に markdown lint または Codex-style skill validator を追加する価値があるか判断する。
-2. 追加する場合は、軽量配布方針・依存追加・CI 実行時間・false positive の運用負荷を見積もってから小さく導入する。
+1. 公開配布前のrelease/tag準備ブリーフ、またはscannerルール拡充を検討する。
+2. release/tag作成とworkflow変更はゲート①のため、実行せずブリーフで停止する。

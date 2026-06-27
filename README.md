@@ -126,7 +126,7 @@ If your environment has a Codex-style skill validator, run it against the reposi
 python path/to/quick_validate.py .
 ```
 
-Optional local checks can include Gitleaks, Semgrep, markdown linting, or a manual review. Report only the checks that actually ran. If a check is unavailable, say it was not checked.
+Optional local checks can include Gitleaks, Semgrep, markdown linting, or a manual review. Report only the checks that actually ran. If a check is unavailable, say it was not checked. See `docs/VALIDATION_DECISION.md` for the current decision not to make markdown lint or an external skill validator mandatory.
 
 Pull requests run the same bundled scanner tests and marker scan in GitHub Actions.
 
