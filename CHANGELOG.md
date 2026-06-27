@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added a synthetic browser screenshot and log boundary summary example for public-safe UI evidence reports.
+
 - Added a synthetic MCP/cloud boundary summary example for public-safe tool and deployment reports.
 
 - Added scanner coverage for Anthropic key prefixes and compact JWT-shaped token values while keeping findings redacted.

@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/28 01:01 JST
+最終更新: 2026/06/28 02:02 JST
 
 ## リポジトリの目的
 
@@ -13,6 +13,7 @@
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
+- `examples/browser-screenshot-log-summary.md` に、browser / screenshot / console / network log境界を公開安全に報告する synthetic example を追加済み。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
 
@@ -27,6 +28,7 @@
 | validation decision | `5bd3d18` | `docs/VALIDATION_DECISION.md` に、mandatory markdown lint / external skill validator は現時点では導入しない判断を記録 |
 | Anthropic/JWT marker coverage | `b171619` | private marker scanner と回帰テストへ Anthropic key prefix / compact JWT shape の合成検出を追加 |
 | MCP/cloud boundary example | `1782fc6` | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
+| Browser/screenshot/log boundary example | この変更 | `examples/browser-screenshot-log-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 
 ## 未完了 / skip タスク
 
@@ -42,12 +44,12 @@
 
 ## 最終検証結果
 
-実行日時: 2026/06/27 21:23 JST
+実行日時: 2026/06/28 02:02 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
 | scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。21 tests passed |
-| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 21 files |
+| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` / `-ScanMode worktree` | pass。tracked / worktree mode |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
