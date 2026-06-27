@@ -196,6 +196,12 @@ Use synthetic examples only.
     Test-DetectsAndRedacts -Name 'Slack app-level token' `
         -Marker ('xa' + 'pp-1-A000-000-abcdef0123456789') -Rule 'slack-app-token-prefix'
 
+    Test-DetectsAndRedacts -Name 'Anthropic API key prefix' `
+        -Marker ('sk-ant-' + 'api03-syntheticfixture000000000000') -Rule 'anthropic-api-key-prefix'
+
+    Test-DetectsAndRedacts -Name 'JWT token shape' `
+        -Marker ('eyJ' + 'hbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaXh0dXJlIn0.signaturepart') -Rule 'jwt-token-shape'
+
     Test-DetectsAndRedacts -Name 'Stripe live secret key' `
         -Marker ('sk' + '_live_0123456789abcdefABCDEF') -Rule 'stripe-live-key'
 

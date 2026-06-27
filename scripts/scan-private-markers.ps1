@@ -47,6 +47,9 @@ $rules = @(
     @{ Name = 'aws-access-key-id'; Pattern = ('AKIA' + '[0-9A-Z]{16}'); Kind = 'regex' },
     # New (H-B): GCP / Google API key.
     @{ Name = 'gcp-api-key'; Pattern = ('AIza' + '[0-9A-Za-z_\-]{35}'); Kind = 'regex' },
+    # New (H-C): Anthropic console/API key prefix and compact JWT-shaped bearer values.
+    @{ Name = 'anthropic-api-key-prefix'; Pattern = ('sk-ant-' + '[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
+    @{ Name = 'jwt-token-shape'; Pattern = 'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}'; Kind = 'regex' },
     # New (H-B): Stripe live secret / restricted keys.
     @{ Name = 'stripe-live-key'; Pattern = ('(?:sk|rk)' + '_live_[0-9A-Za-z]{16,}'); Kind = 'regex' },
     # New (H-B): PEM private-key block variants (RSA/EC/OPENSSH/ENCRYPTED + plain).

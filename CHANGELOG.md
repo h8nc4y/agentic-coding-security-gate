@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added scanner coverage for Anthropic key prefixes and compact JWT-shaped token values while keeping findings redacted.
+
 - Added docs/VALIDATION_DECISION.md to record that markdown lint and external skill validators remain optional unless a future release or CI policy change justifies adopting them.
 
 - Hardened the private marker scanner to scan git-tracked text files and detect additional cloud, Slack, Stripe, bearer, and PEM secret markers without replaying values.
