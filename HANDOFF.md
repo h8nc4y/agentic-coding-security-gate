@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/28 02:02 JST
+最終更新: 2026/06/28 05:09 JST
 
 ## リポジトリの目的
 
@@ -9,7 +9,7 @@
 
 ## 現状サマリ
 
-- `main` は PR #8 / merge commit `129c24a` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example は完了済み。
+- `main` は PR #10 / merge commit `91904bb` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example は完了済み。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -28,11 +28,11 @@
 | validation decision | `5bd3d18` | `docs/VALIDATION_DECISION.md` に、mandatory markdown lint / external skill validator は現時点では導入しない判断を記録 |
 | Anthropic/JWT marker coverage | `b171619` | private marker scanner と回帰テストへ Anthropic key prefix / compact JWT shape の合成検出を追加 |
 | MCP/cloud boundary example | `1782fc6` | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
-| Browser/screenshot/log boundary example | この変更 | `examples/browser-screenshot-log-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
+| Browser/screenshot/log boundary example | `ff59c59` | `examples/browser-screenshot-log-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 
 ## 未完了 / skip タスク
 
-- T-001〜T-005: done。最新状態は `TASKS_BACKLOG.md` が正本。
+- T-001〜T-006: done。最新状態は `TASKS_BACKLOG.md` が正本。
 - 新しい機能実装・依存追加・リリース自動化は未着手。
 - MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
@@ -67,7 +67,7 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #8 / merge commit `129c24a` まで反映済み。
+- `main`: PR #10 / merge commit `91904bb` まで反映済み。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。
 
 ## 次にやるべき候補
