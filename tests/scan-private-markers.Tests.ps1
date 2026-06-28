@@ -190,6 +190,18 @@ Use synthetic examples only.
     Test-DetectsAndRedacts -Name 'GCP API key' `
         -Marker ('AIza' + 'SyA0123456789abcdefghijklmnopqrstuvw') -Rule 'gcp-api-key'
 
+    Test-DetectsAndRedacts -Name 'npm auth token assignment' `
+        -Marker ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=abcdef0123456789abcdef0123456789') -Rule 'npm-auth-token-assignment'
+
+    Invoke-Test 'does not flag npm auth token environment placeholder' {
+        New-FixtureFile -RelativePath '.npmrc' -Content ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=${NODE_AUTH_TOKEN}')
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Environment-variable npm auth placeholders should not fail.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
     Test-DetectsAndRedacts -Name 'Slack user token' `
         -Marker ('xo' + 'xp-0000000000-0000000000-abcdefghij') -Rule 'slack-token-prefix'
 
