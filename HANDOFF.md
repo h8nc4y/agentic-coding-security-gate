@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/28 05:09 JST
+最終更新: 2026/06/28 23:27 JST
 
 ## リポジトリの目的
 
@@ -29,6 +29,7 @@
 | Anthropic/JWT marker coverage | `b171619` | private marker scanner と回帰テストへ Anthropic key prefix / compact JWT shape の合成検出を追加 |
 | MCP/cloud boundary example | `1782fc6` | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 | Browser/screenshot/log boundary example | `ff59c59` | `examples/browser-screenshot-log-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
+| npm auth-token scanner coverage | 未コミット | `.npmrc` text scan と literal `_authToken` assignment の検出回帰を追加 |
 
 ## 未完了 / skip タスク
 
@@ -41,15 +42,16 @@
 - GitHub issue / PR / CI の確認は、通常の sandbox 経路では認証・ネットワーク制約により失敗することがある。必要時は keyring-capable 経路で確認する。
 - README / CONTRIBUTING は `pwsh` 7+ を前提としている。Windows PowerShell 5.1 は文書化された互換対象ではない。
 - scanner は best-effort であり、全 secret 形式の完全検出を保証しない。公開前の最終判断では Gitleaks/Semgrep などの追加チェックと人間の review を併用する。
+- 2026-06-28 の npm auth-token assignment 拡充により、tracked/worktree の `.npmrc` 内に `_authToken=` の直値があれば検出し、`${NODE_AUTH_TOKEN}` のような環境変数 placeholder は許容する。
 
 ## 最終検証結果
 
-実行日時: 2026/06/28 02:02 JST
+実行日時: 2026/06/28 23:27 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。21 tests passed |
-| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` / `-ScanMode worktree` | pass。tracked / worktree mode |
+| scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。23 tests passed |
+| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 22 files |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |

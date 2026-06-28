@@ -47,6 +47,8 @@ $rules = @(
     @{ Name = 'aws-access-key-id'; Pattern = ('AKIA' + '[0-9A-Z]{16}'); Kind = 'regex' },
     # New (H-B): GCP / Google API key.
     @{ Name = 'gcp-api-key'; Pattern = ('AIza' + '[0-9A-Za-z_\-]{35}'); Kind = 'regex' },
+    # New (H-D): npm registry auth token assignment with a literal value.
+    @{ Name = 'npm-auth-token-assignment'; Pattern = '[_A-Za-z0-9./:-]*_authToken\s*=\s*[A-Za-z0-9._\-]{8,}'; Kind = 'regex' },
     # New (H-C): Anthropic console/API key prefix and compact JWT-shaped bearer values.
     @{ Name = 'anthropic-api-key-prefix'; Pattern = ('sk-ant-' + '[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     @{ Name = 'jwt-token-shape'; Pattern = 'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}'; Kind = 'regex' },
@@ -69,7 +71,7 @@ $rules = @(
 $textExtensions = @(
     '.md', '.markdown', '.txt', '.ps1', '.psm1', '.psd1', '.yml', '.yaml',
     '.json', '.jsonc', '.js', '.ts', '.py', '.sh', '.cfg', '.ini', '.toml',
-    '.editorconfig', '.gitignore', '.gitattributes', '.xml', '.html', '.css'
+    '.editorconfig', '.gitignore', '.gitattributes', '.npmrc', '.xml', '.html', '.css'
 )
 
 function Test-IsTextFile {
