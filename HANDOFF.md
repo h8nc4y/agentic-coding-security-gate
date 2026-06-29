@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/29 16:05 JST
+最終更新: 2026/06/29 22:35 JST
 
 ## リポジトリの目的
 
@@ -9,13 +9,14 @@
 
 ## 現状サマリ
 
-- `main` は PR #12 / merge commit `d549c52` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage は完了済み。
+- `main` は PR #13 / merge commit `b036918` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
 - `examples/browser-screenshot-log-summary.md` に、browser / screenshot / console / network log境界を公開安全に報告する synthetic example を追加済み。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
+- 初回release readiness briefとrelease notes draftを追加済み。tag push / GitHub Release作成 / version・target commit・公開タイミング・notes本文承認は未実施。
 
 ## 完了タスクと commit
 
@@ -30,11 +31,12 @@
 | MCP/cloud boundary example | `1782fc6` | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 | Browser/screenshot/log boundary example | `ff59c59` | `examples/browser-screenshot-log-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 | npm auth-token scanner coverage | `de3ee1d` | `.npmrc` text scan と literal `_authToken` assignment の検出回帰を追加 |
+| release readiness brief / notes draft | このbranch | 初回owner-approved release向けの承認前ブリーフとnotes draftを追加 |
 
 ## 未完了 / skip タスク
 
 - T-001〜T-007: done。最新状態は `TASKS_BACKLOG.md` が正本。
-- 新しい機能実装・依存追加・リリース自動化は未着手。
+- 新しい機能実装・依存追加・リリース自動化は未着手。release readiness brief / notes draft はdocs-onlyで追加済み。
 - MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
 ## 既知の問題・残懸念
@@ -69,10 +71,10 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #12 / merge commit `d549c52` まで反映済み。GitHub open PR / issue は 2026/06/29 16:00 JST 確認時点で 0 件。
+- `main`: PR #13 / merge commit `b036918` まで反映済み。GitHub open PR / issue は 2026/06/29 22:35 JST 確認時点で 0 件。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。
 
 ## 次にやるべき候補
 
-1. 公開配布前のrelease/tag準備ブリーフ、または追加scannerルール候補の棚卸しを検討する。
+1. release readiness brief / notes draft は追加済み。次はownerがversion、target commit、公開タイミング、notes本文を承認する。
 2. release/tag作成とworkflow変更はゲート①のため、実行せずブリーフで停止する。

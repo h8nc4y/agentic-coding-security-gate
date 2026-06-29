@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added release readiness brief and release notes draft for the first owner-approved public release; no tag or GitHub Release is created by this change.
+
 - Added scanner coverage for literal npm registry auth token assignments while allowing environment-variable placeholders.
 
 - Added a synthetic browser screenshot and log boundary summary example for public-safe UI evidence reports.
