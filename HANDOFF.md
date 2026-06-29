@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/29 22:35 JST
+最終更新: 2026/06/30 03:30 JST
 
 ## リポジトリの目的
 
@@ -9,7 +9,7 @@
 
 ## 現状サマリ
 
-- `main` は PR #13 / merge commit `b036918` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage は完了済み。現時点で Git tag / GitHub Release は存在しない。
+- `main` は PR #14 / merge commit `96e4a95` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -31,11 +31,12 @@
 | MCP/cloud boundary example | `1782fc6` | `examples/mcp-cloud-boundary-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 | Browser/screenshot/log boundary example | `ff59c59` | `examples/browser-screenshot-log-summary.md` を追加し、README / CHANGELOG / backlog / handoff を同期 |
 | npm auth-token scanner coverage | `de3ee1d` | `.npmrc` text scan と literal `_authToken` assignment の検出回帰を追加 |
-| release readiness brief / notes draft | このbranch | 初回owner-approved release向けの承認前ブリーフとnotes draftを追加 |
+| release readiness brief / notes draft | `607b712` | 初回owner-approved release向けの承認前ブリーフとnotes draftを追加 |
+| PR #14 後の状態同期 | `docs/sync-pr14-handoff-state` | AGENTS / HANDOFF / TASKS を PR #14 後の clean main 状態へ同期 |
 
 ## 未完了 / skip タスク
 
-- T-001〜T-007: done。最新状態は `TASKS_BACKLOG.md` が正本。
+- T-001〜T-009: done。最新状態は `TASKS_BACKLOG.md` が正本。
 - 新しい機能実装・依存追加・リリース自動化は未着手。release readiness brief / notes draft はdocs-onlyで追加済み。
 - MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
@@ -48,12 +49,12 @@
 
 ## 最終検証結果
 
-実行日時: 2026/06/29 16:05 JST
+実行日時: 2026/06/30 03:31 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
 | scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。23 tests passed |
-| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 22 files |
+| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 24 files |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
@@ -71,8 +72,8 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #13 / merge commit `b036918` まで反映済み。GitHub open PR / issue は 2026/06/29 22:35 JST 確認時点で 0 件。
-- この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。
+- `main`: PR #14 / merge commit `96e4a95` まで反映済み。GitHub open PR / issue は 2026/06/30 03:25 JST 確認時点で 0 件。
+- この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
 
 ## 次にやるべき候補
 
