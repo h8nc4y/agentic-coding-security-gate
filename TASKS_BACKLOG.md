@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/06/28 02:02 JST
+最終更新: 2026/06/29 16:05 JST
 
 ## Sources
 
@@ -10,8 +10,8 @@
 - AGENTS.md / `.codex`: リポジトリ内には該当なし
 - TODO / FIXME: 該当なし (`rg -n "TODO|FIXME"` で一致なし)
 - テスト / lint / 型チェック: `pwsh --version` は `PowerShell 7.6.2` を確認済み。`pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` と `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` は成功。lint / 型チェック / build は該当する設定ファイルなし。
-- git status: `main` は `origin/main` と一致し、未コミット変更なしで T-003 の作業ブランチを作成。
-- GitHub open issues: 0件 (`gh issue list --limit 50 --state open --json number,title,labels,url`)
+- git status: `main` は `origin/main` と一致し、PR #12 / merge commit `d549c52` まで反映済み。docs同期は `docs/sync-pr12-handoff-state` で作業。
+- GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/06/29 16:00 JST 確認)
 
 ## Tasks
 
