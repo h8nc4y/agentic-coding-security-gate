@@ -113,9 +113,9 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 ## §9. 現在の状況サマリ（2026-06-29時点）
 
-- 基準ブランチ: **`main`**。直近では PR #12 / merge commit `d549c52` まで統合済みで、scanner hardening、optional validation decision、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage が `main` に反映済み。
+- 基準ブランチ: **`main`**。直近では PR #13 / merge commit `b036918` まで統合済みで、scanner hardening、optional validation decision、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage が `main` に反映済み。現時点で Git tag / GitHub Release は存在しない。
 - 作業ブランチ: 無し（次のタスクから feature ブランチを切る）。`main` 直コミットは禁止。
-- 状態: `TASKS_BACKLOG.md` の T-001〜T-007 は完了済み。2026-06-29確認時点で GitHub open issue / PR は 0 件。未解決 TODO/FIXME は前回棚卸し時点で無し。
+- 状態: `TASKS_BACKLOG.md` の T-001〜T-008 は完了済み。2026-06-29確認時点で GitHub open issue / PR は 0 件。未解決 TODO/FIXME は前回棚卸し時点で無し。
 - 配布形態: 手動インストール型 skill（`SKILL.md` を user-local skills directory へコピー）。npm/Marketplace 公開は **Non-Goal**。
 
 ---
@@ -133,6 +133,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 | T-005 | MCP / cloud boundary の公開安全サマリ例を追加する | 済 |
 | T-006 | Browser / screenshot / log 境界の公開安全サマリ例を追加する | 済 |
 | T-007 | npm `.npmrc` の literal `_authToken` 値を検出し、環境変数 placeholder は許容する | 済 |
+| T-008 | 初回release readiness briefとrelease notes draftを準備する | 済 |
 
 新規候補（自律的に選んでよい。括弧内は留意ゲート）:
 
@@ -140,7 +141,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 - `examples/` 拡充: 追加の公開安全サマリ例を作る場合は、合成データだけで新しい境界シナリオに限定する。
 - クロスプラットフォーム検証: scanner を PowerShell 5.1 でも動作確認、または `pwsh` 7+ 前提を明文化。
 - OSS整備の続き: `CODE_OF_CONDUCT.md` / Issue・PR テンプレートの追加。
-- `CHANGELOG` 運用と `0.1.0` リリース準備（**リリース作成・タグ付けはゲート①** → ブリーフを書いて停止）。
+- owner-approved releaseの最終承認待ち（version / target commit / timing / notes本文）。**リリース作成・タグ付けはゲート①**。
 
 ---
 
