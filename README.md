@@ -91,6 +91,7 @@ Follow [SKILL.md](SKILL.md): classify the boundary, redact protected material, c
 - [Final report template](examples/final-report-template.md)
 - [MCP and cloud boundary safe summary](examples/mcp-cloud-boundary-summary.md)
 - [Browser screenshot and log safe summary](examples/browser-screenshot-log-summary.md)
+- [Cost approval blocker safe summary](examples/cost-approval-blocker-summary.md)
 
 The examples are synthetic. Do not replace placeholders with real secrets, raw logs, private repository names, customer data, screenshots, or local machine paths.
 

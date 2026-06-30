@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added a synthetic cost approval blocker summary example for paid-operation stop reports.
+
 - Added release readiness brief and release notes draft for the first owner-approved public release; no tag or GitHub Release is created by this change.
 
 - Added scanner coverage for literal npm registry auth token assignments while allowing environment-variable placeholders.
