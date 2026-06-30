@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/06/30 14:39 JST
+最終更新: 2026/06/30 21:00 JST
 
 ## Sources
 
@@ -10,8 +10,8 @@
 - AGENTS.md / `.codex`: リポジトリ内には該当なし
 - TODO / FIXME: 該当なし (`rg -n "TODO|FIXME"` で一致なし)
 - テスト / lint / 型チェック: `pwsh --version` は `PowerShell 7.6.2` を確認済み。`pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` と `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` は成功。lint / 型チェック / build は該当する設定ファイルなし。
-- git status: `main` は `origin/main` と一致し、PR #16 / merge commit `9a8c3b3` まで反映済み。T-011 docs example は `docs/cost-approval-summary-example` で作業。
-- GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/06/30 14:35 JST 確認)
+- git status: `main` は `origin/main` と一致し、PR #17 / merge commit `ae6bcce` まで反映済み。T-012 docs example は `docs/release-tag-gate-summary-example` で作業。
+- GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/06/30 20:59 JST 確認)
 
 ## Tasks
 
@@ -28,6 +28,7 @@
 | T-009 | PR #14 後の AGENTS/HANDOFF/TASKS 状態を同期する | git log / 状態同期 | 中 | S | done |
 | T-010 | PR #15 後の AGENTS/HANDOFF/TASKS 状態を同期する | git log / 状態同期 | 中 | S | done |
 | T-011 | cost approval blocker の公開安全サマリ例を追加する | AGENTS.md §10 / README Synthetic Examples | 中 | S | done |
+| T-012 | release / tag gate の公開安全サマリ例を追加する | AGENTS.md §4 / README Synthetic Examples / release readiness brief | 中 | S | done |
 
 - 📌 2026-06-25 Codex 整理: 2026-06-21 の scanner hardening 指摘は PR #4 / commit `aaa8e58` で解決済み。履歴用 docs は公開安全な要約へ圧縮し、ローカル横断索引や旧作業ブランチへの依存は残さない。
 - 📌 2026-06-28 Codex 整理: `examples/browser-screenshot-log-summary.md` を追加し、raw screenshot / console / network log を公開報告へ混ぜない合成テンプレートを README / CHANGELOG と同期した。実ブラウザ、実スクリーンショット、外部アップロード、workflow/release/tag は未実行。
@@ -36,3 +37,4 @@
 - 📌 2026-06-30 Codex 整理: PR #14 / merge commit `96e4a95` 後の AGENTS / HANDOFF / TASKS 状態を同期した。GitHub open issue / PR は0件、release/tagは引き続きowner承認待ち。
 - 📌 2026-06-30 Codex 整理: PR #15 / merge commit `5d4990a` 後の AGENTS / HANDOFF / TASKS 状態を同期した。GitHub open issue / PR は0件、release/tagは引き続きowner承認待ち。
 - 📌 2026-06-30 Codex 整理: `examples/cost-approval-blocker-summary.md` を追加し、paid operationを実行せずに見積・根拠・local/mock代替・承認文言を公開安全に報告する合成例を README / CHANGELOG と同期した。
+- 📌 2026-06-30 Codex 整理: `examples/release-tag-gate-summary.md` を追加し、release/tag/workflow/package公開を実行せずにowner承認待ちの停止報告を公開安全に残す合成例を README / CHANGELOG と同期した。
