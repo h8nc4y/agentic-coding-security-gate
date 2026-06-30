@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/30 07:25 JST
+最終更新: 2026/06/30 14:39 JST
 
 ## リポジトリの目的
 
@@ -9,11 +9,12 @@
 
 ## 現状サマリ
 
-- `main` は PR #15 / merge commit `5d4990a` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、PR #14後の AGENTS/HANDOFF/TASKS 状態同期は完了済み。現時点で Git tag / GitHub Release は存在しない。
+- `main` は PR #16 / merge commit `9a8c3b3` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、PR #15後の AGENTS/HANDOFF/TASKS 状態同期は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
 - `examples/browser-screenshot-log-summary.md` に、browser / screenshot / console / network log境界を公開安全に報告する synthetic example を追加済み。
+- `examples/cost-approval-blocker-summary.md` に、paid operationを実行せず見積・根拠・local/mock代替・承認文言を公開安全に報告する synthetic example を追加。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
 - 初回release readiness briefとrelease notes draftを追加済み。tag push / GitHub Release作成 / version・target commit・公開タイミング・notes本文承認は未実施。
@@ -33,10 +34,12 @@
 | npm auth-token scanner coverage | `de3ee1d` | `.npmrc` text scan と literal `_authToken` assignment の検出回帰を追加 |
 | release readiness brief / notes draft | `607b712` | 初回owner-approved release向けの承認前ブリーフとnotes draftを追加 |
 | PR #14 後の状態同期 | `7cbd74c` / PR #15 merge `5d4990a` | AGENTS / HANDOFF / TASKS を PR #14 後の clean main 状態へ同期 |
+| PR #15 後の状態同期 | `a3e2a3f` / PR #16 merge `9a8c3b3` | AGENTS / HANDOFF / TASKS を PR #15 後の clean main 状態へ同期 |
+| Cost approval blocker example | `docs/cost-approval-summary-example` | paid operation前の停止報告をsynthetic exampleとして追加 |
 
 ## 未完了 / skip タスク
 
-- T-001〜T-010: done。最新状態は `TASKS_BACKLOG.md` が正本。
+- T-001〜T-011: done。最新状態は `TASKS_BACKLOG.md` が正本。
 - 新しい機能実装・依存追加・リリース自動化は未着手。release readiness brief / notes draft はdocs-onlyで追加済み。
 - MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
@@ -49,12 +52,12 @@
 
 ## 最終検証結果
 
-実行日時: 2026/06/30 07:25 JST
+実行日時: 2026/06/30 14:42 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
 | scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` | pass。23 tests passed |
-| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 24 files |
+| private marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 25 files（stage後に新規exampleを含めて再確認） |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
@@ -72,7 +75,7 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #15 / merge commit `5d4990a` まで反映済み。GitHub open PR / issue は 2026/06/30 07:20 JST 確認時点で 0 件。
+- `main`: PR #16 / merge commit `9a8c3b3` まで反映済み。GitHub open PR / issue は 2026/06/30 14:35 JST 確認時点で 0 件。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
 
 ## 次にやるべき候補
