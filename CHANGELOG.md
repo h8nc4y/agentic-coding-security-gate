@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added a synthetic release and tag gate summary example for owner-approval stop reports.
+
 - Added a synthetic cost approval blocker summary example for paid-operation stop reports.
 
 - Added release readiness brief and release notes draft for the first owner-approved public release; no tag or GitHub Release is created by this change.
