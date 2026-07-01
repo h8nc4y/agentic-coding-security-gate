@@ -196,6 +196,9 @@ Use synthetic examples only.
     Test-DetectsAndRedacts -Name 'PyPI API token prefix' `
         -Marker ('pypi-' + 'AgEIcHlwaS5vcmcCsyntheticfixture0000000000') -Rule 'python-package-index-token-prefix'
 
+    Test-DetectsAndRedacts -Name 'RubyGems credentials assignment' `
+        -Marker (':rubygems_' + 'api_' + 'key: ' + 'abcd' + 'ef0123456789abcdef0123456789') -Rule 'ruby-package-credentials-assignment'
+
     Invoke-Test 'does not flag npm auth token environment placeholder' {
         New-FixtureFile -RelativePath '.npmrc' -Content ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=${NODE_AUTH_TOKEN}')
 
