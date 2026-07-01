@@ -193,6 +193,9 @@ Use synthetic examples only.
     Test-DetectsAndRedacts -Name 'npm auth token assignment' `
         -Marker ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=abcdef0123456789abcdef0123456789') -Rule 'npm-auth-token-assignment'
 
+    Test-DetectsAndRedacts -Name 'PyPI API token prefix' `
+        -Marker ('pypi-' + 'AgEIcHlwaS5vcmcCsyntheticfixture0000000000') -Rule 'python-package-index-token-prefix'
+
     Invoke-Test 'does not flag npm auth token environment placeholder' {
         New-FixtureFile -RelativePath '.npmrc' -Content ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=${NODE_AUTH_TOKEN}')
 

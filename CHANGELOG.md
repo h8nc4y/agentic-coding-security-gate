@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added scanner coverage for PyPI API token prefixes while keeping synthetic values redacted.
+
 - Added a synthetic GitHub Actions artifact boundary summary example for public-safe CI evidence reports.
 
 - Added a synthetic release and tag gate summary example for owner-approval stop reports.
