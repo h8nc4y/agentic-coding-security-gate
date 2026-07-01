@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/07/01 18:16 JST
+最終更新: 2026/07/01 18:25 JST
 
 ## リポジトリの目的
 
@@ -9,7 +9,7 @@
 
 ## 現状サマリ
 
-- `main` は PR #20 / merge commit `98891d5` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage は完了済み。今回の作業では RubyGems credentials assignment scanner coverage を追加する。現時点で Git tag / GitHub Release は存在しない。
+- `main` は PR #21 / merge commit `68c4bfe` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage、RubyGems credentials assignment scanner coverage は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -43,7 +43,7 @@
 | Release/tag gate example | `docs/release-tag-gate-summary-example` | release/tag公開前の停止報告をsynthetic exampleとして追加 |
 | GitHub Actions artifact boundary example | `docs/ci-artifact-boundary-summary` | workflow artifact / job logを公開報告へ貼らないsynthetic summaryを追加 |
 | PyPI token scanner coverage | PR #20 / `98891d5` | PyPI API token prefix の synthetic fixture 検出を追加 |
-| RubyGems credentials scanner coverage | current task branch | RubyGems credentials assignment の synthetic fixture 検出を追加 |
+| RubyGems credentials scanner coverage | PR #21 / `68c4bfe` | RubyGems credentials assignment の synthetic fixture 検出を追加 |
 
 ## 未完了 / skip タスク
 
@@ -62,7 +62,7 @@
 
 ## 最終検証結果
 
-実行日時: 2026/07/01 18:16 JST
+実行日時: 2026/07/01 18:25 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
@@ -85,7 +85,7 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #20 / merge commit `98891d5` まで反映済み。GitHub open PR / issue は 2026/07/01 18:16 JST 確認時点で 0 件。
+- `main`: PR #21 / merge commit `68c4bfe` まで反映済み。GitHub open PR / issue は 2026/07/01 18:25 JST 確認時点で 0 件。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
 
 ## 次にやるべき候補

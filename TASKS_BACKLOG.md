@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/07/01 18:16 JST
+最終更新: 2026/07/01 18:25 JST
 
 ## Sources
 
@@ -10,8 +10,8 @@
 - AGENTS.md / `.codex`: リポジトリ内には該当なし
 - TODO / FIXME: 該当なし (`rg -n "TODO|FIXME"` で一致なし)
 - テスト / lint / 型チェック: `pwsh --version` は `PowerShell 7.6.2` を確認済み。`pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests.ps1` は成功（25 tests）。`pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` も成功（tracked mode / 27 files）。lint / 型チェック / build は該当する設定ファイルなし。
-- git status: `main` は `origin/main` と一致し、PR #20 / merge commit `98891d5` まで反映済み。T-015 RubyGems credentials scanner coverage はこの作業ブランチで作業。
-- GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/07/01 18:16 JST 確認)
+- git status: `main` は `origin/main` と一致し、PR #21 / merge commit `68c4bfe` まで反映済み。T-001〜T-015 は完了済み。
+- GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/07/01 18:25 JST 確認)
 
 ## Tasks
 
