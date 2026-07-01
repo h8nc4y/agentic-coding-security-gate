@@ -113,9 +113,9 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 ## §9. 現在の状況サマリ（2026-07-01時点）
 
-- 基準ブランチ: **`main`**。直近では PR #20 / merge commit `98891d5` まで統合済みで、scanner hardening、optional validation decision、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage が `main` に反映済み。今回の作業では RubyGems credentials assignment scanner coverage を追加する。現時点で Git tag / GitHub Release は存在しない。
+- 基準ブランチ: **`main`**。直近では PR #21 / merge commit `68c4bfe` まで統合済みで、scanner hardening、optional validation decision、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage、RubyGems credentials assignment scanner coverage が `main` に反映済み。現時点で Git tag / GitHub Release は存在しない。
 - 作業ブランチ: 無し（次のタスクから feature ブランチを切る）。`main` 直コミットは禁止。
-- 状態: `TASKS_BACKLOG.md` の T-001〜T-015 は完了済み。2026-07-01 18:16 JST確認時点で GitHub open issue / PR は 0 件。未解決 TODO/FIXME は前回棚卸し時点で無し。
+- 状態: `TASKS_BACKLOG.md` の T-001〜T-015 は完了済み。2026-07-01 18:25 JST確認時点で GitHub open issue / PR は 0 件。未解決 TODO/FIXME は前回棚卸し時点で無し。
 - 配布形態: 手動インストール型 skill（`SKILL.md` を user-local skills directory へコピー）。npm/Marketplace 公開は **Non-Goal**。
 
 ---
