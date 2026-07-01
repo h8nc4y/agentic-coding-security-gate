@@ -25,7 +25,7 @@ Unsafe public issue content includes credential values, raw authentication outpu
 
 ## Scanner Coverage
 
-The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, npm auth-token assignments, Slack, Stripe, and PEM private-key headers) and always redacts matched values, but it does not guarantee detection of every secret format. By default it scans only git-tracked files, so a passing local scan reflects what would actually be published. Use it alongside, not instead of, dedicated secret scanners.
+The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, npm auth-token assignments, PyPI, RubyGems, GitLab token prefixes, Slack, Stripe, and PEM private-key headers) and always redacts matched values, but it does not guarantee detection of every secret format. By default it scans only git-tracked files, so a passing local scan reflects what would actually be published. Use it alongside, not instead of, dedicated secret scanners.
 
 ## Maintainer Handling
 

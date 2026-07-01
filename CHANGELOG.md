@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Broadened GitLab scanner coverage to the official token prefix family and the session cookie shape while keeping synthetic values redacted.
+
 - Added scanner coverage for GitLab `glpat-`, Hugging Face `hf_`, Slack incoming webhook URL, and SendGrid `SG.` two-segment key shapes while keeping synthetic values redacted.
 
 - Added scanner coverage for GitHub classic token prefixes (`ghp_`, `gho_`, `ghu_`, `ghs_`, and `ghr_`) while keeping synthetic values redacted.

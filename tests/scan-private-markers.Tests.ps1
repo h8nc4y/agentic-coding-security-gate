@@ -8,6 +8,19 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $scannerPath = Join-Path $repoRoot 'scripts/scan-private-markers.ps1'
 $fixtureRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("agentic-coding-security-gate-tests-" + [System.Guid]::NewGuid().ToString('N'))
 $failures = New-Object System.Collections.Generic.List[string]
+$scannerPowerShell = 'pwsh'
+
+if ($null -eq (Get-Command $scannerPowerShell -ErrorAction SilentlyContinue)) {
+    # Prefer the same executable that is running this harness when PowerShell 7
+    # is not on PATH. CI still uses pwsh; this only keeps local fallback runs
+    # from failing before scanner behavior is exercised.
+    $currentProcess = Get-Process -Id $PID
+    if (-not [string]::IsNullOrWhiteSpace($currentProcess.Path)) {
+        $scannerPowerShell = $currentProcess.Path
+    } else {
+        $scannerPowerShell = 'powershell.exe'
+    }
+}
 
 function New-FixtureFile {
     param(
@@ -30,7 +43,7 @@ function New-FixtureFile {
 function Invoke-Scanner {
     # Fixture roots are temporary non-git directories; force worktree mode so
     # host-specific git stderr behavior does not mask scanner assertions.
-    $output = & pwsh -NoProfile -ExecutionPolicy Bypass -File $scannerPath -Path $fixtureRoot -ScanMode worktree 2>&1
+    $output = & $scannerPowerShell -NoProfile -ExecutionPolicy Bypass -File $scannerPath -Path $fixtureRoot -ScanMode worktree 2>&1
 
     return [pscustomobject]@{
         ExitCode = $LASTEXITCODE
@@ -213,9 +226,6 @@ Use synthetic examples only.
 
     Test-DetectsAndRedacts -Name 'GitHub refresh token prefix' -Marker ('g' + 'hr_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
 
-    Test-DetectsAndRedacts -Name 'GitLab personal access token prefix' `
-        -Marker ('gl' + 'pat-' + 'synthetic_fixture_0123456789') -Rule 'gitlab-pat-prefix'
-
     Test-DetectsAndRedacts -Name 'Hugging Face token prefix' `
         -Marker ('h' + 'f_' + 'synthetic012345') -Rule 'huggingface-token-prefix'
 
@@ -224,6 +234,45 @@ Use synthetic examples only.
 
     Test-DetectsAndRedacts -Name 'SendGrid API key prefix' `
         -Marker ('S' + 'G.' + 'abcdefghijklmnop' + '.' + 'qrstuvwxyzABCDEF') -Rule 'sendgrid-api-key-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab personal access token prefix' `
+        -Marker ('gl' + 'pat-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab deploy token prefix' `
+        -Marker ('gl' + 'dt-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab CI job token prefix' `
+        -Marker ('gl' + 'cbt-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab OAuth application secret prefix' `
+        -Marker ('gl' + 'oas-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab runner authentication token prefix' `
+        -Marker ('gl' + 'rt-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab trigger token prefix' `
+        -Marker ('gl' + 'ptt-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab feed token prefix' `
+        -Marker ('gl' + 'ft-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab incoming mail token prefix' `
+        -Marker ('gl' + 'imt-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab Kubernetes agent token prefix' `
+        -Marker ('gl' + 'agent-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab workspace token prefix' `
+        -Marker ('gl' + 'wt-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab SCIM token prefix' `
+        -Marker ('gl' + 'soat-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab feature flags client token prefix' `
+        -Marker ('gl' + 'ffct-' + 'syntheticfixture0000000000') -Rule 'gitlab-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitLab session cookie value' `
+        -Marker ('_gitlab_' + 'session=' + 'syntheticfixture0000000000') -Rule 'gitlab-session-cookie'
 
     Invoke-Test 'does not flag npm auth token environment placeholder' {
         New-FixtureFile -RelativePath '.npmrc' -Content ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=${NODE_AUTH_TOKEN}')

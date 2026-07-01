@@ -41,8 +41,8 @@ $rules = @(
     # ghs_, and ghr_. Keep the prefix assembled so this file does not match
     # itself, while requiring a token-like suffix to reduce accidental hits.
     @{ Name = 'github-classic-token-prefix'; Pattern = ('g' + 'h[pousr]_[A-Za-z0-9_]{8,}'); Kind = 'regex' },
-    # New (H-D): GitLab, Hugging Face, Slack webhook, and SendGrid markers.
-    @{ Name = 'gitlab-pat-prefix'; Pattern = ('gl' + 'pat-[A-Za-z0-9_\-]{8,}'); Kind = 'regex' },
+    # New (H-D): Hugging Face, Slack webhook, and SendGrid markers. GitLab is
+    # covered by the broader gitlab-token-prefix rule below.
     @{ Name = 'huggingface-token-prefix'; Pattern = ('(?<![A-Za-z0-9])h' + 'f_[A-Za-z0-9]{8,}'); Kind = 'regex' },
     @{ Name = 'slack-webhook-url'; Pattern = ('hooks.slack.' + 'com/services/[A-Za-z0-9/_\-]{8,}'); Kind = 'regex' },
     @{ Name = 'sendgrid-api-key-prefix'; Pattern = ('S' + 'G\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
@@ -61,6 +61,9 @@ $rules = @(
     @{ Name = 'python-package-index-token-prefix'; Pattern = ('pypi-' + '[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     # New (H-D): RubyGems credentials file assignment with a literal value.
     @{ Name = 'ruby-package-credentials-assignment'; Pattern = (':rubygems_' + 'api_key:\s+[A-Za-z0-9_\-]{8,}'); Kind = 'regex' },
+    # New (H-D): GitLab token prefixes from the official token overview table.
+    @{ Name = 'gitlab-token-prefix'; Pattern = ('gl' + '(?:pat|oas|dt|rt|rtr|cbt|ptt|ft|imt|agent|wt|soat|ffct)-[A-Za-z0-9_\-]{8,}'); Kind = 'regex' },
+    @{ Name = 'gitlab-session-cookie'; Pattern = ('_gitlab_' + 'session=[A-Za-z0-9._\-]{8,}'); Kind = 'regex' },
     # New (H-C): Anthropic console/API key prefix and compact JWT-shaped bearer values.
     @{ Name = 'anthropic-api-key-prefix'; Pattern = ('sk-ant-' + '[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     @{ Name = 'jwt-token-shape'; Pattern = 'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}'; Kind = 'regex' },
