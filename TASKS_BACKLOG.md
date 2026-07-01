@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/06/30 21:00 JST
+最終更新: 2026/07/01 13:20 JST
 
 ## Sources
 
@@ -29,6 +29,7 @@
 | T-010 | PR #15 後の AGENTS/HANDOFF/TASKS 状態を同期する | git log / 状態同期 | 中 | S | done |
 | T-011 | cost approval blocker の公開安全サマリ例を追加する | AGENTS.md §10 / README Synthetic Examples | 中 | S | done |
 | T-012 | release / tag gate の公開安全サマリ例を追加する | AGENTS.md §4 / README Synthetic Examples / release readiness brief | 中 | S | done |
+| T-013 | GitHub Actions artifact / workflow log 境界の公開安全サマリ例を追加する | AGENTS.md §10 / README Synthetic Examples | 中 | S | done |
 
 - 📌 2026-06-25 Codex 整理: 2026-06-21 の scanner hardening 指摘は PR #4 / commit `aaa8e58` で解決済み。履歴用 docs は公開安全な要約へ圧縮し、ローカル横断索引や旧作業ブランチへの依存は残さない。
 - 📌 2026-06-28 Codex 整理: `examples/browser-screenshot-log-summary.md` を追加し、raw screenshot / console / network log を公開報告へ混ぜない合成テンプレートを README / CHANGELOG と同期した。実ブラウザ、実スクリーンショット、外部アップロード、workflow/release/tag は未実行。
@@ -38,3 +39,4 @@
 - 📌 2026-06-30 Codex 整理: PR #15 / merge commit `5d4990a` 後の AGENTS / HANDOFF / TASKS 状態を同期した。GitHub open issue / PR は0件、release/tagは引き続きowner承認待ち。
 - 📌 2026-06-30 Codex 整理: `examples/cost-approval-blocker-summary.md` を追加し、paid operationを実行せずに見積・根拠・local/mock代替・承認文言を公開安全に報告する合成例を README / CHANGELOG と同期した。
 - 📌 2026-06-30 Codex 整理: `examples/release-tag-gate-summary.md` を追加し、release/tag/workflow/package公開を実行せずにowner承認待ちの停止報告を公開安全に残す合成例を README / CHANGELOG と同期した。
+- 📌 2026-07-01 Codex 整理: `examples/github-actions-artifact-boundary-summary.md` を追加し、workflow artifact / job log を公開報告へ混ぜない合成テンプレートを README / CHANGELOG と同期した。実artifact download、workflow変更、release/tagは未実行。

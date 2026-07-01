@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/06/30 21:00 JST
+最終更新: 2026/07/01 13:20 JST
 
 ## リポジトリの目的
 
@@ -16,6 +16,7 @@
 - `examples/browser-screenshot-log-summary.md` に、browser / screenshot / console / network log境界を公開安全に報告する synthetic example を追加済み。
 - `examples/cost-approval-blocker-summary.md` に、paid operationを実行せず見積・根拠・local/mock代替・承認文言を公開安全に報告する synthetic example を追加。
 - `examples/release-tag-gate-summary.md` に、release / tag / workflow / package公開を実行せずowner承認待ちの停止報告を公開安全に残す synthetic example を追加。
+- `examples/github-actions-artifact-boundary-summary.md` に、GitHub Actions artifact / job log 境界を公開安全に報告する synthetic example を追加済み。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
 - 初回release readiness briefとrelease notes draftを追加済み。tag push / GitHub Release作成 / version・target commit・公開タイミング・notes本文承認は未実施。
@@ -38,6 +39,7 @@
 | PR #15 後の状態同期 | `a3e2a3f` / PR #16 merge `9a8c3b3` | AGENTS / HANDOFF / TASKS を PR #15 後の clean main 状態へ同期 |
 | Cost approval blocker example | `1d1a086` / PR #17 merge `ae6bcce` | paid operation前の停止報告をsynthetic exampleとして追加 |
 | Release/tag gate example | `docs/release-tag-gate-summary-example` | release/tag公開前の停止報告をsynthetic exampleとして追加 |
+| GitHub Actions artifact boundary example | `docs/ci-artifact-boundary-summary` | workflow artifact / job logを公開報告へ貼らないsynthetic summaryを追加 |
 
 ## 未完了 / skip タスク
 
