@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added a synthetic GitHub Actions artifact boundary summary example for public-safe CI evidence reports.
+
 - Added a synthetic release and tag gate summary example for owner-approval stop reports.
 
 - Added a synthetic cost approval blocker summary example for paid-operation stop reports.
