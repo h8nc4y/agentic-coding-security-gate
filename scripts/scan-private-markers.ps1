@@ -49,6 +49,8 @@ $rules = @(
     @{ Name = 'gcp-api-key'; Pattern = ('AIza' + '[0-9A-Za-z_\-]{35}'); Kind = 'regex' },
     # New (H-D): npm registry auth token assignment with a literal value.
     @{ Name = 'npm-auth-token-assignment'; Pattern = '[_A-Za-z0-9./:-]*_authToken\s*=\s*[A-Za-z0-9._\-]{8,}'; Kind = 'regex' },
+    # New (H-D): PyPI API token prefix with a token-length suffix.
+    @{ Name = 'python-package-index-token-prefix'; Pattern = ('pypi-' + '[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     # New (H-C): Anthropic console/API key prefix and compact JWT-shaped bearer values.
     @{ Name = 'anthropic-api-key-prefix'; Pattern = ('sk-ant-' + '[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     @{ Name = 'jwt-token-shape'; Pattern = 'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}'; Kind = 'regex' },
