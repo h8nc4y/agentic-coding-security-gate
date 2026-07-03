@@ -41,6 +41,11 @@ $rules = @(
     # ghs_, and ghr_. Keep the prefix assembled so this file does not match
     # itself, while requiring a token-like suffix to reduce accidental hits.
     @{ Name = 'github-classic-token-prefix'; Pattern = ('g' + 'h[pousr]_[A-Za-z0-9_]{8,}'); Kind = 'regex' },
+    # New (H-D): GitLab, Hugging Face, Slack webhook, and SendGrid markers.
+    @{ Name = 'gitlab-pat-prefix'; Pattern = ('gl' + 'pat-[A-Za-z0-9_\-]{8,}'); Kind = 'regex' },
+    @{ Name = 'huggingface-token-prefix'; Pattern = ('(?<![A-Za-z0-9])h' + 'f_[A-Za-z0-9]{8,}'); Kind = 'regex' },
+    @{ Name = 'slack-webhook-url'; Pattern = ('hooks.slack.' + 'com/services/[A-Za-z0-9/_\-]{8,}'); Kind = 'regex' },
+    @{ Name = 'sendgrid-api-key-prefix'; Pattern = ('S' + 'G\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{16,}'); Kind = 'regex' },
     @{ Name = 'github-fine-grained-token-prefix'; Pattern = ('github' + '_pat_'); Kind = 'literal' },
     @{ Name = 'slack-bot-token-prefix'; Pattern = ('xo' + 'xb-'); Kind = 'literal' },
     # New (H-B): Slack user/legacy and app-level tokens.
