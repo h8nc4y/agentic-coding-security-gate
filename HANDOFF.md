@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/07/03 23:05 JST
+最終更新: 2026/07/03 23:45 JST
 
 ## リポジトリの目的
 
@@ -9,7 +9,7 @@
 
 ## 現状サマリ
 
-- `main` は PR #23 / merge commit `cef69fe` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage、RubyGems credentials assignment scanner coverage、GitHub classic token prefix 群の scanner coverage は完了済み。現時点で Git tag / GitHub Release は存在しない。
+- `main` は PR #26 まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI / RubyGems / GitHub classic token / GitLab / Hugging Face / Slack webhook / SendGrid の scanner coverage、Fable5 要件レビュー docs は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -20,6 +20,8 @@
 - `scripts/scan-private-markers.ps1` に PyPI API token prefix の合成検出を追加し、`tests/scan-private-markers.Tests.ps1` で RED → GREEN を確認済み。
 - `scripts/scan-private-markers.ps1` に RubyGems credentials assignment の合成検出を追加し、`tests/scan-private-markers.Tests.ps1` で RED → GREEN を確認済み。
 - `scripts/scan-private-markers.ps1` に GitHub classic token prefix 群（`ghp_` / `gho_` / `ghu_` / `ghs_` / `ghr_`）の合成検出を追加し、`tests/scan-private-markers.Tests.ps1` で `gho_` / `ghu_` / `ghs_` / `ghr_` の RED → GREEN を確認済み。
+- `scripts/scan-private-markers.ps1` に GitLab PAT / Hugging Face token / Slack incoming webhook URL / SendGrid API key 2セグメント形状の合成検出を追加（T-017、実装は codex-deep 委譲・Fable5 レビュー）。誤検出防止のネガティブテスト2件を含み RED → GREEN を確認済み。
+- `docs/REQUIREMENTS_REVIEW_2026-07.md`（要件再検討、owner 質問 Q1-Q9、タスク候補 T-017〜T-020 案）と `docs/fable5-market-research-2026-07.md`（市場調査）を追加済み。owner の回答待ち事項はこの2文書を正とする。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
 - 初回release readiness briefとrelease notes draftを追加済み。tag push / GitHub Release作成 / version・target commit・公開タイミング・notes本文承認は未実施。
@@ -46,6 +48,8 @@
 | PyPI token scanner coverage | PR #20 / `98891d5` | PyPI API token prefix の synthetic fixture 検出を追加 |
 | RubyGems credentials scanner coverage | PR #21 / `68c4bfe` | RubyGems credentials assignment の synthetic fixture 検出を追加 |
 | GitHub classic token scanner coverage | PR #23 / `cef69fe` | GitHub classic token prefix 群の synthetic fixture 検出を追加 |
+| Fable5 要件レビュー / 市場調査 docs | PR #25 / `b594cff` | 要件再検討メモと市場調査メモを追加 |
+| GitLab/HF/Slack webhook/SendGrid scanner coverage | PR #26 | T-017 の4形式 synthetic fixture 検出を追加 |
 
 ## 未完了 / skip タスク
 
@@ -62,15 +66,16 @@
 - 2026-07-01 の PyPI prefix 拡充により、`pypi-` から始まる token-length suffix の合成fixtureを検出する。
 - 2026-07-01 の RubyGems credentials 拡充により、credentials file の API key直値を検出する。
 - 2026-07-02 の GitHub classic token prefix 拡充により、`ghp_` / `gho_` / `ghu_` / `ghs_` / `ghr_` から始まる token-like suffix の合成fixtureを検出する。
+- 2026-07-03 の T-017 拡充により、GitLab PAT prefix / Hugging Face token prefix / Slack incoming webhook URL / SendGrid 2セグメント key 形状の合成fixtureを検出する。prefix が変わり得る形式は今後文脈付きルールで補完する方針（`docs/REQUIREMENTS_REVIEW_2026-07.md` §3）。
 
 ## 最終検証結果
 
-実行日時: 2026/07/03 23:00 JST
+実行日時: 2026/07/03 23:40 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| scanner tests | `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` | pass。30 tests passed（pwsh 7 で実行） |
-| private marker scan | `pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 27 files |
+| scanner tests | `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` | pass。36 tests passed（pwsh 7 で実行） |
+| private marker scan | `pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 29 files |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
@@ -88,11 +93,12 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #23 / merge commit `cef69fe` まで反映済み。GitHub open PR / issue は 2026/07/03 23:01 JST 時点で 0 件（`gh pr list` / `gh issue list` で確認）。
-- 作業ブランチ: 無し。`test/github-token-marker-scan` は PR #23 マージ後に削除済み。
+- `main`: PR #26 まで反映済み。マージ済み作業ブランチは削除済み。
+- 作業ブランチ: 無し。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
 
 ## 次にやるべき候補
 
-1. release readiness brief / notes draft は追加済み。次はownerがversion、target commit、公開タイミング、notes本文を承認する。
+1. owner が `docs/REQUIREMENTS_REVIEW_2026-07.md` §5 の質問 Q1-Q9 に回答する（release GO 判断の Q2 を含む）。
 2. release/tag作成とworkflow変更はゲート①のため、実行せずブリーフまたは `examples/release-tag-gate-summary.md` の形式で停止する。
+3. owner 回答を待つ間の自走候補: T-018（CODE_OF_CONDUCT / Issue・PR テンプレート）、T-019（adversarial decision matrix）、T-020（CONTRIBUTING へ skill 攻撃面対策のレビュー観点明文化）。詳細は要件レビュー §6。

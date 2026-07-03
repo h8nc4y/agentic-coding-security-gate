@@ -213,6 +213,18 @@ Use synthetic examples only.
 
     Test-DetectsAndRedacts -Name 'GitHub refresh token prefix' -Marker ('g' + 'hr_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
 
+    Test-DetectsAndRedacts -Name 'GitLab personal access token prefix' `
+        -Marker ('gl' + 'pat-' + 'synthetic_fixture_0123456789') -Rule 'gitlab-pat-prefix'
+
+    Test-DetectsAndRedacts -Name 'Hugging Face token prefix' `
+        -Marker ('h' + 'f_' + 'synthetic012345') -Rule 'huggingface-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'Slack incoming webhook URL' `
+        -Marker ('https://hooks.slack.' + 'com/services/' + 'T00000000/B00000000/abcdefghi') -Rule 'slack-webhook-url'
+
+    Test-DetectsAndRedacts -Name 'SendGrid API key prefix' `
+        -Marker ('S' + 'G.' + 'abcdefghijklmnop' + '.' + 'qrstuvwxyzABCDEF') -Rule 'sendgrid-api-key-prefix'
+
     Invoke-Test 'does not flag npm auth token environment placeholder' {
         New-FixtureFile -RelativePath '.npmrc' -Content ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=${NODE_AUTH_TOKEN}')
 
@@ -263,6 +275,24 @@ Send the credential using the Bearer scheme described above.
         $result = Invoke-Scanner
 
         Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Bearer word with no token value should not fail.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
+    Invoke-Test 'does not flag a plain SendGrid abbreviation' {
+        New-FixtureFile -RelativePath 'docs/sendgrid.md' -Content 'SG. is a common abbreviation in this synthetic note.'
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Plain SG. text should not fail.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
+    Invoke-Test 'does not flag a Hugging Face-like fragment inside a word' {
+        New-FixtureFile -RelativePath 'docs/huggingface.md' -Content 'Synthetic compound words: shelf_hf_note and shelfhf_notemark should stay public-safe.'
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'hf_ with an alphanumeric left boundary should not fail.'
         Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
     }
 
