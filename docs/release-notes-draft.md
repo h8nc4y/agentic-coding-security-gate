@@ -11,7 +11,7 @@ Status: draft. Review and approve before using this text in a GitHub Release. Ve
 - Synthetic MCP/cloud boundary summary example for public-safe reporting of tool, plugin, cloud, cost, and secret boundaries.
 - Synthetic browser screenshot and log boundary summary example for public-safe reporting of UI evidence without raw screenshots, console logs, network logs, or private identifiers.
 - Optional validation decision document explaining why markdown lint and external skill validators remain optional unless a future policy change justifies making them mandatory.
-- Scanner regression coverage for Anthropic key prefixes, compact JWT-shaped token values, GitHub classic token prefixes, GitLab `glpat-`, Hugging Face `hf_`, Slack incoming webhook URL, SendGrid `SG.` two-segment key shapes, and npm registry `_authToken` assignment patterns.
+- Scanner regression coverage for Anthropic key prefixes, compact JWT-shaped token values, GitHub classic token prefixes, the GitLab token prefix family and session cookie shape, Hugging Face `hf_`, Slack incoming webhook URL, SendGrid `SG.` two-segment key shapes, and npm registry `_authToken` assignment patterns.
 
 ## Changed
 

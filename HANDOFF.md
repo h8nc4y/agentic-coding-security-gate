@@ -21,6 +21,7 @@
 - `scripts/scan-private-markers.ps1` に RubyGems credentials assignment の合成検出を追加し、`tests/scan-private-markers.Tests.ps1` で RED → GREEN を確認済み。
 - `scripts/scan-private-markers.ps1` に GitHub classic token prefix 群（`ghp_` / `gho_` / `ghu_` / `ghs_` / `ghr_`）の合成検出を追加し、`tests/scan-private-markers.Tests.ps1` で `gho_` / `ghu_` / `ghs_` / `ghr_` の RED → GREEN を確認済み。
 - `scripts/scan-private-markers.ps1` に GitLab PAT / Hugging Face token / Slack incoming webhook URL / SendGrid API key 2セグメント形状の合成検出を追加（T-017、実装は codex-deep 委譲・Fable5 レビュー）。誤検出防止のネガティブテスト2件を含み RED → GREEN を確認済み。
+- GitLab coverage は 2026-07-02 の Codex ローカル WIP ブランチを回収・統合し、公式 token overview table の prefix family（personal / deploy / runner / CI job / trigger / feed / incoming mail / agent / workspace / SCIM / feature flags）と session cookie 形状へ拡張済み。狭い glpat 単独ルールは広い family ルールへ置換した。
 - `docs/REQUIREMENTS_REVIEW_2026-07.md`（要件再検討、owner 質問 Q1-Q9、タスク候補 T-017〜T-020 案）と `docs/fable5-market-research-2026-07.md`（市場調査）を追加済み。owner の回答待ち事項はこの2文書を正とする。
 - T-004 は `docs/VALIDATION_DECISION.md` で完了。mandatory markdown lint / external skill validator は現時点では導入せず、任意チェックとして維持する。
 - lint / 型チェック / build は該当する設定ファイルがないため未実施扱い。
@@ -70,11 +71,11 @@
 
 ## 最終検証結果
 
-実行日時: 2026/07/03 23:40 JST
+実行日時: 2026/07/04 00:15 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| scanner tests | `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` | pass。36 tests passed（pwsh 7 で実行） |
+| scanner tests | `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` | pass。48 tests passed（pwsh 7 で実行） |
 | private marker scan | `pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 29 files |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |

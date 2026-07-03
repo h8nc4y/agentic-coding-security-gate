@@ -51,3 +51,4 @@
 - 📌 2026-07-03 Claude 整理: 上記 GitHub classic token prefix coverage を PR #23 / merge commit `cef69fe` で `main` へ統合し、作業ブランチを削除した。AGENTS / HANDOFF / TASKS を PR #23 後の clean main 状態へ同期した。
 - 📌 2026-07-03 Claude 整理: Fable5 の要件再検討メモと市場調査メモを PR #25 で追加した（成功指標のプロセス指標化、scanner 拡充優先度、skill 自体の攻撃面リスク、owner 質問 Q1-Q9、タスク候補 T-017〜T-020 案）。
 - 📌 2026-07-03 Claude 整理: T-017 として GitLab / Hugging Face / Slack incoming webhook / SendGrid の合成検出を PR #26 で追加した。実装は Codex GPT-5.5（codex-deep）へ委譲し、RED→GREEN 確認と pwsh 7 実体での再検証（36 tests / 29 files）は Fable5 が実施した。
+- 📌 2026-07-04 Claude 整理: 2026-07-02 の Codex ローカル WIP ブランチ（GitLab token family + session cookie + test harness の pwsh フォールバック）を cherry-pick で回収し PR #27 として統合した。glpat 単独ルールは family ルールへ置換。回収後のローカル WIP ブランチは削除。
