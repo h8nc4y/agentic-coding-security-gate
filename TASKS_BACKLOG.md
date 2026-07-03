@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/07/02 05:34 JST
+最終更新: 2026/07/03 23:05 JST
 
 ## Sources
 
@@ -9,9 +9,9 @@
 - README / docs: 明示的な未完了要件は該当なし
 - AGENTS.md / `.codex`: リポジトリ内には該当なし
 - TODO / FIXME: 該当なし (`rg -n "TODO|FIXME"` で一致なし)
-- テスト / lint / 型チェック: `pwsh` はこの Codex 実行面では PATH 未検出のため、一時 `pwsh.cmd` shim で `tests\scan-private-markers.Tests.ps1` を実行し成功（30 tests）。`powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` も成功（tracked mode / 27 files）。lint / 型チェック / build は該当する設定ファイルなし。
-- git status: `test/github-token-marker-scan` は `main` から作成したローカル作業ブランチ。T-001〜T-016 は完了済み。
-- GitHub open issues / PRs: 未確認（github.com:443 接続不可）
+- テスト / lint / 型チェック: `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` は成功（30 tests）。`pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` も成功（tracked mode / 27 files）。lint / 型チェック / build は該当する設定ファイルなし。
+- git status: `main` は `origin/main` と一致し、PR #23 / merge commit `cef69fe` まで反映済み。T-001〜T-016 は完了済み。
+- GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/07/03 23:01 JST 確認)
 
 ## Tasks
 
@@ -47,3 +47,4 @@
 - 📌 2026-07-01 Codex 整理: scanner に PyPI API token prefix の合成検出を追加した。値は redacted のまま、回帰テストは実装前にREDを確認してからGREEN化した。
 - 📌 2026-07-01 Codex 整理: scanner に RubyGems credentials assignment の合成検出を追加した。公式docsの credentials key 経路に基づき、直値のみredacted findingにする回帰テストをRED→GREENで追加した。
 - 📌 2026-07-02 Codex 整理: scanner に GitHub classic token prefix 群（`ghp_` / `gho_` / `ghu_` / `ghs_` / `ghr_`）の合成検出を追加した。値は redacted のまま、`gho_` / `ghu_` / `ghs_` / `ghr_` はREDを確認してからGREEN化した。
+- 📌 2026-07-03 Claude 整理: 上記 GitHub classic token prefix coverage を PR #23 / merge commit `cef69fe` で `main` へ統合し、作業ブランチを削除した。AGENTS / HANDOFF / TASKS を PR #23 後の clean main 状態へ同期した。

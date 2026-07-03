@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/07/02 05:34 JST
+最終更新: 2026/07/03 23:05 JST
 
 ## リポジトリの目的
 
@@ -9,7 +9,7 @@
 
 ## 現状サマリ
 
-- `main` は PR #21 / merge commit `68c4bfe` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage、RubyGems credentials assignment scanner coverage は完了済み。ローカルブランチ `test/github-token-marker-scan` で GitHub classic token prefix 群の scanner coverage を追加済み。現時点で Git tag / GitHub Release は存在しない。
+- `main` は PR #23 / merge commit `cef69fe` まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage、RubyGems credentials assignment scanner coverage、GitHub classic token prefix 群の scanner coverage は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -45,7 +45,7 @@
 | GitHub Actions artifact boundary example | `docs/ci-artifact-boundary-summary` | workflow artifact / job logを公開報告へ貼らないsynthetic summaryを追加 |
 | PyPI token scanner coverage | PR #20 / `98891d5` | PyPI API token prefix の synthetic fixture 検出を追加 |
 | RubyGems credentials scanner coverage | PR #21 / `68c4bfe` | RubyGems credentials assignment の synthetic fixture 検出を追加 |
-| GitHub classic token scanner coverage | local branch `test/github-token-marker-scan` | GitHub classic token prefix 群の synthetic fixture 検出を追加 |
+| GitHub classic token scanner coverage | PR #23 / `cef69fe` | GitHub classic token prefix 群の synthetic fixture 検出を追加 |
 
 ## 未完了 / skip タスク
 
@@ -65,12 +65,12 @@
 
 ## 最終検証結果
 
-実行日時: 2026/07/02 05:34 JST
+実行日時: 2026/07/03 23:00 JST
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| scanner tests | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File <temp-runner>` | pass。30 tests passed（この Codex 実行面は `pwsh` が PATH 未検出のため一時 shim 使用） |
-| private marker scan | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 27 files |
+| scanner tests | `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` | pass。30 tests passed（pwsh 7 で実行） |
+| private marker scan | `pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 27 files |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
@@ -88,8 +88,8 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #21 / merge commit `68c4bfe` まで反映済み。GitHub open PR / issue は 2026/07/02 05:34 JST 時点で未確認（github.com:443 接続不可）。
-- `test/github-token-marker-scan`: GitHub classic token prefix 群の scanner coverage を追加したローカル作業ブランチ。
+- `main`: PR #23 / merge commit `cef69fe` まで反映済み。GitHub open PR / issue は 2026/07/03 23:01 JST 時点で 0 件（`gh pr list` / `gh issue list` で確認）。
+- 作業ブランチ: 無し。`test/github-token-marker-scan` は PR #23 マージ後に削除済み。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
 
 ## 次にやるべき候補
