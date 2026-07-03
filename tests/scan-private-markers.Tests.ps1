@@ -28,7 +28,9 @@ function New-FixtureFile {
 }
 
 function Invoke-Scanner {
-    $output = & pwsh -NoProfile -ExecutionPolicy Bypass -File $scannerPath -Path $fixtureRoot 2>&1
+    # Fixture roots are temporary non-git directories; force worktree mode so
+    # host-specific git stderr behavior does not mask scanner assertions.
+    $output = & pwsh -NoProfile -ExecutionPolicy Bypass -File $scannerPath -Path $fixtureRoot -ScanMode worktree 2>&1
 
     return [pscustomobject]@{
         ExitCode = $LASTEXITCODE
@@ -198,6 +200,18 @@ Use synthetic examples only.
 
     Test-DetectsAndRedacts -Name 'RubyGems credentials assignment' `
         -Marker (':rubygems_' + 'api_' + 'key: ' + 'abcd' + 'ef0123456789abcdef0123456789') -Rule 'ruby-package-credentials-assignment'
+
+    # GitHub classic token prefixes differ by token source; fixture all public
+    # prefixes so ghp_ is not the only covered case.
+    Test-DetectsAndRedacts -Name 'GitHub personal access token prefix' -Marker ('g' + 'hp_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitHub OAuth token prefix' -Marker ('g' + 'ho_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitHub user-to-server token prefix' -Marker ('g' + 'hu_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitHub server-to-server token prefix' -Marker ('g' + 'hs_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
+
+    Test-DetectsAndRedacts -Name 'GitHub refresh token prefix' -Marker ('g' + 'hr_' + 'syntheticfixture0123456789abcdef') -Rule 'github-classic-token-prefix'
 
     Invoke-Test 'does not flag npm auth token environment placeholder' {
         New-FixtureFile -RelativePath '.npmrc' -Content ('//registry.npmjs.org/:_auth' + 'Tok' + 'en=${NODE_AUTH_TOKEN}')

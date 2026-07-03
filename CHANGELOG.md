@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added scanner coverage for GitHub classic token prefixes (`ghp_`, `gho_`, `ghu_`, `ghs_`, and `ghr_`) while keeping synthetic values redacted.
+
 - Added scanner coverage for RubyGems credentials assignments while keeping synthetic values redacted.
 
 - Added scanner coverage for PyPI API token prefixes while keeping synthetic values redacted.

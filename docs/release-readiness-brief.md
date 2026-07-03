@@ -12,7 +12,7 @@ No local or remote Git tags are present as of the 2026/06/29 Codex check, and `g
 
 The current `main` tip includes these public-safe changes beyond the initial skill skeleton:
 
-- Private-marker scanner hardening for additional cloud, Slack, Stripe, bearer, PEM, Anthropic, JWT-shaped, and npm `_authToken` assignment patterns.
+- Private-marker scanner hardening for additional cloud, Slack, Stripe, bearer, PEM, Anthropic, JWT-shaped, GitHub classic token, and npm `_authToken` assignment patterns.
 - Redacted scanner regression tests for the covered marker shapes.
 - Git-tracked scan mode to reduce local scratch false positives.
 - Optional validation decision documentation for markdown lint and external skill validators.
