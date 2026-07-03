@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/07/03 23:05 JST
+最終更新: 2026/07/03 23:45 JST
 
 ## Sources
 
@@ -9,8 +9,8 @@
 - README / docs: 明示的な未完了要件は該当なし
 - AGENTS.md / `.codex`: リポジトリ内には該当なし
 - TODO / FIXME: 該当なし (`rg -n "TODO|FIXME"` で一致なし)
-- テスト / lint / 型チェック: `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` は成功（30 tests）。`pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` も成功（tracked mode / 27 files）。lint / 型チェック / build は該当する設定ファイルなし。
-- git status: `main` は `origin/main` と一致し、PR #23 / merge commit `cef69fe` まで反映済み。T-001〜T-016 は完了済み。
+- テスト / lint / 型チェック: `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` は成功（36 tests）。`pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` も成功（tracked mode / 29 files）。lint / 型チェック / build は該当する設定ファイルなし。
+- git status: PR #26（T-017 scanner marker batch）まで main へ統合予定の状態。T-001〜T-017 は完了済み。
 - GitHub open issues / PRs: 0件 (`gh issue list` / `gh pr list` で 2026/07/03 23:01 JST 確認)
 
 ## Tasks
@@ -33,6 +33,7 @@
 | T-014 | PyPI API token prefix を scanner の合成fixtureで検出する | AGENTS.md §10 / scanner rule expansion candidate 2026-07-01 | 中 | M | done |
 | T-015 | RubyGems credentials assignment を scanner の合成fixtureで検出する | AGENTS.md §10 / scanner rule expansion candidate 2026-07-01 | 中 | M | done |
 | T-016 | GitHub classic token prefix 群を scanner の合成fixtureで検出する | GitHub公式 token prefix / scanner rule expansion candidate 2026-07-02 | 中 | M | done |
+| T-017 | GitLab / Hugging Face / Slack webhook / SendGrid marker を scanner の合成fixtureで検出する | docs/REQUIREMENTS_REVIEW_2026-07.md §3 優先度高リスト | 中 | M | done |
 
 - 📌 2026-06-25 Codex 整理: 2026-06-21 の scanner hardening 指摘は PR #4 / commit `aaa8e58` で解決済み。履歴用 docs は公開安全な要約へ圧縮し、ローカル横断索引や旧作業ブランチへの依存は残さない。
 - 📌 2026-06-28 Codex 整理: `examples/browser-screenshot-log-summary.md` を追加し、raw screenshot / console / network log を公開報告へ混ぜない合成テンプレートを README / CHANGELOG と同期した。実ブラウザ、実スクリーンショット、外部アップロード、workflow/release/tag は未実行。
@@ -48,3 +49,5 @@
 - 📌 2026-07-01 Codex 整理: scanner に RubyGems credentials assignment の合成検出を追加した。公式docsの credentials key 経路に基づき、直値のみredacted findingにする回帰テストをRED→GREENで追加した。
 - 📌 2026-07-02 Codex 整理: scanner に GitHub classic token prefix 群（`ghp_` / `gho_` / `ghu_` / `ghs_` / `ghr_`）の合成検出を追加した。値は redacted のまま、`gho_` / `ghu_` / `ghs_` / `ghr_` はREDを確認してからGREEN化した。
 - 📌 2026-07-03 Claude 整理: 上記 GitHub classic token prefix coverage を PR #23 / merge commit `cef69fe` で `main` へ統合し、作業ブランチを削除した。AGENTS / HANDOFF / TASKS を PR #23 後の clean main 状態へ同期した。
+- 📌 2026-07-03 Claude 整理: Fable5 の要件再検討メモと市場調査メモを PR #25 で追加した（成功指標のプロセス指標化、scanner 拡充優先度、skill 自体の攻撃面リスク、owner 質問 Q1-Q9、タスク候補 T-017〜T-020 案）。
+- 📌 2026-07-03 Claude 整理: T-017 として GitLab / Hugging Face / Slack incoming webhook / SendGrid の合成検出を PR #26 で追加した。実装は Codex GPT-5.5（codex-deep）へ委譲し、RED→GREEN 確認と pwsh 7 実体での再検証（36 tests / 29 files）は Fable5 が実施した。
