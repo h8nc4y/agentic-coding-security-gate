@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Documented skill-content attack-surface review guidance in CONTRIBUTING.md: full-diff review, hidden-unicode check, and rejection of remote-instruction or gate-weakening changes.
+
 - Added a static adversarial decision matrix that maps synthetic boundary scenarios to expected gate decisions without claiming measured agent enforcement.
 
 - Broadened GitLab scanner coverage to the official token prefix family and the session cookie shape while keeping synthetic values redacted.
