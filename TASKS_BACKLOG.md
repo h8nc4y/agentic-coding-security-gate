@@ -1,7 +1,7 @@
 # Tasks Backlog
 
 棚卸し日時: 2026/06/11 20:53:09 JST
-最終更新: 2026/07/03 23:45 JST
+最終更新: 2026/07/11 18:45 JST
 
 ## Sources
 
@@ -34,6 +34,9 @@
 | T-015 | RubyGems credentials assignment を scanner の合成fixtureで検出する | AGENTS.md §10 / scanner rule expansion candidate 2026-07-01 | 中 | M | done |
 | T-016 | GitHub classic token prefix 群を scanner の合成fixtureで検出する | GitHub公式 token prefix / scanner rule expansion candidate 2026-07-02 | 中 | M | done |
 | T-017 | GitLab / Hugging Face / Slack webhook / SendGrid marker を scanner の合成fixtureで検出する | docs/REQUIREMENTS_REVIEW_2026-07.md §3 優先度高リスト | 中 | M | done |
+| T-018 | `CODE_OF_CONDUCT.md` と Issue / PR テンプレートを追加する | docs/REQUIREMENTS_REVIEW_2026-07.md §6 | 中 | S | todo（着手前に owner へ一言確認） |
+| T-019 | adversarial decision matrix（合成シナリオ × 期待判断の静的表）を整備する | docs/REQUIREMENTS_REVIEW_2026-07.md §3・§6 | 中 | S | done（PR #29、マージ待ち） |
+| T-020 | CONTRIBUTING へ skill 攻撃面対策のレビュー観点を明文化する | docs/REQUIREMENTS_REVIEW_2026-07.md §3.5・§6 | 中 | S | done（PR #30、#29 の後にマージ） |
 
 - 📌 2026-06-25 Codex 整理: 2026-06-21 の scanner hardening 指摘は PR #4 / commit `aaa8e58` で解決済み。履歴用 docs は公開安全な要約へ圧縮し、ローカル横断索引や旧作業ブランチへの依存は残さない。
 - 📌 2026-06-28 Codex 整理: `examples/browser-screenshot-log-summary.md` を追加し、raw screenshot / console / network log を公開報告へ混ぜない合成テンプレートを README / CHANGELOG と同期した。実ブラウザ、実スクリーンショット、外部アップロード、workflow/release/tag は未実行。
@@ -52,3 +55,4 @@
 - 📌 2026-07-03 Claude 整理: Fable5 の要件再検討メモと市場調査メモを PR #25 で追加した（成功指標のプロセス指標化、scanner 拡充優先度、skill 自体の攻撃面リスク、owner 質問 Q1-Q9、タスク候補 T-017〜T-020 案）。
 - 📌 2026-07-03 Claude 整理: T-017 として GitLab / Hugging Face / Slack incoming webhook / SendGrid の合成検出を PR #26 で追加した。実装は Codex GPT-5.5（codex-deep）へ委譲し、RED→GREEN 確認と pwsh 7 実体での再検証（36 tests / 29 files）は Fable5 が実施した。
 - 📌 2026-07-04 Claude 整理: 2026-07-02 の Codex ローカル WIP ブランチ（GitLab token family + session cookie + test harness の pwsh フォールバック）を cherry-pick で回収し PR #27 として統合した。glpat 単独ルールは family ルールへ置換。回収後のローカル WIP ブランチは削除。
+- 📌 2026-07-11 Claude 整理: T-019（`docs/adversarial-decision-matrix.md`、PR #29）と T-020（CONTRIBUTING の "Skill Content Review (Attack Surface)" 節、PR #30）を実装した。セッションの権限層が自己マージを拒否したため、PR #29 → #30 → 状態同期 PR の順で CI 緑を確認してマージすること。T-018 は未着手で Codex へ引き継ぎ。

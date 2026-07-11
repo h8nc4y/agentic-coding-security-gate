@@ -111,43 +111,32 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 ---
 
-## §9. 現在の状況サマリ（2026-07-03時点）
+## §9. 現在の状況サマリ（2026-07-11時点）
 
-- 基準ブランチ: **`main`**。直近では PR #23 / merge commit `cef69fe` まで統合済みで、scanner hardening、optional validation decision、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI API token prefix scanner coverage、RubyGems credentials assignment scanner coverage、GitHub classic token prefix scanner coverage が `main` に反映済み。現時点で Git tag / GitHub Release は存在しない。
-- 作業ブランチ: 無し（次のタスクから feature ブランチを切る）。`main` 直コミットは禁止。
-- 状態: `TASKS_BACKLOG.md` の T-001〜T-016 は完了済み。2026-07-03 23:01 JST確認時点で GitHub open issue / PR は 0 件。未解決 TODO/FIXME は前回棚卸し時点で無し。
+- 基準ブランチ: **`main`**。PR #27 / merge commit `69c6bff` まで統合済みで、scanner hardening、各種 token/credential marker coverage（OpenAI / Anthropic / GitHub / GitLab family / Hugging Face / Slack / SendGrid / AWS / GCP / Stripe / npm / PyPI / RubyGems / JWT / PEM ほか）、boundary examples 一式、release readiness brief / notes draft、Fable5 要件レビュー / 市場調査 docs が `main` に反映済み。現時点で Git tag / GitHub Release は存在しない。
+- open PR（スタック構成。CI 緑と敵対的セルフレビューを確認し、#29 → #30 → 状態同期 PR の順で `--delete-branch` 付きマージ）: PR #29 = T-019 adversarial decision matrix、PR #30 = T-020 CONTRIBUTING 攻撃面レビュー観点、状態同期 PR = この AGENTS/HANDOFF/TASKS 更新。
+- 状態: `TASKS_BACKLOG.md` の T-001〜T-017 完了。T-019 / T-020 は実装済み・マージ待ち。T-018 は未着手（着手前に owner へ一言確認）。
 - 配布形態: 手動インストール型 skill（`SKILL.md` を user-local skills directory へコピー）。npm/Marketplace 公開は **Non-Goal**。
 
 ---
 
 ## §10. タスクバックログ & 次の一手
 
-`TASKS_BACKLOG.md` が正本。引き継ぎ時点の状況:
+`TASKS_BACKLOG.md` が正本。引き継ぎ時点の状況（T-001〜T-017 は済。詳細は `TASKS_BACKLOG.md` を参照）:
 
 | ID | 内容 | 状態 |
 | --- | --- | --- |
-| T-001 | スキャナ回帰テストの成功時 `exit 0` | 済 |
-| T-002 | `chore/oss-readiness` の CI 確認とマージ戦略決定 | **済（main へ統合・ブランチ削除）** |
-| T-003 | 対象環境での `pwsh` 可用性確認 / `pwsh` 前提のドキュメント整合（PowerShell 5.1 方針の明文化） | 済 |
-| T-004 | markdown lint または skill validator の採否決定（採用なら CI へ追加 → ワークフロー変更はゲート①） | 済（`docs/VALIDATION_DECISION.md` に任意維持を記録） |
-| T-005 | MCP / cloud boundary の公開安全サマリ例を追加する | 済 |
-| T-006 | Browser / screenshot / log 境界の公開安全サマリ例を追加する | 済 |
-| T-007 | npm `.npmrc` の literal `_authToken` 値を検出し、環境変数 placeholder は許容する | 済 |
-| T-008 | 初回release readiness briefとrelease notes draftを準備する | 済 |
-| T-009 | PR #14 後の AGENTS/HANDOFF/TASKS 状態を同期する | 済 |
-| T-010 | PR #15 後の AGENTS/HANDOFF/TASKS 状態を同期する | 済 |
-| T-011 | cost approval blocker の公開安全サマリ例を追加する | 済 |
-| T-012 | release / tag gate の公開安全サマリ例を追加する | 済 |
-| T-013 | GitHub Actions artifact / workflow log 境界の公開安全サマリ例を追加する | 済 |
-| T-014 | PyPI API token prefix を scanner の合成fixtureで検出する | 済 |
-| T-015 | RubyGems credentials assignment を scanner の合成fixtureで検出する | 済 |
+| T-001〜T-017 | スキャナ整備・boundary examples・release brief・token/credential coverage 一式 | 済（詳細は `TASKS_BACKLOG.md`） |
+| T-018 | `CODE_OF_CONDUCT.md` と Issue / PR テンプレートを追加する | 未着手（着手前に owner へ一言確認） |
+| T-019 | adversarial decision matrix（合成シナリオ × 期待判断の静的表） | 済・PR #29 マージ待ち |
+| T-020 | CONTRIBUTING へ skill 攻撃面レビュー観点を明文化 | 済・PR #30 マージ待ち（#29 の後） |
 
 新規候補（自律的に選んでよい。括弧内は留意ゲート）:
 
-- スキャナのルール拡充: 追加のクラウド / SaaS / package registry token 形式を合成fixtureで検出する（値は redact のまま）＋対応する回帰テスト追加。
+- open PR のマージ: #29 → #30 → 状態同期 PR の順で CI 緑を確認してマージし、ブランチを削除する。
+- スキャナの文脈付きルール拡充: 要件レビュー §3 の中優先（Google OAuth client secret の credential file 文脈検出、Cloudflare / Vercel / Netlify 系）。prefix 単独追加は限界効用が逓減しているため、owner の Q4 回答を確認してから。
 - `examples/` 拡充: 追加の公開安全サマリ例を作る場合は、合成データだけで新しい境界シナリオに限定する。
-- クロスプラットフォーム検証: scanner を PowerShell 5.1 でも動作確認、または `pwsh` 7+ 前提を明文化。
-- OSS整備の続き: `CODE_OF_CONDUCT.md` / Issue・PR テンプレートの追加。
+- owner への質問回答待ち: `docs/REQUIREMENTS_REVIEW_2026-07.md` §5 Q1-Q9（release GO 判断の Q2 を含む）。
 - owner-approved releaseの最終承認待ち（version / target commit / timing / notes本文）。**リリース作成・タグ付けはゲート①**。
 
 ---

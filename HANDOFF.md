@@ -1,7 +1,7 @@
 # HANDOFF
 
 作成日時: 2026/06/21 00:03:17 JST
-最終更新: 2026/07/03 23:45 JST
+最終更新: 2026/07/11 18:45 JST（Claude Fable 5 → Codex 引き継ぎ）
 
 ## リポジトリの目的
 
@@ -9,7 +9,10 @@
 
 ## 現状サマリ
 
-- `main` は PR #26 まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI / RubyGems / GitHub classic token / GitLab / Hugging Face / Slack webhook / SendGrid の scanner coverage、Fable5 要件レビュー docs は完了済み。現時点で Git tag / GitHub Release は存在しない。
+- 2026-07-11 に T-019（adversarial decision matrix、PR #29）と T-020（CONTRIBUTING への skill 攻撃面レビュー観点、PR #30）を完了した。PR #29 → #30 の順でスタックしており、CI 緑を確認のうえこの順にマージする（Claude セッションの権限層が自己マージを拒否したため open のまま引き継ぐ）。
+- `docs/adversarial-decision-matrix.md`: 16 の合成シナリオ × 期待判断（stop / redact / synthetic / not-checked）の静的参照表。エージェント実測による実効性証明は謳わない（要件レビュー指摘 #5 のスコープ限定）。
+- `CONTRIBUTING.md` の "Skill Content Review (Attack Surface)" 節: SKILL.md / examples 変更時の全 diff 逐行レビュー、hidden-unicode 検査（pwsh チェック付き、文字クラスはエスケープ表記）、remote-instruction 拒否、ゲート弱体化誘導の拒否を明文化。
+- `main` は PR #27 まで取り込み済みで、scanner hardening、Anthropic/JWT marker coverage、MCP/cloud boundary example、browser/screenshot/log boundary example、npm auth-token scanner coverage、release readiness brief / notes draft、state sync、cost approval blocker example、release/tag gate example、GitHub Actions artifact boundary example、PyPI / RubyGems / GitHub classic token / GitLab / Hugging Face / Slack webhook / SendGrid の scanner coverage、Fable5 要件レビュー docs は完了済み。現時点で Git tag / GitHub Release は存在しない。
 - private marker scanner は既定で git-tracked files を走査し、ローカル作業メモと CI checkout の対象差を小さくしている。
 - `docs/CLAUDE_CODE_REVIEW_2026-06-21.md` と `docs/codex-task-scanner-hardening.md` は、旧レビュー/委譲仕様を公開安全な履歴に圧縮したもの。
 - `examples/mcp-cloud-boundary-summary.md` に、MCP / plugin / cloud境界を公開安全に報告する synthetic example を追加済み。
@@ -51,10 +54,14 @@
 | GitHub classic token scanner coverage | PR #23 / `cef69fe` | GitHub classic token prefix 群の synthetic fixture 検出を追加 |
 | Fable5 要件レビュー / 市場調査 docs | PR #25 / `b594cff` | 要件再検討メモと市場調査メモを追加 |
 | GitLab/HF/Slack webhook/SendGrid scanner coverage | PR #26 | T-017 の4形式 synthetic fixture 検出を追加 |
+| GitLab token family への拡張 | PR #27 / `69c6bff` | Codex ローカル WIP を回収し、GitLab prefix family + session cookie 形状へ拡張 |
+| T-019 adversarial decision matrix | PR #29（open、マージ待ち） | 合成シナリオ × 期待判断の静的表 `docs/adversarial-decision-matrix.md` を追加 |
+| T-020 skill 攻撃面レビュー観点 | PR #30（open、#29 の後にマージ） | CONTRIBUTING へ hidden-unicode 検査・remote-instruction 禁止等を明文化 |
 
 ## 未完了 / skip タスク
 
-- T-001〜T-016: done。最新状態は `TASKS_BACKLOG.md` が正本。
+- T-001〜T-017: done。T-019 / T-020 は実装済みで PR #29 / #30 のマージ待ち。最新状態は `TASKS_BACKLOG.md` が正本。
+- T-018（`CODE_OF_CONDUCT.md` と Issue / PR テンプレート追加）は未着手。ゲートなしだが「初回追加時に owner へ一言確認するのが安全」の注記あり（要件レビュー §3）。着手前に owner へ一言確認するか、確認コメントを PR 本文に明記して進める。
 - 新しい機能実装・依存追加・リリース自動化は未着手。release readiness brief / notes draft はdocs-onlyで追加済み。
 - MCP/cloud boundary example は docs-only。実cloud、MCP外部呼び出し、secret、cost operationは未実行。
 
@@ -71,12 +78,14 @@
 
 ## 最終検証結果
 
-実行日時: 2026/07/04 00:15 JST
+実行日時: 2026/07/11 18:30 JST（docs/skill-attack-surface-review ブランチ上）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
 | scanner tests | `pwsh -NoProfile -File .\tests\scan-private-markers.Tests.ps1` | pass。48 tests passed（pwsh 7 で実行） |
-| private marker scan | `pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 29 files |
+| private marker scan | `pwsh -NoProfile -File .\scripts\scan-private-markers.ps1` | pass。tracked mode / 30 files |
+| hidden-unicode check | CONTRIBUTING.md 記載の pwsh ワンショット | pass。全 `.md` クリーン |
+| PR #29 CI | GitHub Actions Quality gate | pass（50s） |
 | lint | 該当なし | `package.json` 等の lint 設定なし |
 | 型チェック | 該当なし | `tsconfig.json` / `pyproject.toml` 等なし |
 | build | 該当なし | build 設定なし |
@@ -94,12 +103,19 @@ build コマンドは未定義。
 
 ## ブランチ状況
 
-- `main`: PR #26 まで反映済み。マージ済み作業ブランチは削除済み。
-- 作業ブランチ: 無し。
+- `main`: PR #27 まで反映済み。
+- open PR（スタック構成、上から順にマージする）:
+  1. PR #29 `docs/adversarial-decision-matrix`（base: main）— T-019
+  2. PR #30 `docs/skill-attack-surface-review`（base: PR #29 ブランチ）— T-020
+  3. PR #31 相当 `docs/handoff-codex-sync`（base: PR #30 ブランチ）— この状態同期
+- 各 PR は `--delete-branch` 付きでマージすると base が自動で付け替わる。CI 緑と敵対的セルフレビュー（AGENTS §11）を確認してからマージすること。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
+- ローカルの未追跡ファイル `docs/CLAUDECODE_FABLE5_HANDOFF.md` / `docs/CLAUDECODE_FABLE5_PROMPT.md` は 2026-07-02 の旧方向（Codex → Fable5）引き継ぎの stale draft。コミットせず、owner 判断で削除してよい。
 
 ## 次にやるべき候補
 
-1. owner が `docs/REQUIREMENTS_REVIEW_2026-07.md` §5 の質問 Q1-Q9 に回答する（release GO 判断の Q2 を含む）。
-2. release/tag作成とworkflow変更はゲート①のため、実行せずブリーフまたは `examples/release-tag-gate-summary.md` の形式で停止する。
-3. owner 回答を待つ間の自走候補: T-018（CODE_OF_CONDUCT / Issue・PR テンプレート）、T-019（adversarial decision matrix）、T-020（CONTRIBUTING へ skill 攻撃面対策のレビュー観点明文化）。詳細は要件レビュー §6。
+1. open PR #29 → #30 → 状態同期 PR の順で CI 緑を確認してマージし、マージ済みブランチを削除する。
+2. owner が `docs/REQUIREMENTS_REVIEW_2026-07.md` §5 の質問 Q1-Q9 に回答する（release GO 判断の Q2 を含む）。
+3. release/tag作成とworkflow変更はゲート①のため、実行せずブリーフまたは `examples/release-tag-gate-summary.md` の形式で停止する。
+4. owner 回答を待つ間の自走候補: T-018（CODE_OF_CONDUCT / Issue・PR テンプレート。着手前に owner へ一言確認）、scanner の文脈付きルール拡充（要件レビュー §3 中優先: Google OAuth client secret の credential file 文脈検出、Cloudflare / Vercel / Netlify 系）、examples の新境界シナリオ追加。
+5. scanner 拡充は限界効用が逓減局面（要件レビュー §3)。プレフィックス追加を続ける前に Q4 の owner 回答を確認する。
