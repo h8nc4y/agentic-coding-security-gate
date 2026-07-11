@@ -21,7 +21,8 @@
   - `examples/` — 合成サンプル（security-checklist / public-issue-safe-summary / final-report-template / boundary summaries）。
   - `.github/workflows/ci.yml` — push(main) / PR で上記テスト＋スキャンを走らせる品質ゲート。
   - `README.md` / `CONTRIBUTING.md` / `SECURITY.md` / `CHANGELOG.md`。
-  - `HANDOFF.md` / `TASKS_BACKLOG.md` — 直近の日本語ハンドオフ・バックログ（履歴コンテキスト）。
+  - `docs/REQUIREMENTS.md` — プロダクト要件の正本（変更はゲート④）。
+  - `HANDOFF.md` / `TASKS_BACKLOG.md` — 現況と次の一手 / タスク状態の正本。
 
 ---
 
@@ -111,33 +112,23 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 ---
 
-## §9. 現在の状況サマリ（2026-07-11時点）
+## §9. 現在の状況サマリ
 
-- 基準ブランチ: **`main`**。PR #27 / merge commit `69c6bff` まで統合済みで、scanner hardening、各種 token/credential marker coverage（OpenAI / Anthropic / GitHub / GitLab family / Hugging Face / Slack / SendGrid / AWS / GCP / Stripe / npm / PyPI / RubyGems / JWT / PEM ほか）、boundary examples 一式、release readiness brief / notes draft、Fable5 要件レビュー / 市場調査 docs が `main` に反映済み。現時点で Git tag / GitHub Release は存在しない。
-- open PR（スタック構成。CI 緑と敵対的セルフレビューを確認し、#29 → #30 → 状態同期 PR の順で `--delete-branch` 付きマージ）: PR #29 = T-019 adversarial decision matrix、PR #30 = T-020 CONTRIBUTING 攻撃面レビュー観点、状態同期 PR = この AGENTS/HANDOFF/TASKS 更新。
-- 状態: `TASKS_BACKLOG.md` の T-001〜T-017 完了。T-019 / T-020 は実装済み・マージ待ち。T-018 は未着手（着手前に owner へ一言確認）。
+**状況の正本は `HANDOFF.md`（現況・open PR・次の一手）**。この節は変わりにくい事実だけを持つ:
+
+- 基準ブランチ: **`main`**。`main` 直コミットは禁止。Git tag / GitHub Release は未作成（初回 release はゲート①）。
+- 要件の正本は `docs/REQUIREMENTS.md`、タスクの正本は `TASKS_BACKLOG.md`。
 - 配布形態: 手動インストール型 skill（`SKILL.md` を user-local skills directory へコピー）。npm/Marketplace 公開は **Non-Goal**。
 
 ---
 
 ## §10. タスクバックログ & 次の一手
 
-`TASKS_BACKLOG.md` が正本。引き継ぎ時点の状況（T-001〜T-017 は済。詳細は `TASKS_BACKLOG.md` を参照）:
+`TASKS_BACKLOG.md` が正本。着手前に必ず `HANDOFF.md`（次の一手・open PR）と `docs/REQUIREMENTS.md` §5（スコープ）・§10（owner 未決事項）を確認する。要点:
 
-| ID | 内容 | 状態 |
-| --- | --- | --- |
-| T-001〜T-017 | スキャナ整備・boundary examples・release brief・token/credential coverage 一式 | 済（詳細は `TASKS_BACKLOG.md`） |
-| T-018 | `CODE_OF_CONDUCT.md` と Issue / PR テンプレートを追加する | 未着手（着手前に owner へ一言確認） |
-| T-019 | adversarial decision matrix（合成シナリオ × 期待判断の静的表） | 済・PR #29 マージ待ち |
-| T-020 | CONTRIBUTING へ skill 攻撃面レビュー観点を明文化 | 済・PR #30 マージ待ち（#29 の後） |
-
-新規候補（自律的に選んでよい。括弧内は留意ゲート）:
-
-- open PR のマージ: #29 → #30 → 状態同期 PR の順で CI 緑を確認してマージし、ブランチを削除する。
-- スキャナの文脈付きルール拡充: 要件レビュー §3 の中優先（Google OAuth client secret の credential file 文脈検出、Cloudflare / Vercel / Netlify 系）。prefix 単独追加は限界効用が逓減しているため、owner の Q4 回答を確認してから。
-- `examples/` 拡充: 追加の公開安全サマリ例を作る場合は、合成データだけで新しい境界シナリオに限定する。
-- owner への質問回答待ち: `docs/REQUIREMENTS_REVIEW_2026-07.md` §5 Q1-Q9（release GO 判断の Q2 を含む）。
-- owner-approved releaseの最終承認待ち（version / target commit / timing / notes本文）。**リリース作成・タグ付けはゲート①**。
+- 未着手タスク: T-018（CODE_OF_CONDUCT / Issue・PR テンプレート。owner へ一言確認する趣旨を PR 本文に明記して進めてよい）。
+- scanner 拡充は文脈付きルールを基本形とし、prefix 単独追加は owner の Q4 回答を待つ。
+- release / tag / workflow 変更は owner 承認（ゲート①）。承認前は `examples/release-tag-gate-summary.md` の形式で停止する。
 
 ---
 
@@ -211,6 +202,6 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 ### 付記
 
-- 日本語の経緯は `HANDOFF.md`（前回クローズアウト）と `TASKS_BACKLOG.md`（タスク棚卸し）を参照。
+- 現況と次の一手は `HANDOFF.md`、タスク状態は `TASKS_BACKLOG.md`、プロダクト要件は `docs/REQUIREMENTS.md` を参照。
 - 不明点は、まず `SKILL.md`・`README.md`・`CONTRIBUTING.md`・`SECURITY.md` を読む。
 - このコントラクトは「Codex = 自律主開発者 / フロントのビジュアル創出のみ ClaudeDesign 仲介 / 既定セルフレビュー / 4ゲート人間承認」の4原則で運用する。
