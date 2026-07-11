@@ -104,10 +104,11 @@ build コマンドは未定義。
 ## ブランチ状況
 
 - `main`: PR #27 まで反映済み。
-- open PR（スタック構成、上から順にマージする）:
-  1. PR #29 `docs/adversarial-decision-matrix`（base: main）— T-019
-  2. PR #30 `docs/skill-attack-surface-review`（base: PR #29 ブランチ）— T-020
-  3. PR #31 相当 `docs/handoff-codex-sync`（base: PR #30 ブランチ）— この状態同期
+- open PR:
+  1. PR #28 `docs/post-fable5-handoff`（base: main、2026-07-06 作成）— 役割ベースの引き継ぎ文書 `docs/CLAUDECODE_HANDOFF.md` 追加。独立してマージ可。「次アクション候補」の decision matrix / CONTRIBUTING 攻撃面観点は PR #29 / #30 で完了済みだが、本文は HANDOFF.md を正本として参照する構成のためそのままマージしてよい。
+  2. PR #29 `docs/adversarial-decision-matrix`（base: main）— T-019
+  3. PR #30 `docs/skill-attack-surface-review`（base: PR #29 ブランチ）— T-020
+  4. PR #31 `docs/handoff-codex-sync`（base: PR #30 ブランチ）— この状態同期。#29 → #30 → #31 の順にマージする。
 - 各 PR は `--delete-branch` 付きでマージすると base が自動で付け替わる。CI 緑と敵対的セルフレビュー（AGENTS §11）を確認してからマージすること。
 - この handoff の次回作業では、まず `git status --short --branch` と GitHub の open PR / issue を確認する。現在の release/tag はowner承認待ちで、実行はゲート①。
 - ローカルの未追跡ファイル `docs/CLAUDECODE_FABLE5_HANDOFF.md` / `docs/CLAUDECODE_FABLE5_PROMPT.md` は 2026-07-02 の旧方向（Codex → Fable5）引き継ぎの stale draft。コミットせず、owner 判断で削除してよい。
