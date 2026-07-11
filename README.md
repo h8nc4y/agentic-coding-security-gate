@@ -97,6 +97,8 @@ Follow [SKILL.md](SKILL.md): classify the boundary, redact protected material, c
 
 The examples are synthetic. Do not replace placeholders with real secrets, raw logs, private repository names, customer data, screenshots, or local machine paths.
 
+For the expected gate decision (`stop`, `redact`, `synthetic`, or `not-checked`) across synthetic boundary scenarios, see the [adversarial decision matrix](docs/adversarial-decision-matrix.md). It is a static reference of intended judgments, not a claim of measured agent behavior.
+
 ## Safety Notes
 
 - Do not print credential values.
