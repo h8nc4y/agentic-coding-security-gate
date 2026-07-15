@@ -6,6 +6,12 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Consolidated project documentation: added `docs/REQUIREMENTS.md` as the single requirements source (absorbing the 2026-07 requirements review and the validation decision), compressed `HANDOFF.md` and `TASKS_BACKLOG.md` to current-state-only, and removed resolved historical docs that git history already preserves.
+
+- Documented skill-content attack-surface review guidance in CONTRIBUTING.md: full-diff review, hidden-unicode check, and rejection of remote-instruction or gate-weakening changes.
+
+- Added a static adversarial decision matrix that maps synthetic boundary scenarios to expected gate decisions without claiming measured agent enforcement.
+
 - Broadened GitLab scanner coverage to the official token prefix family and the session cookie shape while keeping synthetic values redacted.
 
 - Added scanner coverage for GitLab `glpat-`, Hugging Face `hf_`, Slack incoming webhook URL, and SendGrid `SG.` two-segment key shapes while keeping synthetic values redacted.

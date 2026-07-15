@@ -97,6 +97,8 @@ Follow [SKILL.md](SKILL.md): classify the boundary, redact protected material, c
 
 The examples are synthetic. Do not replace placeholders with real secrets, raw logs, private repository names, customer data, screenshots, or local machine paths.
 
+For the expected gate decision (`stop`, `redact`, `synthetic`, or `not-checked`) across synthetic boundary scenarios, see the [adversarial decision matrix](docs/adversarial-decision-matrix.md). It is a static reference of intended judgments, not a claim of measured agent behavior.
+
 ## Safety Notes
 
 - Do not print credential values.
@@ -131,7 +133,7 @@ If your environment has a Codex-style skill validator, run it against the reposi
 python path/to/quick_validate.py .
 ```
 
-Optional local checks can include Gitleaks, Semgrep, markdown linting, or a manual review. Report only the checks that actually ran. If a check is unavailable, say it was not checked. See `docs/VALIDATION_DECISION.md` for the current decision not to make markdown lint or an external skill validator mandatory.
+Optional local checks can include Gitleaks, Semgrep, markdown linting, or a manual review. Report only the checks that actually ran. If a check is unavailable, say it was not checked. Markdown lint and external skill validators remain optional by policy; see `docs/REQUIREMENTS.md` (Japanese) for the validation policy and its revisit triggers.
 
 Pull requests run the same bundled scanner tests and marker scan in GitHub Actions.
 
