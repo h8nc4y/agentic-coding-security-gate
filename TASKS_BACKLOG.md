@@ -18,3 +18,11 @@
 - scanner の文脈付きルール拡充: Google OAuth client secret の credential file 文脈検出、owner 実利用に応じて Cloudflare / Vercel / Netlify 系。prefix 単独追加は限界効用逓減のため owner の Q4 回答を待つ。
 - `examples/` 拡充: 新しい境界シナリオに限定し、合成データのみで追加。追加時は `docs/adversarial-decision-matrix.md` に対応行を検討する。
 - 初回 release: owner の Q2 承認後にゲート①として実施（資料は `docs/release-readiness-brief.md`）。承認前は着手しない。
+
+## 外部レビュー指摘の台帳（2026-07-15 maxエフォート横断レビュー）
+
+読取専用レビュー（実行検証なし）の指摘。採否と実装は次担当が判断する。完了時は行頭を [x] にし、対応PRを追記する。
+
+- [ ] scan-private-markers.ps1:75-77 — 実private値の分割literal埋め込み(019と同件) — 018方式の外部ロードへ。オーナー裁定待ち。
+- [ ] tests/scan-private-markers.Tests.ps1 — .Tests.ps1命名だがPester形式でない(将来Invoke-Pester実行で沈黙スキップ/exit巻き添えの恐れ)。命名変更かPester化。confidence中
+- [ ] secret-assignmentルール — (PASSWORD等のキー名+イコール)のプレースホルダ例示でも即fail / 接頭辞付きキー名(DB_ など)は語境界不成立で素通りの非対称。プレースホルダallowlistか注記。confidence中
