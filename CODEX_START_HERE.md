@@ -17,7 +17,8 @@ AIコーディング時の秘匿情報・危険操作を検知する公開OSSの
 
 ## 検証コマンド
 
-`Invoke-Pester tests/scan-private-markers.Tests.ps1 / scripts/scan-private-markers.ps1`
+- `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1`
+- `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1`
 
 ## 主要 gate(承認なしに越えない境界)
 

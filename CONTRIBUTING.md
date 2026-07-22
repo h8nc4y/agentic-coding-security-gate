@@ -16,6 +16,11 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\scan-private-markers.Tests
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1
 ```
 
+The regression harness is dependency-free and should normally be run directly
+as shown above. Its legacy `.Tests.ps1` filename also registers one adapter test
+when discovered by Pester, so `Invoke-Pester` reports the harness result instead
+of a misleading zero-test pass; Pester is not required by this repository.
+
 If a check fails, fix the finding instead of hiding it. Scanner output intentionally redacts values; do not replay protected values in issues, commits, or pull request comments.
 
 ## Pull Request Guidelines

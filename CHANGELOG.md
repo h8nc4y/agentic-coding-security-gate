@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed the legacy `.Tests.ps1` harness to report one real Pester adapter test instead of a misleading zero-test pass, and aligned `CODEX_START_HERE.md` with the dependency-free validation commands.
+
 - Added a project code of conduct plus public-safe bug, feature, and pull request templates with private-first reporting guidance.
 
 - Consolidated project documentation: added `docs/REQUIREMENTS.md` as the single requirements source (absorbing the 2026-07 requirements review and the validation decision), compressed `HANDOFF.md` and `TASKS_BACKLOG.md` to current-state-only, and removed resolved historical docs that git history already preserves.
