@@ -1,0 +1,80 @@
+name: Bug report
+description: Report a reproducible problem using only public-safe information.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve the project.
+
+        Do not include credentials, OAuth values, private repository names, raw logs, private screenshots, customer or production data, or local absolute paths. Use a minimal synthetic reproduction. For a security-sensitive report, follow `SECURITY.md` instead.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Skill guidance
+        - Marker scanner
+        - Regression tests
+        - Documentation or examples
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Public-safe summary
+      description: Describe the problem without protected values or private context.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Provide the smallest synthetic steps or fixture that demonstrates the behavior.
+      placeholder: |
+        1. Create a synthetic fixture containing ...
+        2. Run the documented local check ...
+        3. Observe the redacted result ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Summarize the result. Do not paste credential-bearing or private output.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Use a public tag or abbreviated commit identifier. Do not include a local path.
+      placeholder: main or abc1234
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Checks performed
+      description: List only checks that actually ran and mark the rest as not checked.
+      placeholder: Scanner tests passed; marker scan passed; optional checks not checked.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Public-safety confirmation
+      options:
+        - label: I searched existing issues for the same problem.
+          required: true
+        - label: I removed credentials, private data, raw logs, screenshots, private repository names, and local absolute paths.
+          required: true
+        - label: The reproduction uses synthetic data and states which checks were not run.
+          required: true

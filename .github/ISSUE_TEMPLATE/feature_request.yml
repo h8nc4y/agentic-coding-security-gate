@@ -1,0 +1,59 @@
+name: Feature request
+description: Propose a focused improvement using a public-safe scenario.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep the proposal synthetic and public-safe. Do not include credentials, private context, real user or customer data, raw logs, private screenshots, or local absolute paths.
+
+        Changes to product scope, supported platforms, expected gate decisions, Non-Goals, or release policy require owner approval before merge.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What public-safe workflow problem should this change solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the smallest useful change and its expected result.
+    validations:
+      required: true
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Synthetic boundary scenario
+      description: Show how the proposal behaves without using real credentials or private data.
+    validations:
+      required: true
+  - type: dropdown
+    id: requirement_impact
+    attributes:
+      label: Requirement impact
+      description: Does this change product scope, expected gate behavior, Non-Goals, licensing, release policy, or supported platforms?
+      options:
+        - No known requirement change
+        - Yes or unsure; owner decision required
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include a local, synthetic, or documentation-only alternative when relevant.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Public-safety confirmation
+      options:
+        - label: I searched existing issues for related proposals.
+          required: true
+        - label: This request contains only synthetic, public-safe information.
+          required: true
+        - label: I understand that requirement-changing work needs explicit owner approval before merge.
+          required: true

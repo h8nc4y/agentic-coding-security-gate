@@ -1,31 +1,34 @@
 # HANDOFF
 
-最終更新: 2026/07/12（Claude Fable 5 → Codex 引き継ぎ）
+最終更新: 2026/07/22（Codex）
 役割: 現況と次の一手だけを持つ project brain。完了履歴は `CHANGELOG.md`・git log・マージ済み PR を正とし、ここには残さない。要件は `docs/REQUIREMENTS.md`、タスクは `TASKS_BACKLOG.md`、運用契約は `AGENTS.md` が正本。
 
 ## 現在の状態
 
-- `main` は PR #27 まで統合済み。Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
-- T-001〜T-017 完了。T-019（decision matrix）・T-020（CONTRIBUTING 攻撃面レビュー観点）は実装済みで PR マージ待ち。T-018（CODE_OF_CONDUCT / Issue・PR テンプレート）は未着手。
-- 2026-07-12 に文書体系を整理: `docs/REQUIREMENTS.md` を要件正本として新設し、要件レビュー 2026-07 と validation 採否判断を統合（吸収元 2 ファイルと解決済み履歴 docs 2 ファイルは削除。git 履歴で参照可能）。
+- `main` は T-018 の community health files 追加まで統合済み。Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
+- T-001〜T-020 完了。T-018 として `CODE_OF_CONDUCT.md`、public-safe な Issue forms、PR template を追加し、private-first reporting を既存 `SECURITY.md` へ一本化した。
+- 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
 ## open PR
 
-2026-07-15 の横断監査で、スタック PR #29〜#32 は #32（本文書整理、#29〜#31 の内容を包含）の merge により全て統合済み。PR #28 は役割が本整理で `HANDOFF.md` / `docs/REQUIREMENTS.md` に統合されたため supersede 理由付きで close 済み。現時点の open PR はなし。
+2026-07-22 確認時点で open PR / open issue はなし。
 
-## 最終検証結果（2026/07/15、docs/consolidate-project-docs ブランチ + main 統合後）
+## 最終検証結果（2026/07/22、T-018）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| scanner tests | `pwsh -NoProfile -File ./tests/scan-private-markers.Tests.ps1` | pass（48 tests） |
-| marker scan | `pwsh -NoProfile -File ./scripts/scan-private-markers.ps1` | pass（tracked mode） |
+| entry command | `Invoke-Pester tests/scan-private-markers.Tests.ps1 / scripts/scan-private-markers.ps1` | fail（`EnableExit` 引数変換。次タスクで整合修正） |
+| scanner tests | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（exit 0） |
+| marker scan | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1` | pass（tracked mode、33 files） |
+| Issue forms | YAML parse・必須キー・ID 重複チェック | pass |
 | hidden-unicode check | `CONTRIBUTING.md` 記載の pwsh チェック | pass（全 `.md` クリーン） |
-| lint / 型 / build | 該当設定なし | 未実施扱い |
+| lint / 型 / build | 該当設定なし | 未確認 |
 
 ## 次の一手（優先順）
 
-1. T-018 に着手する（`TASKS_BACKLOG.md` 参照。初回追加のため owner へ一言確認する趣旨を PR 本文に明記して進めてよい）。
-2. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。回答待ちの間の自走候補は `TASKS_BACKLOG.md` の新規候補から選ぶ。
+1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+2. 次の自走可能タスクとして、`.Tests.ps1` と `Invoke-Pester` の不整合指摘を再現・評価し、命名変更か Pester 化を選ぶ。
+3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
 4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 
 ## 既知の問題・残懸念

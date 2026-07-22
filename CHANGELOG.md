@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Added a project code of conduct plus public-safe bug, feature, and pull request templates with private-first reporting guidance.
+
 - Consolidated project documentation: added `docs/REQUIREMENTS.md` as the single requirements source (absorbing the 2026-07 requirements review and the validation decision), compressed `HANDOFF.md` and `TASKS_BACKLOG.md` to current-state-only, and removed resolved historical docs that git history already preserves.
 
 - Documented skill-content attack-surface review guidance in CONTRIBUTING.md: full-diff review, hidden-unicode check, and rejection of remote-instruction or gate-weakening changes.
