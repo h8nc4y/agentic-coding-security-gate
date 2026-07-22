@@ -4,6 +4,35 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+# This file predates its Pester-style suffix and remains the zero-dependency
+# executable harness used by CI. When Pester discovers it, register one real
+# test that launches the same harness in a clean child pwsh process. This keeps
+# direct execution unchanged while preventing a misleading 0-tests pass.
+$invokedByPester = @(
+    Get-PSCallStack | Where-Object {
+        $_.Command -eq 'Invoke-Pester' -or
+        $_.InvocationInfo.MyCommand.ModuleName -eq 'Pester'
+    }
+).Count -gt 0
+
+if ($invokedByPester) {
+    $harnessPath = $PSCommandPath
+
+    Describe 'scan-private-markers regression harness' {
+        It 'passes all dependency-free regression cases' {
+            $output = & pwsh -NoProfile -ExecutionPolicy Bypass -File $harnessPath 2>&1
+            $exitCode = $LASTEXITCODE
+
+            if ($exitCode -ne 0) {
+                $summary = $output | Select-Object -Last 20 | Out-String
+                throw "Dependency-free scanner harness failed with exit code $exitCode.`n$summary"
+            }
+        }
+    }
+
+    return
+}
+
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $scannerPath = Join-Path $repoRoot 'scripts/scan-private-markers.ps1'
 $fixtureRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("agentic-coding-security-gate-tests-" + [System.Guid]::NewGuid().ToString('N'))

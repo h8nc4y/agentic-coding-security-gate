@@ -23,5 +23,5 @@
 読取専用レビュー（実行検証なし）の指摘。採否と実装は次担当が判断する。完了時は行頭を [x] にし、対応PRを追記する。
 
 - [ ] scan-private-markers.ps1:75-77 — 実private値の分割literal埋め込み(019と同件) — 018方式の外部ロードへ。オーナー裁定待ち。
-- [ ] tests/scan-private-markers.Tests.ps1 — .Tests.ps1命名だがPester形式でない(将来Invoke-Pester実行で沈黙スキップ/exit巻き添えの恐れ)。命名変更かPester化。confidence中
+- [x] tests/scan-private-markers.Tests.ps1 — Pester 実行が 0 tests で false green になる問題を再現し、直接実行互換の 1-test adapter と正しい入口コマンドで解消。
 - [ ] secret-assignmentルール — (PASSWORD等のキー名+イコール)のプレースホルダ例示でも即fail / 接頭辞付きキー名(DB_ など)は語境界不成立で素通りの非対称。プレースホルダallowlistか注記。confidence中
