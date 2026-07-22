@@ -6,7 +6,7 @@
 ## 現在の状態
 
 - `main` は Pester 0-tests false green の解消まで統合済み。Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
-- T-001〜T-020 と外部レビュー台帳の Pester 指摘を完了。依存ゼロ harness の直接実行を維持しつつ、Pester discovery では 1 adapter test を登録する。
+- T-001〜T-020 と外部レビュー台帳の Pester 指摘を完了（PR #37）。依存ゼロ harness の直接実行を維持しつつ、Pester discovery では 1 adapter test を登録する。
 - 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
 ## open PR
