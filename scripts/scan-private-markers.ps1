@@ -94,9 +94,17 @@ $textExtensions = @(
     '.json', '.jsonc', '.js', '.ts', '.py', '.sh', '.cfg', '.ini', '.toml',
     '.editorconfig', '.gitignore', '.gitattributes', '.npmrc', '.xml', '.html', '.css'
 )
+$dotenvFileNamePattern = '^\.env(?:\.[A-Za-z0-9_-]+)*$'
 
 function Test-IsTextFile {
     param([System.IO.FileInfo]$File)
+
+    # Dotenv files are text configuration, but FileInfo treats `.env`,
+    # `.example`, and `.local` as extensions. Match the complete known filename
+    # shape before the general extension allowlist so binary files stay skipped.
+    if ([regex]::IsMatch($File.Name, $dotenvFileNamePattern, 'IgnoreCase')) {
+        return $true
+    }
 
     $ext = $File.Extension
     if ([string]::IsNullOrEmpty($ext)) {
