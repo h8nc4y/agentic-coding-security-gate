@@ -312,6 +312,39 @@ Use synthetic examples only.
         Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
     }
 
+    Invoke-Test 'flags a prefixed secret assignment with a literal value' {
+        $assignment = ('DB_' + 'PASSWORD' + '=' + 'syntheticfixturevalue')
+        $quotedAssignment = ('SERVICE_' + 'TOKEN' + '=' + "'syntheticquotedvalue'")
+        New-FixtureFile -RelativePath 'config.txt' -Content (@($assignment, $quotedAssignment) -join [Environment]::NewLine)
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Prefixed secret keys with literal values should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should name the assignment rule.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Finding should show redaction.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $quotedAssignment -Message 'Finding output should not replay quoted assignments.'
+    }
+
+    Invoke-Test 'allows recognized secret assignment placeholders and empty values' {
+        $assignments = @(
+            ('PASSWORD' + '=' + '${PASSWORD}'),
+            ('PASSWORD' + '=' + '"${PASSWORD}"'),
+            ('DB_' + 'PASSWORD' + '=' + '${DB_PASSWORD}'),
+            ('API_' + 'TOKEN' + '=' + '$env:API_TOKEN'),
+            ('CLIENT_' + 'SECRET' + '=' + 'process.env.CLIENT_SECRET'),
+            ('ACCESS_' + 'TOKEN' + '=' + '${{ secrets.ACCESS_TOKEN }}'),
+            ('API_' + 'KEY' + '=' + '<redacted>'),
+            ('EMPTY_' + 'PASSWORD' + '=')
+        )
+        New-FixtureFile -RelativePath 'config.txt' -Content ($assignments -join [Environment]::NewLine)
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Recognized placeholders and empty assignments should not fail.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Scan should pass.'
+    }
+
     Test-DetectsAndRedacts -Name 'Slack user token' `
         -Marker ('xo' + 'xp-0000000000-0000000000-abcdefghij') -Rule 'slack-token-prefix'
 

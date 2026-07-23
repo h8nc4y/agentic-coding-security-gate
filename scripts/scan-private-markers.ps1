@@ -30,6 +30,10 @@ $ownRepoUrlPattern = '^https://github\.com/h8nc4y/agentic-coding-security-gate(?
 # marker. Real maintainer addresses must still be flagged.
 $emailAllowlistPattern = '@(?:example\.(?:com|org|net)|test|localhost)$'
 
+# Generic secret assignments may reference a runtime value without embedding it.
+# Keep this allowlist narrow and require the entire normalized value to match.
+$secretAssignmentPlaceholderPattern = '^(?:\$\{\{\s*secrets\.[A-Z_][A-Z0-9_]*\s*\}\}|\$\{[A-Z_][A-Z0-9_]*\}|\$env:[A-Z_][A-Z0-9_]*|\$[A-Z_][A-Z0-9_]*|%[A-Z_][A-Z0-9_]*%|process\.env\.[A-Z_][A-Z0-9_]*|<[A-Z0-9_.:-]+>)$'
+
 # Best-effort secret/private-marker rules. This is NOT a guarantee that every
 # secret format is caught (see SKILL.md / SECURITY.md). Literal prefixes are
 # assembled by concatenation so this scanner file does not self-trigger.
@@ -77,7 +81,9 @@ $rules = @(
     @{ Name = 'private-user-path'; Pattern = ('C:' + '\Users\h8nc4'); Kind = 'literal' },
     @{ Name = 'email-address'; Pattern = '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b'; Kind = 'regex' },
     @{ Name = 'windows-absolute-path'; Pattern = '\b[A-Za-z]:\\(?:[^\\/:*?"<>|\r\n]+\\?){2,}'; Kind = 'regex' },
-    @{ Name = 'secret-assignment'; Pattern = '\b(?:API_KEY|TOKEN|SECRET|PASSWORD)\s*='; Kind = 'regex' }
+    # Match prefixed names such as DB_PASSWORD, then inspect the assigned value
+    # below so empty values and explicit runtime placeholders remain safe.
+    @{ Name = 'secret-assignment'; Pattern = '(?<![A-Za-z0-9])(?:[A-Z][A-Z0-9]*_)*(?:API_KEY|TOKEN|SECRET|PASSWORD)\s*=\s*(?<value>[^#;\r\n]*)'; Kind = 'regex' }
 )
 
 # Text-only scan: skip binary/large assets so future binary examples (PNG, etc.)
@@ -212,6 +218,36 @@ foreach ($file in $files) {
                     }
                 }
                 $matched = $hasRealEmail
+            }
+
+            # A key name alone is not protected material. Only flag assignments
+            # whose normalized value is non-empty and not an approved reference.
+            if ($matched -and $rule.Name -eq 'secret-assignment') {
+                $hasLiteralSecretAssignment = $false
+                foreach ($assignmentMatch in [regex]::Matches($line, $rule.Pattern, 'IgnoreCase')) {
+                    $value = $assignmentMatch.Groups['value'].Value.Trim()
+
+                    # Treat one matching quote pair as syntax around the value,
+                    # then require the entire inner value to be a placeholder.
+                    if (
+                        $value.Length -ge 2 -and
+                        (
+                            ($value.StartsWith("'") -and $value.EndsWith("'")) -or
+                            ($value.StartsWith('"') -and $value.EndsWith('"'))
+                        )
+                    ) {
+                        $value = $value.Substring(1, $value.Length - 2).Trim()
+                    }
+
+                    if (
+                        -not [string]::IsNullOrWhiteSpace($value) -and
+                        $value -notmatch $secretAssignmentPlaceholderPattern
+                    ) {
+                        $hasLiteralSecretAssignment = $true
+                        break
+                    }
+                }
+                $matched = $hasLiteralSecretAssignment
             }
 
             if ($matched) {
