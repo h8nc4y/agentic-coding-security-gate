@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so `.env` and suffixed dotenv files such as `.env.example` and `.env.local` are scanned while unrelated binary extensions remain skipped.
+
 - Fixed generic secret-assignment scanning to detect prefixed keys with literal values while allowing empty values and explicit runtime placeholders.
 
 - Fixed the legacy `.Tests.ps1` harness to report one real Pester adapter test instead of a misleading zero-test pass, and aligned `CODEX_START_HERE.md` with the dependency-free validation commands.

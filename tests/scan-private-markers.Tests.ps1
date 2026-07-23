@@ -444,6 +444,29 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $email -Message 'Finding output should not replay the email.'
     }
 
+    Invoke-Test 'scans dotenv filenames and keeps assigned values redacted' {
+        # Dotenv variants carry text configuration even though FileInfo reports
+        # `.env`, `.example`, or `.local` as extensions outside the allowlist.
+        $baseAssignment = ('DB_' + 'PASSWORD' + '=' + 'syntheticdotenvvalue')
+        $exampleAssignment = ('SERVICE_' + 'TOKEN' + '=' + 'syntheticexamplevalue')
+        $localAssignment = ('CLIENT_' + 'SECRET' + '=' + 'syntheticlocalvalue')
+        New-FixtureFile -RelativePath '.env' -Content $baseAssignment
+        New-FixtureFile -RelativePath '.env.example' -Content $exampleAssignment
+        New-FixtureFile -RelativePath '.env.local' -Content $localAssignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Dotenv files with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle '.env' -Message 'Finding should include the base dotenv path.'
+        Assert-Contains -Text $result.Output -Needle '.env.example' -Message 'Finding should include the example dotenv path.'
+        Assert-Contains -Text $result.Output -Needle '.env.local' -Message 'Finding should include the local dotenv path.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Dotenv findings should remain redacted.'
+        Assert-Contains -Text $result.Output -Needle '3 finding(s) across 3 scanned file(s).' -Message 'Every dotenv variant should be scanned.'
+        Assert-NotContains -Text $result.Output -Needle $baseAssignment -Message 'Finding output should not replay the base assignment.'
+        Assert-NotContains -Text $result.Output -Needle $exampleAssignment -Message 'Finding output should not replay the example assignment.'
+        Assert-NotContains -Text $result.Output -Needle $localAssignment -Message 'Finding output should not replay the local assignment.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')
