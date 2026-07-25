@@ -68,6 +68,7 @@ The overwrite guard is intentional. If a local skill already exists, review it b
 SKILL.md                         Skill instructions loaded by an agent.
 examples/                        Synthetic examples and templates.
 scripts/scan-private-markers.ps1 Local public-safety marker scan.
+scripts/private-marker-process.ps1 Bounded native-process and Git transport.
 tests/                           Dependency-free scanner regression tests.
 .github/workflows/ci.yml         Pull request and main-branch quality gate.
 ```
@@ -127,6 +128,18 @@ Run the bundled marker scan:
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\scan-private-markers.ps1
 ```
 
+The default `auto` mode uses the exact Git index plus regular worktree
+snapshots when the root is a repository. This detects staged-only and
+worktree-only markers without following symlinks or reparse points. Worktree
+reads retain a no-follow file identity, change version, and content hash, then
+revalidate all three
+immediately before reporting so an intermediate same-length replacement and
+restore cannot be accepted as the original snapshot. Use
+`-ScanMode tracked` to require that Git boundary, or `-ScanMode worktree` for
+an explicit non-Git fixture scan. Ambiguous repository state, malformed UTF-8,
+budget exhaustion, or process-boundary failure exits with code 2 and a fixed
+redacted integrity diagnostic.
+
 If your environment has a Codex-style skill validator, run it against the repository root:
 
 ```bash
@@ -135,7 +148,16 @@ python path/to/quick_validate.py .
 
 Optional local checks can include Gitleaks, Semgrep, markdown linting, or a manual review. Report only the checks that actually ran. If a check is unavailable, say it was not checked. Markdown lint and external skill validators remain optional by policy; see `docs/REQUIREMENTS.md` (Japanese) for the validation policy and its revisit triggers.
 
-Pull requests run the same bundled scanner tests and marker scan in GitHub Actions.
+The dependency-free test entrypoint also runs process-containment, binary Git
+transport, index/worktree provenance, path-boundary, one-budget operation
+deadline, and atomic output regressions. The operation deadline includes child
+setup, launch, POSIX readiness, execution, drain, and cleanup. Native children
+start from an explicit environment allowlist. On POSIX, both external and
+native `setsid` paths use the same readiness-verified live anchor, and cleanup
+signals a process group only while that anchor still owns it. Isolation
+directories are removed through a bounded manifest of known artifacts rather
+than recursive traversal. Pull requests run the same bundled scanner tests and
+marker scan in GitHub Actions.
 
 ## Contributing And Security
 

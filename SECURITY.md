@@ -25,7 +25,13 @@ Unsafe public issue content includes credential values, raw authentication outpu
 
 ## Scanner Coverage
 
-The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, npm auth-token assignments, PyPI, RubyGems, GitLab token prefixes, Slack, Stripe, and PEM private-key headers) and always redacts matched values. Generic secret-assignment checks flag literal values on base or prefixed keys while allowing empty values and explicit runtime placeholders. Text-file selection includes `.env` and suffixed dotenv filenames while continuing to skip unrelated binary extensions. The scanner does not guarantee detection of every secret format. By default it scans only git-tracked files, so a passing local scan reflects what would actually be published. Use it alongside, not instead of, dedicated secret scanners.
+The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, npm auth-token assignments, PyPI, RubyGems, GitLab token prefixes, Slack, Stripe, and PEM private-key headers) and always redacts matched values. Generic secret-assignment checks flag literal values on base or prefixed keys while allowing empty values and explicit runtime placeholders. Text-file selection includes `.env` and suffixed dotenv filenames while continuing to skip unrelated binary extensions.
+
+The default scan takes bounded snapshots from both the Git index and regular worktree files, so staged-only and unstaged-only markers remain visible. Worktree content is opened without following links, bound to a stable file identity, change version, and SHA-256 content hash, and revalidated immediately before reporting. This rejects same-length replacement/restore and in-place modification/restore races as well as type or path drift.
+
+Git runs through a hermetic, time- and output-bounded child-process boundary whose environment is built from an empty allowlist rather than inherited and filtered. POSIX execution uses a readiness-verified live session anchor for both external and native `setsid`; cleanup signals the process group only while the anchor still owns it. Isolation cleanup recognizes only a bounded manifest of expected runtime artifacts and does not recursively traverse unknown data. Unsafe index states, path/type drift, reparse points, invalid UTF-8, scan-budget exhaustion, and ambiguous `.git` ancestry fail closed with exit code 2. Finding reports are bounded, atomically emitted UTF-8 with redacted values, and do not include the absolute scan root on success.
+
+The scanner does not guarantee detection of every secret format. Use it alongside, not instead of, dedicated secret scanners.
 
 ## Maintainer Handling
 
