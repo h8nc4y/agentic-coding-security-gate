@@ -1,6 +1,6 @@
 # Tasks Backlog
 
-最終更新: 2026/07/23
+最終更新: 2026/07/25
 運用: 本ファイルはタスク状態の正本。完了タスクの詳細・経緯は `CHANGELOG.md`・git log・マージ済み PR を参照する（ここには履歴注記を蓄積しない）。要件と拡充方針は `docs/REQUIREMENTS.md` が正本。
 
 ## タスク
@@ -12,6 +12,7 @@
 | T-019 | adversarial decision matrix（合成シナリオ × 期待判断の静的表） | `docs/REQUIREMENTS.md` §5 | 中 | done |
 | T-020 | CONTRIBUTING へ skill 攻撃面レビュー観点を明文化 | `docs/REQUIREMENTS.md` §8 | 中 | done |
 | T-021 | `.env` / suffixed dotenv filenames を text scan 対象にする | scanner coverage gap | 高 | done |
+| T-022 | Git/index/worktree/process/output 境界を fail-closed かつ bounded にする | scanner boundary audit | 高 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
@@ -23,6 +24,6 @@
 
 読取専用レビュー（実行検証なし）の指摘。採否と実装は次担当が判断する。完了時は行頭を [x] にし、対応PRを追記する。
 
-- [ ] scan-private-markers.ps1:75-77 — 実private値の分割literal埋め込み(019と同件) — 018方式の外部ロードへ。オーナー裁定待ち。
+- [ ] `scan-private-markers.ps1` の private inventory/path rules — 実private値の分割literal埋め込み（019と同件）を 018 方式の外部ロードへ。オーナー裁定待ち。
 - [x] tests/scan-private-markers.Tests.ps1 — Pester 実行が 0 tests で false green になる問題を再現し、直接実行互換の 1-test adapter と正しい入口コマンドで解消（PR #37）。
 - [x] secret-assignmentルール — 接頭辞付き key の literal 値を検出し、空値・明示的 runtime placeholder だけを allowlist する文脈判定で非対称を解消。

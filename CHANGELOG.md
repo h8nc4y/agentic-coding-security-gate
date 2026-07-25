@@ -6,6 +6,14 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Hardened the private marker scanner with bounded hermetic Git execution, exact index plus worktree snapshots, staged-only detection, non-following path checks, a scan-wide deadline, fixed redacted bootstrap/process/cleanup integrity failures, and atomic UTF-8 reports.
+
+- Made the scan-wide deadline cover Git child setup, Windows atomic launch, POSIX session readiness, execution, stream drain, and cleanup under one millisecond-accurate absolute budget; added linked-worktree, POSIX `.GIT`, public argument-redaction, and first-call AST regressions.
+
+- Added cross-runtime boundary regressions for binary stdin/stdout/stderr and real `git cat-file --batch` transport, AST first-call enforcement across aliases/scopes/function and alias providers/classes/dynamic invocation, missing-helper redaction, Windows launch/Job-close/Dispose failure cleanup, process-tree timeout cleanup, `.git` ancestry shapes, dangling metadata, invalid UTF-8, and output budgets.
+
+- Closed the final scanner-boundary review findings: child processes now start from an explicit environment allowlist, POSIX external and native `setsid` paths share a readiness-verified live anchor, worktree snapshots retain no-follow file identity, change version, and content hashes through final report validation, stale process-group identifiers are never signaled after owner exit, and isolation cleanup follows a bounded known-artifact manifest.
+
 - Fixed text-file selection so `.env` and suffixed dotenv files such as `.env.example` and `.env.local` are scanned while unrelated binary extensions remain skipped.
 
 - Fixed generic secret-assignment scanning to detect prefixed keys with literal values while allowing empty values and explicit runtime placeholders.

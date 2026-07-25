@@ -481,6 +481,25 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
     Remove-Item -LiteralPath $fixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
 }
 
+# Keep the existing CI entrypoint responsible for the boundary suite as well.
+$boundaryHarness = Join-Path `
+    $PSScriptRoot `
+    'scan-private-markers-boundaries.Tests.ps1'
+$boundaryOutput = & $scannerPowerShell `
+    -NoProfile `
+    -ExecutionPolicy Bypass `
+    -File $boundaryHarness `
+    -Path $repoRoot 2>&1
+$boundaryExitCode = $LASTEXITCODE
+foreach ($line in $boundaryOutput) {
+    Write-Host $line
+}
+if ($boundaryExitCode -ne 0) {
+    $failures.Add(
+        "Scanner boundary self-test failed with exit code $boundaryExitCode."
+    ) | Out-Null
+}
+
 if ($failures.Count -gt 0) {
     Write-Host ''
     Write-Host 'Test failures:'
