@@ -13,6 +13,7 @@
 | T-020 | CONTRIBUTING へ skill 攻撃面レビュー観点を明文化 | `docs/REQUIREMENTS.md` §8 | 中 | done |
 | T-021 | `.env` / suffixed dotenv filenames を text scan 対象にする | scanner coverage gap | 高 | done |
 | T-022 | Git/index/worktree/process/output 境界を fail-closed かつ bounded にする | scanner boundary audit | 高 | done |
+| T-023 | `.pem` text container を既存 private-key rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
