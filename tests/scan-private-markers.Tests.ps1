@@ -467,6 +467,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $localAssignment -Message 'Finding output should not replay the local assignment.'
     }
 
+    Invoke-Test 'scans case-insensitive PEM text files and keeps private key markers redacted' {
+        # Keep the existing private-key rule reachable for standard text-container extensions.
+        $syntheticPemMarker = ('-----BEGIN ' + 'PRIVATE KEY-----')
+        New-FixtureFile -RelativePath 'certificates/synthetic-private.pem' -Content $syntheticPemMarker
+        New-FixtureFile -RelativePath 'certificates/synthetic-secondary.PeM' -Content $syntheticPemMarker
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'PEM text files with private key markers should fail.'
+        Assert-Contains -Text $result.Output -Needle 'private-key-block' -Message 'Finding should name the private key rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-private.pem' -Message 'Finding should include the lowercase PEM path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-secondary.PeM' -Message 'Finding should include the mixed-case PEM path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both PEM extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'PEM findings should remain redacted.'
+        Assert-NotContains `
+            -Text $result.Output `
+            -Needle ('-----BEGIN ' + 'PRIVATE KEY-----') `
+            -Message 'Finding output should not replay the private key marker.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')

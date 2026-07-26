@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so case-insensitive `.pem` containers reach the existing private-key marker rule while findings remain redacted.
+
 - Hardened the private marker scanner with bounded hermetic Git execution, exact index plus worktree snapshots, staged-only detection, non-following path checks, a scan-wide deadline, fixed redacted bootstrap/process/cleanup integrity failures, and atomic UTF-8 reports.
 
 - Made the scan-wide deadline cover Git child setup, Windows atomic launch, POSIX session readiness, execution, stream drain, and cleanup under one millisecond-accurate absolute budget; added linked-worktree, POSIX `.GIT`, public argument-redaction, and first-call AST regressions.
