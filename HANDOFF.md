@@ -5,11 +5,10 @@
 
 ## 現在の状態
 
-- T-026 は Class M の実装候補をfeature branchで検証済み。
-  `.mjs` / `.cjs` / `.mts` / `.cts` をcase-insensitiveなtext-file
-  allowlistへ追加し、既存JS / TS detectorへ到達させる。新しいrule・
-  redaction・integrity semanticsは変更せず、大小混在拡張子と値非再掲を
-  synthetic regressionで固定した。commit / PR / mergeは未実施。
+- T-026 では `.mjs` / `.cjs` / `.mts` / `.cts` がtext-file routingから
+  漏れる非対称を解消した。case-insensitiveなallowlistから既存JS / TS
+  detectorへ到達させ、新しいrule・redaction・integrity semanticsは
+  変更せず、大小混在拡張子と値非再掲をsynthetic regressionで固定した。
 - T-025 では `.js` / `.ts` と同系の `.jsx` / `.tsx` が text-file routing
   から漏れる非対称を、既存 detector・redaction・integrity semantics を
   変えずに解消した。大小混在拡張子、既存 rule への到達、redaction、
@@ -18,11 +17,11 @@
   `private-key-block` rule の走査対象へ追加した。大小混在拡張子、
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
-- `main` は T-025 JSX / TSX text coverage まで統合済み（PR #45、merge commit
-  `08eff6e`）。直前の T-023 / T-024 は PEM / KEY container を、T-025 は
-  JSX / TSX source を既存 rule へ到達させ、検出 rule 自体は変更していない。
+- `main` は T-026 module source text coverage まで統合済み（PR #47、
+  merge commit `b8335cd`）。T-025はJSX / TSXを、T-026はMJS / CJS /
+  MTS / CTSを既存JS / TS ruleへ到達させ、検出rule自体は変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
-- T-001〜T-025、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-025 は検出 rule 名・literal / placeholder 判定を変更していない。
+- T-001〜T-026、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-026 は検出 rule 名・literal / placeholder 判定を変更していない。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
 - 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
@@ -30,7 +29,7 @@
 
 最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
 
-## 最終検証結果（2026/07/29、T-026 module source text coverage候補）
+## 最終検証結果（2026/07/29、T-026 module source text coverage）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
@@ -38,18 +37,17 @@
 | Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（55 cases + boundary self-test、final pass sentinel、stderr 0） |
 | Pester 3.4 | `Invoke-Pester` discovery adapter + `-PassThru` | pass（Total 1 / Passed 1 / Failed 0 / Skipped 0 / Pending 0 / Inconclusive 0、198.19秒。stderrはhost/progress CLIXMLのみ、error record 0） |
 | Windows PowerShell 5.1 | Pester discovery adapter + 変更した scanner / test file のAST parse | adapter pass、AST 2 files / 0 errors / exit 0。full harnessは未確認、公式supportはPowerShell 7+のまま |
-| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、29.89秒、exit 0、stderr 0） |
+| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、24.89秒、exit 0、stderr 0） |
 | whitespace / encoding / hidden Unicode | `git diff --check`、変更7ファイルのstrict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md`記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| independent review | correctness / regression review | freeze後に実行予定、未確認 |
-| Gitleaks / Semgrep | local security scan | 未実行 |
-| GitHub CI | PR / main pushの既存Quality gate | PR未作成、未確認 |
+| independent review | correctness / regression review | exact freeze `a8349c0` をP0=0 / P1=0 / P2=0 / P3=0でCLEAR |
+| Gitleaks / Semgrep | local security scan | Gitleaks v8.30.1はstaged約6.07KBでleak 0。Semgrep v1.165.0はexplicit 7 files / exit 0 / 対象言語fileなし。global hookはGitleaks pass、Semgrep no filesでskip |
+| GitHub CI | PR / main pushの既存Quality gate | PR run `30391878024` / main run `30392142081` ともにsuccess |
 | lint / 型 / build | 該当設定なし | 未確認 |
 
 ## 次の一手（優先順）
 
-1. T-026のexact freezeを独立レビューし、security scanを通してから
-   commit / push / PR / CI / merge / branch cleanupを行う。
-2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
 3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
 4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 
