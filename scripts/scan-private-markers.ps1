@@ -226,12 +226,13 @@ function Add-ScanFinding {
 # Extensionless text files such as LICENSE are still allowed. Dotfiles like
 # .env are "all extension" to GetExtension, so the secret-prone ones are
 # listed explicitly — otherwise they would be silently skipped.
-# PEMはASCII armorのtext containerとして扱い、既存private-key ruleを標準拡張子にも届かせる。
+# Treat PEM and KEY as private-key text containers so the existing rule reaches
+# their standard extensions.
 $textExtensions = @(
     '.md', '.markdown', '.txt', '.ps1', '.psm1', '.psd1', '.yml', '.yaml',
     '.json', '.jsonc', '.js', '.ts', '.py', '.sh', '.cfg', '.ini', '.toml',
     '.editorconfig', '.gitignore', '.gitattributes', '.npmrc', '.xml', '.html',
-    '.css', '.pem'
+    '.css', '.pem', '.key'
 )
 $textExtensionSet = [System.Collections.Generic.HashSet[string]]::new(
     [string[]]$textExtensions, [System.StringComparer]::OrdinalIgnoreCase)

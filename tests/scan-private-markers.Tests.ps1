@@ -487,6 +487,27 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
             -Message 'Finding output should not replay the private key marker.'
     }
 
+    Invoke-Test 'scans case-insensitive KEY containers and keeps private key markers redacted' {
+        # A KEY file commonly contains a private key. Keep mixed-case extensions
+        # reachable by the existing rule without replaying values in output.
+        $syntheticKeyMarker = ('-----BEGIN ' + 'PRIVATE KEY-----')
+        New-FixtureFile -RelativePath 'certificates/synthetic-private.key' -Content $syntheticKeyMarker
+        New-FixtureFile -RelativePath 'certificates/synthetic-secondary.KeY' -Content $syntheticKeyMarker
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'KEY containers with private key markers should fail.'
+        Assert-Contains -Text $result.Output -Needle 'private-key-block' -Message 'Finding should name the private key rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-private.key' -Message 'Finding should include the lowercase KEY path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-secondary.KeY' -Message 'Finding should include the mixed-case KEY path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both KEY extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'KEY findings should remain redacted.'
+        Assert-NotContains `
+            -Text $result.Output `
+            -Needle ('-----BEGIN ' + 'PRIVATE KEY-----') `
+            -Message 'Finding output should not replay the private key marker.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')

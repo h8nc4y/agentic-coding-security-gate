@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so case-insensitive `.key` containers reach the existing private-key marker rule while findings remain redacted.
+
 - Fixed text-file selection so case-insensitive `.pem` containers reach the existing private-key marker rule while findings remain redacted.
 
 - Hardened the private marker scanner with bounded hermetic Git execution, exact index plus worktree snapshots, staged-only detection, non-following path checks, a scan-wide deadline, fixed redacted bootstrap/process/cleanup integrity failures, and atomic UTF-8 reports.
