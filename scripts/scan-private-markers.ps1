@@ -228,9 +228,11 @@ function Add-ScanFinding {
 # listed explicitly — otherwise they would be silently skipped.
 # Treat PEM and KEY as private-key text containers so the existing rule reaches
 # their standard extensions.
+# JS / TS と同じ detector routing を JSX / TSX にも適用し、同系言語間の
+# silent skip を防ぐ。大小文字は HashSet の comparer で統一して扱う。
 $textExtensions = @(
     '.md', '.markdown', '.txt', '.ps1', '.psm1', '.psd1', '.yml', '.yaml',
-    '.json', '.jsonc', '.js', '.ts', '.py', '.sh', '.cfg', '.ini', '.toml',
+    '.json', '.jsonc', '.js', '.jsx', '.ts', '.tsx', '.py', '.sh', '.cfg', '.ini', '.toml',
     '.editorconfig', '.gitignore', '.gitattributes', '.npmrc', '.xml', '.html',
     '.css', '.pem', '.key'
 )
