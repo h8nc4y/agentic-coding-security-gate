@@ -140,9 +140,9 @@ an explicit non-Git fixture scan. Ambiguous repository state, malformed UTF-8,
 budget exhaustion, or process-boundary failure exits with code 2 and a fixed
 redacted integrity diagnostic.
 
-Text-file selection includes case-insensitive `.pem` containers so the existing
-private-key marker rule also reaches standard PEM files. Unrelated binary
-extensions remain skipped.
+Text-file selection includes case-insensitive `.pem` and `.key` private-key
+containers so the existing private-key marker rule reaches common key files.
+Unrelated binary extensions remain skipped.
 
 If your environment has a Codex-style skill validator, run it against the repository root:
 
