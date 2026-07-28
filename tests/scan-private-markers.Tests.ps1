@@ -528,6 +528,30 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive MJS CJS MTS and CTS sources with existing rules' {
+        # Module-specific JS and TS extensions must reach the same existing
+        # detector path without changing rule or redaction semantics.
+        $syntheticValue = 'syntheticmodulefixturevalue'
+        $assignment = ('API_' + 'TOKEN' + '=' + $syntheticValue)
+        New-FixtureFile -RelativePath 'src/synthetic-esm.MjS' -Content $assignment
+        New-FixtureFile -RelativePath 'src/synthetic-common.CjS' -Content $assignment
+        New-FixtureFile -RelativePath 'src/synthetic-esm.MtS' -Content $assignment
+        New-FixtureFile -RelativePath 'src/synthetic-common.CtS' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Module-specific JS and TS sources with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-esm.MjS' -Message 'Finding should include the mixed-case MJS path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-common.CjS' -Message 'Finding should include the mixed-case CJS path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-esm.MtS' -Message 'Finding should include the mixed-case MTS path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-common.CtS' -Message 'Finding should include the mixed-case CTS path.'
+        Assert-Contains -Text $result.Output -Needle '4 finding(s) across 4 scanned file(s).' -Message 'All four module source extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Module source findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')

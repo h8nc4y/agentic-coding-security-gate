@@ -16,6 +16,7 @@
 | T-023 | `.pem` text container を既存 private-key rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-024 | `.key` private-key container を既存 private-key rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-025 | `.jsx` / `.tsx` を既存 JS / TS rule の走査対象にする | scanner text-file coverage gap | 高 | done |
+| T-026 | `.mjs` / `.cjs` / `.mts` / `.cts` を既存 JS / TS rule の走査対象にする | scanner text-file coverage gap | 高 | in progress |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
