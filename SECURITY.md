@@ -25,7 +25,7 @@ Unsafe public issue content includes credential values, raw authentication outpu
 
 ## Scanner Coverage
 
-The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, npm auth-token assignments, PyPI, RubyGems, GitLab token prefixes, Slack, Stripe, and PEM private-key headers) and always redacts matched values. Generic secret-assignment checks flag literal values on base or prefixed keys while allowing empty values and explicit runtime placeholders. Text-file selection includes `.env` and suffixed dotenv filenames while continuing to skip unrelated binary extensions.
+The local marker scanner (`scripts/scan-private-markers.ps1`) is best-effort. It detects a curated set of private markers and common secret prefixes (for example AWS, GCP, npm auth-token assignments, PyPI, RubyGems, GitLab token prefixes, Slack, Stripe, and PEM private-key headers) and always redacts matched values. Generic secret-assignment checks flag literal values on base or prefixed keys while allowing empty values and explicit runtime placeholders. Text-file selection includes `.env` and suffixed dotenv filenames, routes `.jsx` / `.tsx` through the same existing rules as `.js` / `.ts`, and continues to skip unrelated binary extensions.
 
 The default scan takes bounded snapshots from both the Git index and regular worktree files, so staged-only and unstaged-only markers remain visible. Worktree content is opened without following links, bound to a stable file identity, change version, and SHA-256 content hash, and revalidated immediately before reporting. This rejects same-length replacement/restore and in-place modification/restore races as well as type or path drift.
 

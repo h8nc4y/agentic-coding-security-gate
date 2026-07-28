@@ -508,6 +508,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
             -Message 'Finding output should not replay the private key marker.'
     }
 
+    Invoke-Test 'scans case-insensitive JSX and TSX sources with existing rules' {
+        # JSX and TSX are text variants of already-scanned JS and TS sources.
+        # Keep both extensions reachable without changing detector semantics.
+        $syntheticValue = 'syntheticfixturevalue'
+        $assignment = ('API_' + 'TOKEN' + '=' + $syntheticValue)
+        New-FixtureFile -RelativePath 'src/synthetic-view.JsX' -Content $assignment
+        New-FixtureFile -RelativePath 'src/synthetic-panel.TsX' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'JSX and TSX sources with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-view.JsX' -Message 'Finding should include the mixed-case JSX path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-panel.TsX' -Message 'Finding should include the mixed-case TSX path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both source extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'JSX and TSX findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')
