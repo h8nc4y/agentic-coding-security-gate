@@ -9,7 +9,9 @@
   `private-key-block` rule の走査対象へ追加した。大小混在拡張子、
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
-- `main` は T-023 PEM text coverage まで統合済み（PR #41、merge commit `1543f48`）。直前の T-022 で Git index / worktree / child-process / path / deadline / output 境界を bounded かつ fail-closed に強化し、T-023 はその scanner の text-container 選択だけを補完した。
+- `main` は T-024 KEY text coverage まで統合済み（PR #43、merge commit
+  `4649338`）。直前の T-023 は PEM text container を、T-024 は KEY
+  private-key container を既存 rule へ到達させ、検出 rule 自体は変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
 - T-001〜T-024、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を完了。既存の検出 rule 名・literal / placeholder 判定は変更していない。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
@@ -23,21 +25,21 @@
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（53 cases + boundary self-test、196.9秒、exit 0） |
+| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | post-main pass（53 cases + boundary self-test、final pass sentinel、exit 0） |
 | Windows / PowerShell 5.1 | 同じ統合 test entrypoint（`powershell.exe` を強制） | fix後 pass（53 cases + boundary self-test、exit 0）。公式 support は PowerShell 7+ のまま |
-| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（41 files、29.7秒、exit 0） |
+| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | post-main pass（35 files、23.0秒、exit 0） |
 | whitespace / encoding / hidden Unicode | `git diff --check`、変更6ファイルの strict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md` 記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| independent review | frozen tree の correctness / regression review | pass（P0=0 / P1=0 / P2=0 / P3=0、commit clearance） |
+| independent review | frozen tree の correctness / regression review | pass（P0=0 / P1=0 / P2=0 / P3=0、commit clearance）。final staged treeも同判定 |
 | Gitleaks / Semgrep | local security scan | Gitleaks v8.30.1 は履歴28 commits・working treeとも pass。Semgrepは実装・docs 5 files / 47 rulesで0 findings |
+| GitHub CI | PR / main pushの既存Quality gate | PR run `30333193265` / main run `30333398006` ともにsuccess |
 | lint / 型 / build | 該当設定なし | 未確認 |
 
 ## 次の一手（優先順）
 
-1. T-024 の frozen treeをcommit / pushし、PR / CI / merge / branch cleanupを完了する。
-2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-3. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
-4. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
-5. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
+1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
+4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 
 ## 既知の問題・残懸念
 
