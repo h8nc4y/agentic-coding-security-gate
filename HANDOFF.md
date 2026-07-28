@@ -5,6 +5,11 @@
 
 ## 現在の状態
 
+- T-026 は Class M の実装候補をfeature branchで検証済み。
+  `.mjs` / `.cjs` / `.mts` / `.cts` をcase-insensitiveなtext-file
+  allowlistへ追加し、既存JS / TS detectorへ到達させる。新しいrule・
+  redaction・integrity semanticsは変更せず、大小混在拡張子と値非再掲を
+  synthetic regressionで固定した。commit / PR / mergeは未実施。
 - T-025 では `.js` / `.ts` と同系の `.jsx` / `.tsx` が text-file routing
   から漏れる非対称を、既存 detector・redaction・integrity semantics を
   変えずに解消した。大小混在拡張子、既存 rule への到達、redaction、
@@ -25,24 +30,26 @@
 
 最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
 
-## 最終検証結果（2026/07/28、T-025 JSX / TSX text coverage）
+## 最終検証結果（2026/07/29、T-026 module source text coverage候補）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | post-main pass（54 cases + boundary self-test、final pass sentinel、exit 0、stderr 0） |
-| Pester 3.4 | `Invoke-Pester` discovery adapter + `-PassThru` | post-main pass（Total 1 / Passed 1 / Failed 0 / Skipped 0 / Pending 0 / Inconclusive 0、195.09秒、exit 0。stderr は host/progress CLIXML のみ、error record 0） |
-| Windows PowerShell 5.1 | 変更した scanner / test file の AST parse | pass（0 errors）。full harness は未確認、公式 support は PowerShell 7+ のまま |
-| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | post-main pass（clean mainのtracked 35 files、23.78秒、exit 0、stderr 0） |
-| whitespace / encoding / hidden Unicode | `git diff --check`、変更7ファイルの strict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md` 記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| independent review | correctness / regression review | pre-freeze の P1 1件・P2 1件を修正後、exact tree `0855987` を P0=0 / P1=0 / P2=0 / P3=0 でCLEAR |
-| Gitleaks / Semgrep | local security scan | post-mainでGitleaks v8.30.1は履歴54 commits・exact tree `0855987`（tracked 35 files）ともpass。Semgrep v1.165.0はexplicit tracked 7 files / 36 rules / findings 0 / engine errors 0 |
-| GitHub CI | PR / main pushの既存Quality gate | PR run `30363794303` / main run `30364081519` ともにsuccess |
+| TDD RED | module source 4 extensionのsynthetic regression | 新規caseだけが `Expected '1' but got '0'` でfail。前後の既存caseとboundary self-testはpass、stderr 0 |
+| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（55 cases + boundary self-test、final pass sentinel、stderr 0） |
+| Pester 3.4 | `Invoke-Pester` discovery adapter + `-PassThru` | pass（Total 1 / Passed 1 / Failed 0 / Skipped 0 / Pending 0 / Inconclusive 0、198.19秒。stderrはhost/progress CLIXMLのみ、error record 0） |
+| Windows PowerShell 5.1 | Pester discovery adapter + 変更した scanner / test file のAST parse | adapter pass、AST 2 files / 0 errors / exit 0。full harnessは未確認、公式supportはPowerShell 7+のまま |
+| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、29.89秒、exit 0、stderr 0） |
+| whitespace / encoding / hidden Unicode | `git diff --check`、変更7ファイルのstrict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md`記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
+| independent review | correctness / regression review | freeze後に実行予定、未確認 |
+| Gitleaks / Semgrep | local security scan | 未実行 |
+| GitHub CI | PR / main pushの既存Quality gate | PR未作成、未確認 |
 | lint / 型 / build | 該当設定なし | 未確認 |
 
 ## 次の一手（優先順）
 
-1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+1. T-026のexact freezeを独立レビューし、security scanを通してから
+   commit / push / PR / CI / merge / branch cleanupを行う。
+2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
 3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
 4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 

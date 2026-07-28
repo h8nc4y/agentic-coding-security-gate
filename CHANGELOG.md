@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so case-insensitive `.mjs`, `.cjs`, `.mts`, and `.cts` sources reach the same existing marker rules as `.js` and `.ts`, with redacted findings.
+
 - Fixed text-file selection so case-insensitive `.jsx` and `.tsx` sources reach the same existing marker rules as `.js` and `.ts`, with redacted findings.
 
 - Fixed text-file selection so case-insensitive `.key` containers reach the existing private-key marker rule while findings remain redacted.
