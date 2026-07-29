@@ -1,10 +1,15 @@
 # HANDOFF
 
-最終更新: 2026/07/28（Codex）
+最終更新: 2026/07/29（Codex）
 役割: 現況と次の一手だけを持つ project brain。完了履歴は `CHANGELOG.md`・git log・マージ済み PR を正とし、ここには残さない。要件は `docs/REQUIREMENTS.md`、タスクは `TASKS_BACKLOG.md`、運用契約は `AGENTS.md` が正本。
 
 ## 現在の状態
 
+- T-027 は Class M の実装候補をfeature branchでGREEN検証済み。
+  `.vue` / `.svelte` / `.astro` をcase-insensitiveなtext-file allowlistへ
+  追加し、既存detectorへ到達させる。新しいrule・redaction・integrity
+  semanticsは変更せず、大小混在拡張子と値非再掲をsynthetic regressionで
+  固定する。commit / PR / mergeは未実施。
 - T-026 では `.mjs` / `.cjs` / `.mts` / `.cts` がtext-file routingから
   漏れる非対称を解消した。case-insensitiveなallowlistから既存JS / TS
   detectorへ到達させ、新しいrule・redaction・integrity semanticsは
@@ -29,25 +34,26 @@
 
 最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
 
-## 最終検証結果（2026/07/29、T-026 module source text coverage）
+## 最終検証結果（2026/07/29、T-027 component source text coverage候補）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| TDD RED | module source 4 extensionのsynthetic regression | 新規caseだけが `Expected '1' but got '0'` でfail。前後の既存caseとboundary self-testはpass、stderr 0 |
-| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（55 cases + boundary self-test、final pass sentinel、stderr 0） |
-| Pester 3.4 | `Invoke-Pester` discovery adapter + `-PassThru` | pass（Total 1 / Passed 1 / Failed 0 / Skipped 0 / Pending 0 / Inconclusive 0、198.19秒。stderrはhost/progress CLIXMLのみ、error record 0） |
+| TDD RED | component source 3 extensionのsynthetic regression | 新規caseだけが `Expected '1' but got '0'` でfail。前後の既存caseとboundary self-testはpass、stderr 0 |
+| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（56 cases + boundary self-test、final pass sentinel、stderr 0） |
+| Pester 3.4 | `Invoke-Pester` discovery adapter + `-PassThru` | pass（Total 1 / Passed 1 / Failed 0 / Skipped 0 / Pending 0 / Inconclusive 0、約185秒、stderr 0） |
 | Windows PowerShell 5.1 | Pester discovery adapter + 変更した scanner / test file のAST parse | adapter pass、AST 2 files / 0 errors / exit 0。full harnessは未確認、公式supportはPowerShell 7+のまま |
-| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、24.89秒、exit 0、stderr 0） |
+| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、約29秒、exit 0、stderr 0） |
 | whitespace / encoding / hidden Unicode | `git diff --check`、変更7ファイルのstrict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md`記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| independent review | correctness / regression review | exact freeze `a8349c0` をP0=0 / P1=0 / P2=0 / P3=0でCLEAR |
-| Gitleaks / Semgrep | local security scan | Gitleaks v8.30.1はstaged約6.07KBでleak 0。Semgrep v1.165.0はexplicit 7 files / exit 0 / 対象言語fileなし。global hookはGitleaks pass、Semgrep no filesでskip |
-| GitHub CI | PR / main pushの既存Quality gate | PR run `30391878024` / main run `30392142081` ともにsuccess |
+| independent review | correctness / regression review | raw diff hash `41eafe4a830a7988574be1f431db65cf8ee43bad` をP0=0 / P1=0 / P2=0 / P3=0でCLEAR |
+| Gitleaks / Semgrep | local security scan | 未確認 |
+| GitHub CI | PR / main pushの既存Quality gate | PR未作成、未確認 |
 | lint / 型 / build | 該当設定なし | 未確認 |
 
 ## 次の一手（優先順）
 
-1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+1. T-027のGREEN検証後にexact freezeを独立レビューし、security scanを
+   通してからcommit / push / PR / CI / merge / branch cleanupを行う。
+2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
 3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
 4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 

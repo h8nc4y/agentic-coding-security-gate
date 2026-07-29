@@ -552,6 +552,28 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive Vue Svelte and Astro component sources with existing rules' {
+        # Single-file component formats embed ordinary text source and must
+        # reach the existing detector path without changing rule semantics.
+        $syntheticValue = 'syntheticcomponentfixturevalue'
+        $assignment = ('API_' + 'TOKEN' + '=' + $syntheticValue)
+        New-FixtureFile -RelativePath 'src/synthetic-view.VuE' -Content $assignment
+        New-FixtureFile -RelativePath 'src/synthetic-panel.SvElTe' -Content $assignment
+        New-FixtureFile -RelativePath 'src/synthetic-page.AsTrO' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Component sources with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-view.VuE' -Message 'Finding should include the mixed-case Vue path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-panel.SvElTe' -Message 'Finding should include the mixed-case Svelte path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-page.AsTrO' -Message 'Finding should include the mixed-case Astro path.'
+        Assert-Contains -Text $result.Output -Needle '3 finding(s) across 3 scanned file(s).' -Message 'All three component extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Component source findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')
