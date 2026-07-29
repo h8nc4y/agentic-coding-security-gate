@@ -1,10 +1,13 @@
 # HANDOFF
 
-最終更新: 2026/07/29（Codex）
+最終更新: 2026/07/30（Codex）
 役割: 現況と次の一手だけを持つ project brain。完了履歴は `CHANGELOG.md`・git log・マージ済み PR を正とし、ここには残さない。要件は `docs/REQUIREMENTS.md`、タスクは `TASKS_BACKLOG.md`、運用契約は `AGENTS.md` が正本。
 
 ## 現在の状態
 
+- T-028 では CI の trigger・job・runner・実行 command・権限を変えず、
+  `actions/checkout` を公式 v4.4.0 tag の immutable SHA へ固定した。
+  checkout credential は保持せず、quality gate に25分の上限を設定した。
 - T-027 では `.vue` / `.svelte` / `.astro` がtext-file routingから漏れる
   非対称を解消した。case-insensitiveなallowlistから既存detectorへ到達させ、
   新しいrule・redaction・integrity semanticsは変更せず、大小混在拡張子と
@@ -21,9 +24,9 @@
   `private-key-block` rule の走査対象へ追加した。大小混在拡張子、
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
-- `main` は T-027 component source text coverage まで統合済み（PR #49、
-  merge commit `5629c9e`）。T-025〜T-027は派生sourceとcomponent sourceを
-  既存ruleへ到達させ、検出rule自体は変更していない。
+- `main` は T-028 CI workflow metadata hardening まで統合済み。
+  T-025〜T-027は派生sourceとcomponent sourceを既存ruleへ到達させ、
+  T-028はscanner・secret-assignment・public form・Pester契約を変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
 - T-001〜T-027、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-027 は検出 rule 名・literal / placeholder 判定を変更していない。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
@@ -33,20 +36,18 @@
 
 最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
 
-## 最終検証結果（2026/07/29、T-027 component source text coverage）
+## 最終検証結果（2026/07/30、T-028 CI workflow metadata hardening）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| TDD RED | component source 3 extensionのsynthetic regression | 新規caseだけが `Expected '1' but got '0'` でfail。前後の既存caseとboundary self-testはpass、stderr 0 |
-| Windows / PowerShell 7 | `pwsh -NoProfile -ExecutionPolicy Bypass -File ./tests/scan-private-markers.Tests.ps1` | pass（56 cases + boundary self-test、final pass sentinel、stderr 0） |
-| Pester 3.4 | `Invoke-Pester` discovery adapter + `-PassThru` | pass（Total 1 / Passed 1 / Failed 0 / Skipped 0 / Pending 0 / Inconclusive 0、約185秒、stderr 0） |
-| Windows PowerShell 5.1 | Pester discovery adapter + 変更した scanner / test file のAST parse | adapter pass、AST 2 files / 0 errors / exit 0。full harnessは未確認、公式supportはPowerShell 7+のまま |
-| marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、約29秒、exit 0、stderr 0） |
-| whitespace / encoding / hidden Unicode | `git diff --check`、変更7ファイルのstrict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md`記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| independent review | correctness / regression review | raw diff hash `41eafe4a830a7988574be1f431db65cf8ee43bad` をP0=0 / P1=0 / P2=0 / P3=0でCLEAR |
-| Gitleaks / Semgrep | local security scan | global hookのGitleaks staged scanはpass。Semgrep v1.165.0はbaseline `origin/main` / explicit 7 paths / 47 rules / new findings 0 / errors 0 / exit 0。full-file scanの1件は変更外の既存synthetic fixtureで、値を再掲せず同一行hashを確認 |
-| GitHub CI | PR / main pushの既存Quality gate | PR run `30426397545` / main run `30426566183` ともにsuccess |
-| lint / 型 / build | 該当設定なし | 未確認 |
+| upstream tag | official `actions/checkout` repositoryの `refs/tags/v4.4.0` | workflowに記載した40桁SHAと一致 |
+| YAML / contract | PyYAML parse + metadata以外の構造比較 | pass。trigger・job・runner・実行command・env・permissionsはbaseと一致 |
+| PowerShell 7 | scanner regression / repository marker scan | 56 cases + boundary self-test pass（188.63秒）/ tracked 39 files pass（24.20秒）、ともにexit 0 |
+| Windows PowerShell 5.1 | scanner regression / repository marker scan | 56 cases + boundary self-test pass（183.08秒）/ tracked 39 files pass（60.34秒）、ともにexit 0。公式supportはPowerShell 7+のまま |
+| whitespace / encoding | `git diff --check`、変更4ファイルのstrict UTF-8 / BOM / NUL / CRLF / trailing whitespace / form-feed | pass。4ファイルともUTF-8 BOMなし + LF |
+| independent review | workflow contract / regression / public-safety review | P0=0 / P1=0 / P2=0 / P3=0でCLEAR |
+| Gitleaks / Semgrep | worktree + history scan（Gitleaks報告: 59 non-merge commits）/ 明示した変更4パス | Gitleaksはleak 0、Semgrepはexit 0 |
+| actionlint | workflow lint | 未確認。既知のpolicy拒否に従い再試行・別経路実行をしていない |
 
 ## 次の一手（優先順）
 
@@ -63,5 +64,6 @@
 - `.key` がbinary DER等でstrict UTF-8 decode不能な場合は、既存のintegrity経路でexit 2へfail closedする。binary内容自体の識別はbest-effort scannerの射程外。
 - sandbox 環境からの GitHub 認証確認は false negative があり得る。keyring-capable 経路で再確認してから認証問題と判断する。
 - SKILL.md / examples への変更は `CONTRIBUTING.md` の攻撃面レビュー観点（逐行レビュー・hidden-unicode 検査）を必ず通す。
-- CI は `actions/checkout@v4` を使用中。2026/07/28確認時の上流最新は
-  v7.0.1だが、workflow変更はゲート①のためT-025では変更していない。
+- CI の `actions/checkout` は公式 v4.4.0 tag のimmutable SHAへ固定し、
+  credential非保持と25分timeoutを明示した。workflow変更はT-028の
+  明示指示範囲だけに限定した。
