@@ -5,11 +5,10 @@
 
 ## 現在の状態
 
-- T-027 は Class M の実装候補をfeature branchでGREEN検証済み。
-  `.vue` / `.svelte` / `.astro` をcase-insensitiveなtext-file allowlistへ
-  追加し、既存detectorへ到達させる。新しいrule・redaction・integrity
-  semanticsは変更せず、大小混在拡張子と値非再掲をsynthetic regressionで
-  固定する。commit / PR / mergeは未実施。
+- T-027 では `.vue` / `.svelte` / `.astro` がtext-file routingから漏れる
+  非対称を解消した。case-insensitiveなallowlistから既存detectorへ到達させ、
+  新しいrule・redaction・integrity semanticsは変更せず、大小混在拡張子と
+  値非再掲をsynthetic regressionで固定した。
 - T-026 では `.mjs` / `.cjs` / `.mts` / `.cts` がtext-file routingから
   漏れる非対称を解消した。case-insensitiveなallowlistから既存JS / TS
   detectorへ到達させ、新しいrule・redaction・integrity semanticsは
@@ -22,11 +21,11 @@
   `private-key-block` rule の走査対象へ追加した。大小混在拡張子、
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
-- `main` は T-026 module source text coverage まで統合済み（PR #47、
-  merge commit `b8335cd`）。T-025はJSX / TSXを、T-026はMJS / CJS /
-  MTS / CTSを既存JS / TS ruleへ到達させ、検出rule自体は変更していない。
+- `main` は T-027 component source text coverage まで統合済み（PR #49、
+  merge commit `5629c9e`）。T-025〜T-027は派生sourceとcomponent sourceを
+  既存ruleへ到達させ、検出rule自体は変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
-- T-001〜T-026、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-026 は検出 rule 名・literal / placeholder 判定を変更していない。
+- T-001〜T-027、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-027 は検出 rule 名・literal / placeholder 判定を変更していない。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
 - 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
@@ -34,7 +33,7 @@
 
 最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
 
-## 最終検証結果（2026/07/29、T-027 component source text coverage候補）
+## 最終検証結果（2026/07/29、T-027 component source text coverage）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
@@ -45,15 +44,14 @@
 | marker scan | scanner default `auto` mode（Git repoでは tracked index + worktree） | pass（tracked 42 files、約29秒、exit 0、stderr 0） |
 | whitespace / encoding / hidden Unicode | `git diff --check`、変更7ファイルのstrict UTF-8 / NUL / CRLF / form-feed、`CONTRIBUTING.md`記載pattern | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
 | independent review | correctness / regression review | raw diff hash `41eafe4a830a7988574be1f431db65cf8ee43bad` をP0=0 / P1=0 / P2=0 / P3=0でCLEAR |
-| Gitleaks / Semgrep | local security scan | 未確認 |
-| GitHub CI | PR / main pushの既存Quality gate | PR未作成、未確認 |
+| Gitleaks / Semgrep | local security scan | global hookのGitleaks staged scanはpass。Semgrep v1.165.0はbaseline `origin/main` / explicit 7 paths / 47 rules / new findings 0 / errors 0 / exit 0。full-file scanの1件は変更外の既存synthetic fixtureで、値を再掲せず同一行hashを確認 |
+| GitHub CI | PR / main pushの既存Quality gate | PR run `30426397545` / main run `30426566183` ともにsuccess |
 | lint / 型 / build | 該当設定なし | 未確認 |
 
 ## 次の一手（優先順）
 
-1. T-027のGREEN検証後にexact freezeを独立レビューし、security scanを
-   通してからcommit / push / PR / CI / merge / branch cleanupを行う。
-2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
 3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
 4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 
