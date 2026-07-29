@@ -6,6 +6,8 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so case-insensitive `.vue`, `.svelte`, and `.astro` component sources reach the existing marker rules with redacted findings.
+
 - Fixed text-file selection so case-insensitive `.mjs`, `.cjs`, `.mts`, and `.cts` sources reach the same existing marker rules as `.js` and `.ts`, with redacted findings.
 
 - Fixed text-file selection so case-insensitive `.jsx` and `.tsx` sources reach the same existing marker rules as `.js` and `.ts`, with redacted findings.

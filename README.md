@@ -140,11 +140,12 @@ an explicit non-Git fixture scan. Ambiguous repository state, malformed UTF-8,
 budget exhaustion, or process-boundary failure exits with code 2 and a fixed
 redacted integrity diagnostic.
 
-Text-file selection routes case-insensitive `.jsx` / `.tsx` and module-specific
-`.mjs` / `.cjs` / `.mts` / `.cts` sources through the same existing rules as
-`.js` / `.ts`. It also includes case-insensitive `.pem` and `.key` private-key
-containers so the existing private-key marker rule reaches common key files.
-Unrelated binary extensions remain skipped.
+Text-file selection routes case-insensitive `.jsx` / `.tsx`, module-specific
+`.mjs` / `.cjs` / `.mts` / `.cts`, and component-source `.vue` / `.svelte` /
+`.astro` files through the same existing rules as `.js` / `.ts`. It also
+includes case-insensitive `.pem` and `.key` private-key containers so the
+existing private-key marker rule reaches common key files. Unrelated binary
+extensions remain skipped.
 
 If your environment has a Codex-style skill validator, run it against the repository root:
 

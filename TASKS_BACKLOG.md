@@ -1,6 +1,6 @@
 # Tasks Backlog
 
-最終更新: 2026/07/28
+最終更新: 2026/07/29
 運用: 本ファイルはタスク状態の正本。完了タスクの詳細・経緯は `CHANGELOG.md`・git log・マージ済み PR を参照する（ここには履歴注記を蓄積しない）。要件と拡充方針は `docs/REQUIREMENTS.md` が正本。
 
 ## タスク
@@ -17,6 +17,7 @@
 | T-024 | `.key` private-key container を既存 private-key rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-025 | `.jsx` / `.tsx` を既存 JS / TS rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-026 | `.mjs` / `.cjs` / `.mts` / `.cts` を既存 JS / TS rule の走査対象にする | scanner text-file coverage gap | 高 | done |
+| T-027 | `.vue` / `.svelte` / `.astro` を既存 text rule の走査対象にする | scanner text-file coverage gap | 高 | in progress |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
