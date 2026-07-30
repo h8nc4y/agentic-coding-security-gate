@@ -126,7 +126,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/scan-private-markers.ps1
 
 `TASKS_BACKLOG.md` が正本。着手前に必ず `HANDOFF.md`（次の一手・open PR）と `docs/REQUIREMENTS.md` §5（スコープ）・§10（owner 未決事項）を確認する。要点:
 
-- 未着手タスク: T-018（CODE_OF_CONDUCT / Issue・PR テンプレート。owner へ一言確認する趣旨を PR 本文に明記して進めてよい）。
+- 未着手・進行中タスクをこの運用文書へ固定列挙しない。必ず `TASKS_BACKLOG.md` の状態列と `HANDOFF.md` の「次の一手」を現在値として読む。
 - scanner 拡充は文脈付きルールを基本形とし、prefix 単独追加は owner の Q4 回答を待つ。
 - release / tag / workflow 変更は owner 承認（ゲート①）。承認前は `examples/release-tag-gate-summary.md` の形式で停止する。
 
