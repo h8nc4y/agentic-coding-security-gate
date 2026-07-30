@@ -6,10 +6,9 @@
 ## 現在の状態
 
 - T-029 では Terraform の `.tf` / `.tfvars` が text-file routing から漏れる
-  非対称に対し、case-insensitive な allowlist、既存 rule への到達、
+  非対称を、case-insensitive な allowlistから既存 ruleへ到達させて解消した。
   redaction、代入文と値の非再掲を synthetic regression で固定する変更を
-  隔離 worktree でGREEN検証した。新しいrule・redaction・integrity
-  semanticsは変更していない。commit / GitHub 統合は未実施。
+  統合し、新しいrule・redaction・integrity semanticsは変更していない。
 - T-028 では CI の trigger・job・runner・実行 command・権限を変えず、
   `actions/checkout` を公式 v4.4.0 tag の immutable SHA へ固定した。
   checkout credential は保持せず、quality gate に25分の上限を設定した。
@@ -29,36 +28,39 @@
   `private-key-block` rule の走査対象へ追加した。大小混在拡張子、
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
-- `main` は T-028 CI workflow metadata hardening まで統合済み。
-  T-025〜T-027は派生sourceとcomponent sourceを既存ruleへ到達させ、
+- `origin/main` は T-029 Terraform text coverage まで統合済み。
+  T-025〜T-027とT-029は各source形式を既存ruleへ到達させ、
   T-028はscanner・secret-assignment・public form・Pester契約を変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
-- T-001〜T-027、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-027 は検出 rule 名・literal / placeholder 判定を変更していない。
+- T-001〜T-029、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-029 は検出 rule 名・literal / placeholder 判定を変更していない。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
 - 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
 ## open PR
 
-最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
+2026/07/30 時点で open PR / open issue は0件。最新状態はGitHubを正とし、
+各着手時に再確認する。
 
-## 最終検証結果（2026/07/30、T-029 Terraform text coverage候補）
+## 最終検証結果（2026/07/30、T-029 Terraform text coverage）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
 | TDD RED | base + Terraform extensionのsynthetic regressionだけ | 既存56 casesはpassし、新規caseだけが `Expected '1' but got '0'` でfail。boundary self-testはpass、stderr 0 |
-| PowerShell 7 | scanner regression / repository marker scan | 57 cases + boundary self-test pass / tracked 42 files pass、ともにexit 0。test wrapper stderrはCLIXML information/progressのみでErrorRecord / FAIL / Exceptionは0 |
+| PowerShell 7 | scanner regression / repository marker scan | 実装treeとexact merge treeで57 cases + boundary self-test pass。実装treeはtracked 42 files、clean merge treeはtracked 35 files pass。すべてexit 0。test wrapper stderrはCLIXML information/progressのみでErrorRecord / FAIL / Exceptionは0 |
 | whitespace / encoding | `git diff --check`、変更7ファイルのstrict UTF-8 / BOM / NUL / CRLF / trailing whitespace / form-feed | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
 | Gitleaks | worktree / history scan（61 non-merge commits） | ともにleak 0 |
 | Semgrep | `p/default`で変更7パス / base同一7パス | 両方exit 0、error 0。既存synthetic JWT fixtureの同一1件だけでdelta 0 |
+| independent review | correctness / regression / public-safety review | P0=0 / P1=0 / P2=0 / P3=0でCLEAR |
+| global hook | staged Gitleaks / Semgrep | Gitleaks pass、Semgrepは対象fileなしでskip |
+| GitHub CI | PR #53 / `origin/main` push | runs `30534185902` / `30534425553` ともにsuccess |
+| integration | reviewed tree / merge tree、ancestor、cleanup | tree一致、feature commitは`origin/main`のancestor。task / post-main worktreeとlocal / remote branchを削除済み |
 
 ## 次の一手（優先順）
 
-1. T-029 のexact差分を最終reviewし、global hook commit後にPR / CI / mergeを
-   完了する。
-2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-3. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
-4. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
-5. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
+1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
+4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 
 ## 既知の問題・残懸念
 
