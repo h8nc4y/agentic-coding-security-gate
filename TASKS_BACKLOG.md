@@ -19,6 +19,7 @@
 | T-026 | `.mjs` / `.cjs` / `.mts` / `.cts` を既存 JS / TS rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-027 | `.vue` / `.svelte` / `.astro` を既存 text rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-028 | CI workflow metadataをimmutable / credential-free / boundedにする | workflow security inventory | 中 | done |
+| T-029 | `.tf` / `.tfvars` を既存 text rule の走査対象にする | scanner text-file coverage gap | 高 | in progress |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 

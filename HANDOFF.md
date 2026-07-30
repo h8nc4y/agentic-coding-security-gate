@@ -5,6 +5,11 @@
 
 ## 現在の状態
 
+- T-029 では Terraform の `.tf` / `.tfvars` が text-file routing から漏れる
+  非対称に対し、case-insensitive な allowlist、既存 rule への到達、
+  redaction、代入文と値の非再掲を synthetic regression で固定する変更を
+  隔離 worktree でGREEN検証した。新しいrule・redaction・integrity
+  semanticsは変更していない。commit / GitHub 統合は未実施。
 - T-028 では CI の trigger・job・runner・実行 command・権限を変えず、
   `actions/checkout` を公式 v4.4.0 tag の immutable SHA へ固定した。
   checkout credential は保持せず、quality gate に25分の上限を設定した。
@@ -36,25 +41,24 @@
 
 最新の open PR / open issue は GitHub を正とし、各着手時に再確認する。
 
-## 最終検証結果（2026/07/30、T-028 CI workflow metadata hardening）
+## 最終検証結果（2026/07/30、T-029 Terraform text coverage候補）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| upstream tag | official `actions/checkout` repositoryの `refs/tags/v4.4.0` | workflowに記載した40桁SHAと一致 |
-| YAML / contract | PyYAML parse + metadata以外の構造比較 | pass。trigger・job・runner・実行command・env・permissionsはbaseと一致 |
-| PowerShell 7 | scanner regression / repository marker scan | 56 cases + boundary self-test pass（188.63秒）/ tracked 39 files pass（24.20秒）、ともにexit 0 |
-| Windows PowerShell 5.1 | scanner regression / repository marker scan | 56 cases + boundary self-test pass（183.08秒）/ tracked 39 files pass（60.34秒）、ともにexit 0。公式supportはPowerShell 7+のまま |
-| whitespace / encoding | `git diff --check`、変更4ファイルのstrict UTF-8 / BOM / NUL / CRLF / trailing whitespace / form-feed | pass。4ファイルともUTF-8 BOMなし + LF |
-| independent review | workflow contract / regression / public-safety review | P0=0 / P1=0 / P2=0 / P3=0でCLEAR |
-| Gitleaks / Semgrep | worktree + history scan（Gitleaks報告: 59 non-merge commits）/ 明示した変更4パス | Gitleaksはleak 0、Semgrepはexit 0 |
-| actionlint | workflow lint | 未確認。既知のpolicy拒否に従い再試行・別経路実行をしていない |
+| TDD RED | base + Terraform extensionのsynthetic regressionだけ | 既存56 casesはpassし、新規caseだけが `Expected '1' but got '0'` でfail。boundary self-testはpass、stderr 0 |
+| PowerShell 7 | scanner regression / repository marker scan | 57 cases + boundary self-test pass / tracked 42 files pass、ともにexit 0。test wrapper stderrはCLIXML information/progressのみでErrorRecord / FAIL / Exceptionは0 |
+| whitespace / encoding | `git diff --check`、変更7ファイルのstrict UTF-8 / BOM / NUL / CRLF / trailing whitespace / form-feed | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
+| Gitleaks | worktree / history scan（61 non-merge commits） | ともにleak 0 |
+| Semgrep | `p/default`で変更7パス / base同一7パス | 両方exit 0、error 0。既存synthetic JWT fixtureの同一1件だけでdelta 0 |
 
 ## 次の一手（優先順）
 
-1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
-3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
-4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
+1. T-029 のexact差分を最終reviewし、global hook commit後にPR / CI / mergeを
+   完了する。
+2. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+3. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+4. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
+5. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 
 ## 既知の問題・残懸念
 
