@@ -32,4 +32,4 @@
 
 - [ ] `scan-private-markers.ps1` の private inventory/path rules — 実private値の分割literal埋め込み（019と同件）を 018 方式の外部ロードへ。オーナー裁定待ち。
 - [x] tests/scan-private-markers.Tests.ps1 — Pester 実行が 0 tests で false green になる問題を再現し、直接実行互換の 1-test adapter と正しい入口コマンドで解消（PR #37）。
-- [x] secret-assignmentルール — 接頭辞付き key の literal 値を検出し、空値・明示的 runtime placeholder だけを allowlist する文脈判定で非対称を解消。
+- [x] secret-assignmentルール — 接頭辞付き key の literal 値を検出し、空値・明示的 runtime placeholder だけを allowlist する文脈判定で非対称を解消（PR #38）。
