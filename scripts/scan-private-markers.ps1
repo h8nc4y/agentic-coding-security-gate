@@ -230,12 +230,14 @@ function Add-ScanFinding {
 # their standard extensions.
 # JS / TS と同じ detector routing を派生sourceとcomponent sourceにも適用する。
 # JSX / TSX、module形式、Vue / Svelte / Astroを明示列挙してsilent skipを防ぐ。
+# Terraformの設定・変数fileも既存detectorへ到達させ、ruleの意味は変えない。
 # 大小文字はHashSetのcomparerで統一して扱う。
 $textExtensions = @(
     '.md', '.markdown', '.txt', '.ps1', '.psm1', '.psd1', '.yml', '.yaml',
     '.json', '.jsonc', '.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.mts', '.cts',
     '.vue', '.svelte', '.astro', '.py', '.sh', '.cfg', '.ini', '.toml',
-    '.editorconfig', '.gitignore', '.gitattributes', '.npmrc', '.xml', '.html',
+    '.tf', '.tfvars', '.editorconfig', '.gitignore', '.gitattributes', '.npmrc',
+    '.xml', '.html',
     '.css', '.pem', '.key'
 )
 $textExtensionSet = [System.Collections.Generic.HashSet[string]]::new(

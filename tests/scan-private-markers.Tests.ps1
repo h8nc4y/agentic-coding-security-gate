@@ -574,6 +574,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive Terraform sources with existing rules' {
+        # Terraform configuration and variable files are plain text. Route
+        # both extensions to the existing detector without changing its rules.
+        $syntheticValue = 'syntheticterraformfixturevalue'
+        $assignment = ('api_' + 'token' + ' = "' + $syntheticValue + '"')
+        New-FixtureFile -RelativePath 'infra/synthetic-main.Tf' -Content $assignment
+        New-FixtureFile -RelativePath 'infra/synthetic-vars.TfVaRs' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Terraform sources with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-main.Tf' -Message 'Finding should include the mixed-case TF path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-vars.TfVaRs' -Message 'Finding should include the mixed-case TFVARS path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both Terraform extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Terraform findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')
