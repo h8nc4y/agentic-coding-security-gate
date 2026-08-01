@@ -1,10 +1,14 @@
 # HANDOFF
 
-最終更新: 2026/07/30（Codex）
+最終更新: 2026/08/01（Codex）
 役割: 現況と次の一手だけを持つ project brain。完了履歴は `CHANGELOG.md`・git log・マージ済み PR を正とし、ここには残さない。要件は `docs/REQUIREMENTS.md`、タスクは `TASKS_BACKLOG.md`、運用契約は `AGENTS.md` が正本。
 
 ## 現在の状態
 
+- T-030 では大小文字が混在する `.hcl` がtext-file routingから漏れる非対称を、
+  case-insensitiveなallowlistから既存ruleへ到達させて解消した。新しいrule、
+  redaction、placeholder判定、Q4のprefix方針は変更せず、値非再掲をsynthetic
+  regressionで固定した。
 - T-029 では Terraform の `.tf` / `.tfvars` が text-file routing から漏れる
   非対称を、case-insensitive な allowlistから既存 ruleへ到達させて解消した。
   redaction、代入文と値の非再掲を synthetic regression で固定する変更を
@@ -28,37 +32,31 @@
   `private-key-block` rule の走査対象へ追加した。大小混在拡張子、
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
-- `origin/main` は T-029 Terraform text coverage まで統合済み。
-  T-025〜T-027とT-029は各source形式を既存ruleへ到達させ、
-  T-028はscanner・secret-assignment・public form・Pester契約を変更していない。
+- observableなGit / GitHub / CI状態は固定せず、各work unitの着手時に再計測する。
+- T-025〜T-027とT-029〜T-030は各source形式を既存ruleへ到達させ、T-028は
+  scanner・secret-assignment・public form・Pester契約を変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
-- T-001〜T-029、Pester 0-tests false green（PR #37）、secret-assignment の prefix/placeholder 非対称、dotenv filename coverage を現行treeで完了。T-029 は検出 rule 名・literal / placeholder 判定を変更していない。
+- T-001〜T-030、Pester 0-tests false green（PR #37）、secret-assignmentの
+  prefix / placeholder非対称、dotenv filename coverageを現行treeで完了。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
 - 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
-## open PR
-
-2026/07/30 時点で open PR / open issue は0件。最新状態はGitHubを正とし、
-各着手時に再確認する。
-
-## 最終検証結果（2026/07/30、T-029 Terraform text coverage）
+## 最終検証結果（2026/08/01、T-030 HCL text coverage）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| TDD RED | base + Terraform extensionのsynthetic regressionだけ | 既存56 casesはpassし、新規caseだけが `Expected '1' but got '0'` でfail。boundary self-testはpass、stderr 0 |
-| PowerShell 7 | scanner regression / repository marker scan | 実装treeとexact merge treeで57 cases + boundary self-test pass。実装treeはtracked 42 files、clean merge treeはtracked 35 files pass。すべてexit 0。test wrapper stderrはCLIXML information/progressのみでErrorRecord / FAIL / Exceptionは0 |
-| whitespace / encoding | `git diff --check`、変更7ファイルのstrict UTF-8 / BOM / NUL / CRLF / trailing whitespace / form-feed | pass。scanner本体の既存UTF-8 BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| Gitleaks | worktree / history scan（61 non-merge commits） | ともにleak 0 |
-| Semgrep | `p/default`で変更7パス / base同一7パス | 両方exit 0、error 0。既存synthetic JWT fixtureの同一1件だけでdelta 0 |
-| independent review | correctness / regression / public-safety review | P0=0 / P1=0 / P2=0 / P3=0でCLEAR |
-| global hook | staged Gitleaks / Semgrep | Gitleaks pass、Semgrepは対象fileなしでskip |
-| GitHub CI | PR #53 / `origin/main` push | runs `30534185902` / `30534425553` ともにsuccess |
-| integration | reviewed tree / merge tree、ancestor、cleanup | tree一致、feature commitは`origin/main`のancestor。task / post-main worktreeとlocal / remote branchを削除済み |
+| TDD RED | 既存scanner regression + HCL case | 既存57 casesとboundary self-testはpassし、HCL caseだけが`Expected '1' but got '0'`でfail |
+| PowerShell 7 | scanner regression / repository marker scan | 58 cases + boundary self-test、最終7-file treeのtracked 42 files scanがともにexit 0 |
+| Windows PowerShell 5.1 | scanner regression / repository marker scan | 58 cases + boundary self-test、最終7-file treeのtracked 42 files scanがともにexit 0 |
+| whitespace / encoding | `git diff --check`、変更7 filesのUTF-8 / BOM / LF / NUL | pass。scanner本体の既存BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
+| Gitleaks | working directory / Git history | leak 0。historyは63 commitsをscan |
+| Semgrep | `p/default`で変更7 paths / base同一7 paths | error 0。既存synthetic JWT fixtureの同一1件だけでdelta 0 |
 
 ## 次の一手（優先順）
 
 1. 外部レビュー台帳の scanner 実 private 値に関する指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-2. GitHub の open issue と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+2. GitHubのopen issue / PRとbacklogを再確認し、要件変更なしで閉じられる
+   新しいcoverage gapがあれば次の自走タスクにする。
 3. owner が `docs/REQUIREMENTS.md` §10 の Q1-Q9 に回答する（release GO の Q2 を含む）。
 4. release / tag / workflow 変更はゲート①。実行せず `examples/release-tag-gate-summary.md` の形式で停止する。
 

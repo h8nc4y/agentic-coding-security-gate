@@ -144,7 +144,8 @@ Text-file selection routes case-insensitive `.jsx` / `.tsx`, module-specific
 `.mjs` / `.cjs` / `.mts` / `.cts`, and component-source `.vue` / `.svelte` /
 `.astro` files through the same existing rules as `.js` / `.ts`. Terraform
 configuration and variable files with case-insensitive `.tf` / `.tfvars`
-extensions also reach the existing marker rules. The selection includes
+extensions and generic `.hcl` configuration files also reach the existing
+marker rules. The selection includes
 case-insensitive `.pem` and `.key` private-key containers so the existing
 private-key marker rule reaches common key files. Unrelated binary extensions
 remain skipped.

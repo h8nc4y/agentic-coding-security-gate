@@ -1,6 +1,6 @@
 # Tasks Backlog
 
-最終更新: 2026/07/30
+最終更新: 2026/08/01
 運用: 本ファイルはタスク状態の正本。完了タスクの詳細・経緯は `CHANGELOG.md`・git log・マージ済み PR を参照する（ここには履歴注記を蓄積しない）。要件と拡充方針は `docs/REQUIREMENTS.md` が正本。
 
 ## タスク
@@ -20,6 +20,7 @@
 | T-027 | `.vue` / `.svelte` / `.astro` を既存 text rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-028 | CI workflow metadataをimmutable / credential-free / boundedにする | workflow security inventory | 中 | done |
 | T-029 | `.tf` / `.tfvars` を既存 text rule の走査対象にする | scanner text-file coverage gap | 高 | done |
+| T-030 | `.hcl` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
