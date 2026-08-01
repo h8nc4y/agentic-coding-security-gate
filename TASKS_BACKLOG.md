@@ -22,6 +22,7 @@
 | T-029 | `.tf` / `.tfvars` を既存 text rule の走査対象にする | scanner text-file coverage gap | 高 | done |
 | T-030 | `.hcl` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-031 | `.properties` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
+| T-032 | `.conf` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
