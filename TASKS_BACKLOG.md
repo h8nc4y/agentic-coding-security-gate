@@ -27,9 +27,11 @@
 | T-034 | `.sql` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-035 | `.jsonl` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-036 | 既知 text 拡張子 + `.example` を既存 rule の走査対象にする | scanner compound-suffix coverage gap | 中 | done |
+| T-037 | `.rules` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
+- extension-routing inventory は T-037 で一区切り。再現可能な false negative または明示的な正本driftは Q4 の判断材料として記録し、owner が Q4 で再開を認めるまで拡張子追加を再開しない。
 - scanner の文脈付きルール拡充: Google OAuth client secret の credential file 文脈検出、owner 実利用に応じて Cloudflare / Vercel / Netlify 系。prefix 単独追加は限界効用逓減のため owner の Q4 回答を待つ。
 - `examples/` 拡充: 新しい境界シナリオに限定し、合成データのみで追加。追加時は `docs/adversarial-decision-matrix.md` に対応行を検討する。
 - 初回 release: owner の Q2 承認後にゲート①として実施（資料は `docs/release-readiness-brief.md`）。承認前は着手しない。

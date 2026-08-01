@@ -487,6 +487,33 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $jsonlEmail -Message 'Finding output should not replay the email value.'
     }
 
+    Invoke-Test 'scans rules policy files and case-insensitive example variants' {
+        # Rules files are high-trust text policy. Route regular and one-layer
+        # example suffixes without adding policy-specific detector semantics.
+        $rulesEmail = ('alice' + '@' + 'realcorp.io')
+        $policySentinel = 'synthetic-rules-policy-record'
+        $policyLine = ($policySentinel + ' deny contact=' + $rulesEmail)
+        New-FixtureFile -RelativePath 'policies/lower-policy.rules' -Content $policyLine
+        New-FixtureFile -RelativePath 'policies/mixed-policy.RuLeS' -Content $policyLine
+        New-FixtureFile -RelativePath 'samples/lower-example.rules.example' -Content $policyLine
+        New-FixtureFile -RelativePath 'samples/mixed-example.RuLeS.ExAmPlE' -Content $policyLine
+        New-FixtureFile -RelativePath 'samples/nested-policy.rules.example.example' -Content $policyLine
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Rules policy files with existing private markers should fail.'
+        Assert-Contains -Text $result.Output -Needle 'email-address' -Message 'Finding should use the existing email rule.'
+        Assert-Contains -Text $result.Output -Needle 'lower-policy.rules' -Message 'Finding should include the lowercase rules path.'
+        Assert-Contains -Text $result.Output -Needle 'mixed-policy.RuLeS' -Message 'Finding should include the mixed-case rules path.'
+        Assert-Contains -Text $result.Output -Needle 'lower-example.rules.example' -Message 'Finding should include the lowercase example path.'
+        Assert-Contains -Text $result.Output -Needle 'mixed-example.RuLeS.ExAmPlE' -Message 'Finding should include the mixed-case example path.'
+        Assert-NotContains -Text $result.Output -Needle 'nested-policy.rules.example.example' -Message 'Only one example suffix should be unwrapped.'
+        Assert-Contains -Text $result.Output -Needle '4 finding(s) across 4 scanned file(s).' -Message 'Only regular and one-layer example rules files should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Rules findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $policySentinel -Message 'Finding output should not replay the policy record.'
+        Assert-NotContains -Text $result.Output -Needle $rulesEmail -Message 'Finding output should not replay the email value.'
+    }
+
     Invoke-Test 'scans compound example suffixes only after known text extensions' {
         # Do not treat `.example` itself as text. Route only samples whose
         # inner suffix is a known text type, regardless of suffix casing.

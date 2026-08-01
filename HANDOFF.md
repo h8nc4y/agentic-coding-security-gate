@@ -5,20 +5,20 @@
 
 ## 現在の状態
 
-- T-036 では末尾 `.example` を1層だけ外し、直前が既知text拡張子の場合だけ既存detectorへ到達させる。bare unknown `.example` と多重 `.example.example` は従来どおりskipする。
-- 4-file synthetic fixture は大小文字が混在するpositive 2件とbare／多重suffixのnegative 2件を固定し、既存 `email-address` finding、redaction、payloadと値の非再掲を検証する。sample専用 ruleや実データは追加していない。
-- T-001〜T-036、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
+- T-037 では大小文字が混在する `.rules` policy file をtext-file routingへ追加し、既存detector・placeholder・redaction・integrity semanticsを変えずsilent skipを解消する。
+- 5-file synthetic fixture は通常／1層 `.example` の大小文字positive 4件と多重suffix negative 1件を固定し、既存 `email-address` finding、redaction、policy recordと値の非再掲を検証する。policy専用 ruleや実データは追加していない。
+- T-001〜T-037、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
 - observable な Git / GitHub / CI 状態は固定せず、各 work unit 着手時に再計測する。
 - Git tag / GitHub Release は未作成。初回 release、workflow 変更、`docs/REQUIREMENTS.md` §10 Q1-Q9 は owner gate を維持する。
 
-## 最終検証結果（2026/08/02、T-036 compound example text coverage）
+## 最終検証結果（2026/08/02、T-037 rules policy text coverage）
 
 | 種別 | 結果 |
 | --- | --- |
-| TDD RED | 既存63 cases + boundary self-test は pass。追加 compound example case のみ exit 0 で期待 exit 1 に失敗 |
-| PowerShell 7 | scanner regression 64 cases + boundary self-test pass |
-| Windows PowerShell 5.1 | scanner regression 64 cases + boundary self-test pass（BOMなしtest fileの新規commentを既存規約どおりASCII化。公式 support は `pwsh` 7+） |
-| 独立レビュー | 初回P2 1件（多重suffix負例不足）/ P3 1件（README indent）を修正。再reviewはP0〜P3 actionable findingなし |
+| TDD RED | 既存64 cases + boundary self-test は pass。追加 `.rules` case のみ exit 0 で期待 exit 1 に失敗 |
+| PowerShell 7 | scanner regression 65 cases + boundary self-test pass |
+| Windows PowerShell 5.1 | scanner regression 65 cases + boundary self-test pass（BOMなしtest fileの新規commentは既存規約どおりASCII。公式 support は `pwsh` 7+） |
+| 独立レビュー | 初回P2 3件（compound境界、policy sentinel、停止条件同期）を修正。再review P2 1件（Q4再開条件の曖昧さ）を修正。最終reviewはP0〜P3 actionable findingなし |
 | repository marker scan | 変更中treeは PowerShell 7 / Windows PowerShell 5.1 ともindex/worktree snapshot合計42 files、exit 0 |
 | whitespace / encoding | `git diff --check` pass。変更7 files は strict UTF-8 / LF / NULなし。scanner本体だけ既存BOMを保持 |
 | Gitleaks | working directory / Git history とも `--redact` で exit 0 |
@@ -27,7 +27,7 @@
 ## 次の一手（優先順）
 
 1. 外部レビュー台帳の scanner 実 private 値指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
-2. open issue / PR と backlog を再確認し、要件変更なしで閉じられる新しい coverage gap があれば次の自走タスクにする。
+2. extension inventory 起点の拡充は T-037 で停止する。再現可能な false negative または明示的な正本driftは Q4 の判断材料として記録し、owner が Q4 で再開を認めるまで拡張子追加を再開しない。
 3. owner が `docs/REQUIREMENTS.md` §10 Q1-Q9 に回答する。
 4. release / tag / workflow 変更はゲート①。承認前は実行しない。
 
