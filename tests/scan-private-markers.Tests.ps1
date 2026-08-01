@@ -614,6 +614,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive Java properties files with existing rules' {
+        # Java properties files are plain-text configuration. Route mixed-case
+        # extensions to the existing detector without changing rule semantics.
+        $syntheticValue = 'syntheticpropertiesfixturevalue'
+        $assignment = ('service_' + 'token' + '=' + $syntheticValue)
+        New-FixtureFile -RelativePath 'config/synthetic-app.properties' -Content $assignment
+        New-FixtureFile -RelativePath 'config/synthetic-build.PrOpErTiEs' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Properties files with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-app.properties' -Message 'Finding should include the lowercase properties path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-build.PrOpErTiEs' -Message 'Finding should include the mixed-case properties path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both properties extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Properties findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')
