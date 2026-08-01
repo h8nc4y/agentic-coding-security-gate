@@ -654,6 +654,98 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive Windows batch files with existing rules' {
+        # BAT and CMD use SET-specific quoting and chaining. Keep literals in
+        # commands or comments visible while runtime, empty, and prompt stay safe.
+        $plainValue = 'syntheticbatchfixturevalue'
+        $hashValue = 'syntheticbatchhashvalue'
+        $semicolonValue = 'syntheticbatchsemicolonvalue'
+        $inlineValue = 'syntheticbatchinlinevalue'
+        $chainedValue = 'syntheticbatchchainedvalue'
+        $commentValue = 'syntheticbatchcommentvalue'
+        $quotedSuffixValue = 'syntheticbatchsuffixvalue'
+        $plainAssignment = ('set API_' + 'TOKEN' + '=' + $plainValue)
+        $quotedHashAssignment = ('set "API_' + 'TOKEN' + '=#' + $hashValue + '"')
+        $semicolonAssignment = ('set API_' + 'TOKEN' + '=;' + $semicolonValue)
+        $inlineAssignment = ('if defined READY set "API_' + 'TOKEN' + '=' + $inlineValue + '"')
+        $chainedAssignment = ('echo ok & set API_' + 'TOKEN' + '=' + $chainedValue + ' & echo done')
+        $runtimePlaceholder = ('set "API_' + 'TOKEN' + '=%API_' + 'TOKEN%"')
+        $chainedRuntimePlaceholder = ('echo ok & set API_' + 'TOKEN' + '=%API_' + 'TOKEN% & echo done')
+        $quotedChainedRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=%API_' + 'TOKEN%" & echo done')
+        $groupedRuntimePlaceholder = ('if defined READY (set API_' + 'TOKEN' + '=%API_' + 'TOKEN%)')
+        $redirectedRuntimePlaceholder = ('set API_' + 'TOKEN' + '=%API_' + 'TOKEN% 2>nul')
+        $delayedRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=!API_' + 'TOKEN!"')
+        $positionalRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=%~1"')
+        $numberedRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=%1"')
+        $allArgsRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=%*"')
+        $searchRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=%~dp$PATH:1"')
+        $forRuntimePlaceholder = ('set "API_' + 'TOKEN' + '=%%~fA"')
+        $emptyAssignment = ('set "API_' + 'TOKEN' + '="')
+        $promptAssignment = ('set /p API_' + 'TOKEN' + '=Enter token: ')
+        $commentAssignment = ('REM set API_' + 'TOKEN' + '=' + $commentValue)
+        $quotedSuffixAssignment = ('set "API_' + 'TOKEN' + '=%SOURCE_' + 'TOKEN%"' + $quotedSuffixValue + '"')
+        New-FixtureFile -RelativePath 'scripts/synthetic-build.BaT' -Content $plainAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-hash.cmd' -Content $quotedHashAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-semicolon.CmD' -Content $semicolonAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-inline.bat' -Content $inlineAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-chained.cmd' -Content $chainedAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-comment.cmd' -Content $commentAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-quoted-suffix.bat' -Content $quotedSuffixAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-runtime.bat' -Content $runtimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-chained-runtime.cmd' -Content $chainedRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-quoted-chained-runtime.bat' -Content $quotedChainedRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-grouped-runtime.cmd' -Content $groupedRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-redirected-runtime.bat' -Content $redirectedRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-delayed-runtime.bat' -Content $delayedRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-positional-runtime.cmd' -Content $positionalRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-numbered-runtime.bat' -Content $numberedRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-all-args-runtime.cmd' -Content $allArgsRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-search-runtime.bat' -Content $searchRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-for-runtime.cmd' -Content $forRuntimePlaceholder
+        New-FixtureFile -RelativePath 'scripts/synthetic-empty.cmd' -Content $emptyAssignment
+        New-FixtureFile -RelativePath 'scripts/synthetic-prompt.bat' -Content $promptAssignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Windows batch files with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-build.BaT' -Message 'Finding should include the mixed-case BAT path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-hash.cmd' -Message 'Finding should include the quoted hash-value path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-semicolon.CmD' -Message 'Finding should include the semicolon-value path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-inline.bat' -Message 'Finding should include an inline SET path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-chained.cmd' -Message 'Finding should include a chained SET path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-comment.cmd' -Message 'Finding should include a commented literal path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-quoted-suffix.bat' -Message 'Finding should include malformed quoted suffix text.'
+        Assert-Contains -Text $result.Output -Needle '7 finding(s) across 20 scanned file(s).' -Message 'Literal SET values should fail while safe batch forms stay allowed.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Windows batch findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-runtime.bat' -Message 'Quoted runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-chained-runtime.cmd' -Message 'Chained runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-quoted-chained-runtime.bat' -Message 'Quoted chained runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-grouped-runtime.cmd' -Message 'Grouped runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-redirected-runtime.bat' -Message 'Redirected runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-delayed-runtime.bat' -Message 'Delayed runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-positional-runtime.cmd' -Message 'Positional runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-numbered-runtime.bat' -Message 'Numbered runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-all-args-runtime.cmd' -Message 'All-arguments runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-search-runtime.bat' -Message 'Search-modifier runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-for-runtime.cmd' -Message 'FOR runtime placeholder should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-empty.cmd' -Message 'Quoted empty assignment should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle 'synthetic-prompt.bat' -Message 'SET /P prompt should not produce a finding.'
+        Assert-NotContains -Text $result.Output -Needle $plainAssignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $plainValue -Message 'Finding output should not replay the plain value.'
+        Assert-NotContains -Text $result.Output -Needle $hashValue -Message 'Finding output should not replay the hash-prefixed value.'
+        Assert-NotContains -Text $result.Output -Needle $semicolonValue -Message 'Finding output should not replay the semicolon-prefixed value.'
+        Assert-NotContains -Text $result.Output -Needle $inlineValue -Message 'Finding output should not replay the inline value.'
+        Assert-NotContains -Text $result.Output -Needle $chainedValue -Message 'Finding output should not replay the chained value.'
+        Assert-NotContains -Text $result.Output -Needle $commentValue -Message 'Finding output should not replay the commented value.'
+        Assert-NotContains -Text $result.Output -Needle $quotedSuffixValue -Message 'Finding output should not replay the malformed quoted suffix.'
+        Assert-NotContains -Text $result.Output -Needle $runtimePlaceholder -Message 'Finding output should not replay the runtime placeholder.'
+        Assert-NotContains -Text $result.Output -Needle $delayedRuntimePlaceholder -Message 'Finding output should not replay the delayed runtime placeholder.'
+        Assert-NotContains -Text $result.Output -Needle $positionalRuntimePlaceholder -Message 'Finding output should not replay the positional runtime placeholder.'
+        Assert-NotContains -Text $result.Output -Needle $numberedRuntimePlaceholder -Message 'Finding output should not replay the numbered runtime placeholder.'
+        Assert-NotContains -Text $result.Output -Needle $allArgsRuntimePlaceholder -Message 'Finding output should not replay the all-arguments runtime placeholder.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')

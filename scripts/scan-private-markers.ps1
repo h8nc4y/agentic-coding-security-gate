@@ -163,8 +163,13 @@ Add-ScanRule -Name 'email-address' -Pattern '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]
 Add-ScanRule -Name 'windows-absolute-path' -Pattern '\b[A-Za-z]:\\(?:[^\\/:*?"<>|\r\n]+\\?){2,}' -Kind 'regex'
 
 # 実値だけを検出し、runtime参照や明示placeholderは許可する。
+$secretAssignmentKeyPattern = '(?:[A-Z][A-Z0-9]*_)*(?:API_KEY|TOKEN|SECRET|PASSWORD)'
 $secretAssignmentPlaceholderPattern = '^(?:\$\{\{\s*secrets\.[A-Z_][A-Z0-9_]*\s*\}\}|\$\{[A-Z_][A-Z0-9_]*\}|\$env:[A-Z_][A-Z0-9_]*|\$[A-Z_][A-Z0-9_]*|%[A-Z_][A-Z0-9_]*%|process\.env\.[A-Z_][A-Z0-9_]*|<[A-Z0-9_.:-]+>)$'
-Add-ScanRule -Name 'secret-assignment' -Pattern '(?<![A-Za-z0-9])(?:[A-Z][A-Z0-9]*_)*(?:API_KEY|TOKEN|SECRET|PASSWORD)\s*=\s*(?<value>[^#;\r\n]*)' -Kind 'regex'
+Add-ScanRule `
+    -Name 'secret-assignment' `
+    -Pattern ('(?<![A-Za-z0-9])' + $secretAssignmentKeyPattern +
+        '\s*=\s*(?<value>[^#;\r\n]*)') `
+    -Kind 'regex'
 
 # Git子processだけでなく列挙・decode・regex・serialize・最終emitまで同じ時計へ収める。
 function Assert-ScanDeadline {
@@ -190,6 +195,28 @@ $ownRepoUrlRegex = [regex]::new(
 )
 $secretAssignmentPlaceholderRegex = [regex]::new(
     $secretAssignmentPlaceholderPattern,
+    $boundedRegexOptions,
+    $regexTimeout
+)
+# BatchのSETだけはquoted wrapperとcommand separatorを文法境界として扱う。
+# `/p` promptは値ではないため除外し、line中やcomment中のliteralは検出する。
+$windowsBatchCommandBoundaryPattern = '\s*(?:[&|)]|\d*[<>]|$)'
+$windowsBatchSecretAssignmentRegex = [regex]::new(
+    ('(?<![A-Za-z0-9_])@?set\s+(?!/p(?:\s|$))(?:(?:"' +
+        $secretAssignmentKeyPattern + '\s*=(?<value>[^"\r\n]*)"(?=' +
+        $windowsBatchCommandBoundaryPattern + '))|(?:(?<value>"(?=' +
+        $secretAssignmentKeyPattern + '\s*=))' +
+        $secretAssignmentKeyPattern + '\s*=[^\r\n]*)|(?:' +
+        $secretAssignmentKeyPattern + '\s*=\s*(?<value>.*?)(?=' +
+        $windowsBatchCommandBoundaryPattern + ')))'),
+    $boundedRegexOptions,
+    $regexTimeout
+)
+# Batch固有の遅延展開、位置引数、FOR変数だけをruntime参照として許可する。
+$windowsBatchRuntimePlaceholderRegex = [regex]::new(
+    ('^(?:![A-Z_][A-Z0-9_]*!|%(?:[0-9*]|~[FDPNXSATZ]*' +
+        '(?:\$[A-Z_][A-Z0-9_]*:)?[0-9])|%%(?:[A-Z]|~[FDPNXSATZ]*' +
+        '(?:\$[A-Z_][A-Z0-9_]*:)?[A-Z]))$'),
     $boundedRegexOptions,
     $regexTimeout
 )
@@ -230,12 +257,12 @@ function Add-ScanFinding {
 # their standard extensions.
 # JS / TS と同じ detector routing を派生sourceとcomponent sourceにも適用する。
 # JSX / TSX、module形式、Vue / Svelte / Astroを明示列挙してsilent skipを防ぐ。
-# Terraform、HCL、Java properties、CONFの設定fileも既存detectorへ到達させ、ruleの意味は変えない。
+# Terraform、HCL、Java properties、CONF、Windows batchも既存detectorへ到達させ、ruleの意味は変えない。
 # 大小文字はHashSetのcomparerで統一して扱う。
 $textExtensions = @(
     '.md', '.markdown', '.txt', '.ps1', '.psm1', '.psd1', '.yml', '.yaml',
     '.json', '.jsonc', '.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.mts', '.cts',
-    '.vue', '.svelte', '.astro', '.py', '.sh', '.cfg', '.conf', '.ini', '.toml', '.properties',
+    '.vue', '.svelte', '.astro', '.py', '.sh', '.bat', '.cmd', '.cfg', '.conf', '.ini', '.toml', '.properties',
     '.tf', '.tfvars', '.hcl', '.editorconfig', '.gitignore', '.gitattributes', '.npmrc',
     '.xml', '.html',
     '.css', '.pem', '.key'
@@ -1531,6 +1558,7 @@ function Get-SafeTrackedWorktreeState {
 function Add-ScanTarget {
     param(
         [System.Collections.Generic.List[object]]$Targets,
+        [string]$SourcePath,
         [string]$DisplayPath,
         [byte[]]$Bytes
     )
@@ -1549,6 +1577,9 @@ function Add-ScanTarget {
     $Targets.Add([pscustomobject]@{
         DisplayPath = ConvertTo-SafeDisplayPath -RelativePath $DisplayPath
         Bytes = $Bytes
+        IsWindowsBatch = @('.bat', '.cmd').Contains(
+            [IO.Path]::GetExtension($SourcePath).ToLowerInvariant()
+        )
     }) | Out-Null
 }
 
@@ -2342,6 +2373,7 @@ if ($null -ne $gitExe) {
                     }
                     Add-ScanTarget `
                         -Targets $scanTargets `
+                        -SourcePath $entry.Path `
                         -DisplayPath "$($entry.Path) [$state]" `
                         -Bytes $indexBytes
                 } elseif (Test-ByteArraysEqual `
@@ -2349,15 +2381,18 @@ if ($null -ne $gitExe) {
                     -Right $worktreeState.Bytes) {
                     Add-ScanTarget `
                         -Targets $scanTargets `
+                        -SourcePath $entry.Path `
                         -DisplayPath $entry.Path `
                         -Bytes $indexBytes
                 } else {
                     Add-ScanTarget `
                         -Targets $scanTargets `
+                        -SourcePath $entry.Path `
                         -DisplayPath "$($entry.Path) [index]" `
                         -Bytes $indexBytes
                     Add-ScanTarget `
                         -Targets $scanTargets `
+                        -SourcePath $entry.Path `
                         -DisplayPath "$($entry.Path) [worktree]" `
                         -Bytes $worktreeState.Bytes
                 }
@@ -2499,6 +2534,7 @@ if ($usingGitIndex) {
                 }
                 Add-ScanTarget `
                     -Targets $scanTargets `
+                    -SourcePath $relative `
                     -DisplayPath $relative `
                     -Bytes $worktreeState.Bytes
             }
@@ -2578,9 +2614,17 @@ foreach ($target in $scanTargets) {
                 if ($rule.Kind -eq 'literal') {
                     $matched = $line.Contains($rule.Pattern)
                 } elseif ($rule.Name -eq 'secret-assignment') {
-                    $assignmentMatch = Get-FirstBoundedRegexMatch `
-                        -InputText $line `
-                        -Regex $rule.Regex
+                    # BatchではSET構文だけを抽出し、quoted wrapper、command
+                    # separator、`/p` promptをgeneric grammarから分離する。
+                    if ($target.IsWindowsBatch) {
+                        $assignmentMatch = Get-FirstBoundedRegexMatch `
+                            -InputText $line `
+                            -Regex $windowsBatchSecretAssignmentRegex
+                    } else {
+                        $assignmentMatch = Get-FirstBoundedRegexMatch `
+                            -InputText $line `
+                            -Regex $rule.Regex
+                    }
                     while ($assignmentMatch.Success) {
                         Assert-ScanDeadline
                         $script:regexMatchCount++
@@ -2605,8 +2649,16 @@ foreach ($target in $scanTargets) {
                         $placeholderMatch = Get-FirstBoundedRegexMatch `
                             -InputText $value `
                             -Regex $secretAssignmentPlaceholderRegex
+                        $isPlaceholder = $placeholderMatch.Success
+                        if (-not $isPlaceholder -and
+                            $target.IsWindowsBatch) {
+                            $batchPlaceholderMatch = Get-FirstBoundedRegexMatch `
+                                -InputText $value `
+                                -Regex $windowsBatchRuntimePlaceholderRegex
+                            $isPlaceholder = $batchPlaceholderMatch.Success
+                        }
                         if (-not [string]::IsNullOrWhiteSpace($value) -and
-                            -not $placeholderMatch.Success) {
+                            -not $isPlaceholder) {
                             $matched = $true
                             break
                         }
