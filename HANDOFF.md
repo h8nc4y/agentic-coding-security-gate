@@ -5,21 +5,19 @@
 
 ## 現在の状態
 
-- T-034 では大小文字が混在する `.sql` migration file を text-file routing に追加し、既存 detector・placeholder・redaction・integrity semantics を変えずに silent skip を解消した。
-- 2-file synthetic fixture は SQL の quoted literal を既存 `secret-assignment` finding にし、大小文字 routing、redaction、assignment と値の非再掲を固定する。SQL専用 rule や実データは追加していない。
-- T-033 では大小文字が混在する Windows `.bat` / `.cmd` を text-file routing に追加した。既存 `secret-assignment` rule の意味と redaction を維持しつつ、batch の `SET` に限って quoted value、command separator、`SET /P`、empty value、認識済み runtime 参照を区別する。
-- 20-file synthetic fixture は literal 7 種を finding にし、`%VAR%` / `!VAR!`、`%1` / `%*` / `%~1`、CALL search modifier、FOR modifier、chain / group / redirection、empty、`SET /P` の13種を安全側に固定する。assignment と値は出力しない。
-- T-001〜T-034、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
+- T-035 では大小文字が混在する `.jsonl` JSON Lines file を text-file routing に追加し、既存 detector・placeholder・redaction・integrity semantics を変えずに silent skip を解消した。
+- 2-file synthetic fixture は有効なJSON record内の合成emailを既存 `email-address` finding にし、大小文字 routing、redaction、recordと値の非再掲を固定する。JSON Lines専用 rule や実データは追加していない。
+- T-001〜T-035、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
 - observable な Git / GitHub / CI 状態は固定せず、各 work unit 着手時に再計測する。
 - Git tag / GitHub Release は未作成。初回 release、workflow 変更、`docs/REQUIREMENTS.md` §10 Q1-Q9 は owner gate を維持する。
 
-## 最終検証結果（2026/08/02、T-034 SQL text coverage）
+## 最終検証結果（2026/08/02、T-035 JSON Lines text coverage）
 
 | 種別 | 結果 |
 | --- | --- |
-| TDD RED | 既存61 cases + boundary self-test は pass。追加 SQL case のみ exit 0 で期待 exit 1 に失敗 |
-| PowerShell 7 | scanner regression 62 cases + boundary self-test pass |
-| Windows PowerShell 5.1 | scanner regression 62 cases + boundary self-test pass（補助証跡。公式 support は `pwsh` 7+） |
+| TDD RED | 既存62 cases + boundary self-test は pass。追加 JSON Lines case のみ exit 0 で期待 exit 1 に失敗 |
+| PowerShell 7 | scanner regression 63 cases + boundary self-test pass |
+| Windows PowerShell 5.1 | scanner regression 63 cases + boundary self-test pass（補助証跡。公式 support は `pwsh` 7+） |
 | 独立レビュー | code / tests / public docs とも actionable finding なし |
 | repository marker scan | PowerShell 7 / Windows PowerShell 5.1 とも tracked 42 files、exit 0 |
 | whitespace / encoding | `git diff --check` pass。変更7 files は strict UTF-8 / LF / NULなし。scanner本体だけ既存BOMを保持 |

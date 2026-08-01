@@ -145,7 +145,8 @@ Text-file selection routes case-insensitive `.jsx` / `.tsx`, module-specific
 `.astro` files through the same existing rules as `.js` / `.ts`. Terraform
 configuration and variable files with case-insensitive `.tf` / `.tfvars`
 extensions also reach the existing marker rules, as do generic `.hcl` / `.conf`
-and Java `.properties` configuration files. SQL migration files with
+and Java `.properties` configuration files. JSON Lines files with
+case-insensitive `.jsonl` extensions and SQL migration files with
 case-insensitive `.sql` extensions reach those existing rules as well. Windows
 `.bat` / `.cmd` scripts also use the existing rules; batch-aware `SET` parsing
 distinguishes quoted values, command separators, `SET /P` prompts, and

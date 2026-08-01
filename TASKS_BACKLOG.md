@@ -25,6 +25,7 @@
 | T-032 | `.conf` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-033 | `.bat` / `.cmd` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-034 | `.sql` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
+| T-035 | `.jsonl` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 

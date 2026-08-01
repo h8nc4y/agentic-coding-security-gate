@@ -467,6 +467,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $localAssignment -Message 'Finding output should not replay the local assignment.'
     }
 
+    Invoke-Test 'scans case-insensitive JSON Lines files with existing rules' {
+        # JSON Linesは1行1JSON値のUTF-8 textとして扱う。小文字／大小文字混在の
+        # 拡張子を既存detectorへ通し、format固有のmarker semanticsは追加しない。
+        $email = ('alice' + '@' + 'realcorp.io')
+        $record = ('{"contact":"' + $email + '"}')
+        New-FixtureFile -RelativePath 'events/synthetic-records.jsonl' -Content $record
+        New-FixtureFile -RelativePath 'events/synthetic-audit.JsOnL' -Content $record
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'JSON Lines files with existing private markers should fail.'
+        Assert-Contains -Text $result.Output -Needle 'email-address' -Message 'Finding should use the existing email rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-records.jsonl' -Message 'Finding should include the lowercase JSONL path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-audit.JsOnL' -Message 'Finding should include the mixed-case JSONL path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both JSONL extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'JSONL findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $record -Message 'Finding output should not replay the JSON record.'
+        Assert-NotContains -Text $result.Output -Needle $email -Message 'Finding output should not replay the email value.'
+    }
+
     Invoke-Test 'scans case-insensitive PEM text files and keeps private key markers redacted' {
         # Keep the existing private-key rule reachable for standard text-container extensions.
         $syntheticPemMarker = ('-----BEGIN ' + 'PRIVATE KEY-----')
