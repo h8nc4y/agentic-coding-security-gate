@@ -594,6 +594,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive HCL sources with existing rules' {
+        # HCL sources use the same text assignment form as Terraform files.
+        # Keep mixed-case extensions reachable without changing detector rules.
+        $syntheticValue = 'synthetichclfixturevalue'
+        $assignment = ('api_' + 'token' + ' = "' + $syntheticValue + '"')
+        New-FixtureFile -RelativePath 'infra/synthetic-policy.hcl' -Content $assignment
+        New-FixtureFile -RelativePath 'infra/synthetic-build.HcL' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'HCL sources with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-policy.hcl' -Message 'Finding should include the lowercase HCL path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-build.HcL' -Message 'Finding should include the mixed-case HCL path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both HCL extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'HCL findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')
