@@ -147,7 +147,9 @@ configuration and variable files with case-insensitive `.tf` / `.tfvars`
 extensions also reach the existing marker rules, as do generic `.hcl` / `.conf`
 and Java `.properties` configuration files. JSON Lines files with
 case-insensitive `.jsonl` extensions and SQL migration files with
-case-insensitive `.sql` extensions reach those existing rules as well. Compound
+case-insensitive `.sql` extensions reach those existing rules as well. Policy
+files with case-insensitive `.rules` extensions use the same existing marker
+rules without adding policy-specific detector semantics. Compound
 sample names such as `CLAUDE.md.example` also reach the existing rules when the
 extension immediately before `.example` is a known text type; a bare unknown
 `.example` file remains skipped. Windows
