@@ -19,7 +19,7 @@
 | PowerShell 7 | scanner regression 63 cases + boundary self-test pass |
 | Windows PowerShell 5.1 | scanner regression 63 cases + boundary self-test pass（補助証跡。公式 support は `pwsh` 7+） |
 | 独立レビュー | code / tests / public docs とも actionable finding なし |
-| repository marker scan | PowerShell 7 / Windows PowerShell 5.1 とも tracked 42 files、exit 0 |
+| repository marker scan | 変更中treeは両hostともindex/worktree snapshot合計42 files、exit 0。clean merged mainは両hostともtracked 35 files、exit 0 |
 | whitespace / encoding | `git diff --check` pass。変更7 files は strict UTF-8 / LF / NULなし。scanner本体だけ既存BOMを保持 |
 | Gitleaks | working directory / Git history とも `--redact` で exit 0 |
 | Semgrep | T-033時のdirect wrapperは実行policyにreject済み。同じ直接実行を再試行せず未確認を維持 |
