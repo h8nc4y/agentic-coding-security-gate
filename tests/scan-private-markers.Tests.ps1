@@ -468,10 +468,10 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
     }
 
     Invoke-Test 'scans case-insensitive JSON Lines files with existing rules' {
-        # JSON Linesは1行1JSON値のUTF-8 textとして扱う。小文字／大小文字混在の
-        # 拡張子を既存detectorへ通し、format固有のmarker semanticsは追加しない。
-        $email = ('alice' + '@' + 'realcorp.io')
-        $record = ('{"contact":"' + $email + '"}')
+        # JSON Lines is UTF-8 text with one JSON value per line. Route lower-
+        # and mixed-case suffixes without adding format-specific semantics.
+        $jsonlEmail = ('alice' + '@' + 'realcorp.io')
+        $record = ('{"contact":"' + $jsonlEmail + '"}')
         New-FixtureFile -RelativePath 'events/synthetic-records.jsonl' -Content $record
         New-FixtureFile -RelativePath 'events/synthetic-audit.JsOnL' -Content $record
 
@@ -484,7 +484,31 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both JSONL extension variants should be scanned.'
         Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'JSONL findings should remain redacted.'
         Assert-NotContains -Text $result.Output -Needle $record -Message 'Finding output should not replay the JSON record.'
-        Assert-NotContains -Text $result.Output -Needle $email -Message 'Finding output should not replay the email value.'
+        Assert-NotContains -Text $result.Output -Needle $jsonlEmail -Message 'Finding output should not replay the email value.'
+    }
+
+    Invoke-Test 'scans compound example suffixes only after known text extensions' {
+        # Do not treat `.example` itself as text. Route only samples whose
+        # inner suffix is a known text type, regardless of suffix casing.
+        $compoundEmail = ('alice' + '@' + 'realcorp.io')
+        $payload = ('{"contact":"' + $compoundEmail + '"}')
+        New-FixtureFile -RelativePath 'templates/CLAUDE.md.example' -Content $payload
+        New-FixtureFile -RelativePath 'templates/settings.JsOn.ExAmPlE' -Content $payload
+        New-FixtureFile -RelativePath 'templates/opaque.example' -Content $payload
+        New-FixtureFile -RelativePath 'templates/CLAUDE.md.example.example' -Content $payload
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Known text files with an example suffix should fail on existing private markers.'
+        Assert-Contains -Text $result.Output -Needle 'email-address' -Message 'Finding should use the existing email rule.'
+        Assert-Contains -Text $result.Output -Needle 'CLAUDE.md.example' -Message 'Finding should include the lowercase compound path.'
+        Assert-Contains -Text $result.Output -Needle 'settings.JsOn.ExAmPlE' -Message 'Finding should include the mixed-case compound path.'
+        Assert-NotContains -Text $result.Output -Needle 'opaque.example' -Message 'A bare unknown example suffix should remain skipped.'
+        Assert-NotContains -Text $result.Output -Needle 'CLAUDE.md.example.example' -Message 'Only one example suffix should be unwrapped.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Only known inner text extensions should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Compound example findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $payload -Message 'Finding output should not replay the sample payload.'
+        Assert-NotContains -Text $result.Output -Needle $compoundEmail -Message 'Finding output should not replay the email value.'
     }
 
     Invoke-Test 'scans case-insensitive PEM text files and keeps private key markers redacted' {

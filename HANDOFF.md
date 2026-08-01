@@ -5,21 +5,21 @@
 
 ## 現在の状態
 
-- T-035 では大小文字が混在する `.jsonl` JSON Lines file を text-file routing に追加し、既存 detector・placeholder・redaction・integrity semantics を変えずに silent skip を解消した。
-- 2-file synthetic fixture は有効なJSON record内の合成emailを既存 `email-address` finding にし、大小文字 routing、redaction、recordと値の非再掲を固定する。JSON Lines専用 rule や実データは追加していない。
-- T-001〜T-035、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
+- T-036 では末尾 `.example` を1層だけ外し、直前が既知text拡張子の場合だけ既存detectorへ到達させる。bare unknown `.example` と多重 `.example.example` は従来どおりskipする。
+- 4-file synthetic fixture は大小文字が混在するpositive 2件とbare／多重suffixのnegative 2件を固定し、既存 `email-address` finding、redaction、payloadと値の非再掲を検証する。sample専用 ruleや実データは追加していない。
+- T-001〜T-036、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
 - observable な Git / GitHub / CI 状態は固定せず、各 work unit 着手時に再計測する。
 - Git tag / GitHub Release は未作成。初回 release、workflow 変更、`docs/REQUIREMENTS.md` §10 Q1-Q9 は owner gate を維持する。
 
-## 最終検証結果（2026/08/02、T-035 JSON Lines text coverage）
+## 最終検証結果（2026/08/02、T-036 compound example text coverage）
 
 | 種別 | 結果 |
 | --- | --- |
-| TDD RED | 既存62 cases + boundary self-test は pass。追加 JSON Lines case のみ exit 0 で期待 exit 1 に失敗 |
-| PowerShell 7 | scanner regression 63 cases + boundary self-test pass |
-| Windows PowerShell 5.1 | scanner regression 63 cases + boundary self-test pass（補助証跡。公式 support は `pwsh` 7+） |
-| 独立レビュー | code / tests / public docs とも actionable finding なし |
-| repository marker scan | 変更中treeは両hostともindex/worktree snapshot合計42 files、exit 0。clean merged mainは両hostともtracked 35 files、exit 0 |
+| TDD RED | 既存63 cases + boundary self-test は pass。追加 compound example case のみ exit 0 で期待 exit 1 に失敗 |
+| PowerShell 7 | scanner regression 64 cases + boundary self-test pass |
+| Windows PowerShell 5.1 | scanner regression 64 cases + boundary self-test pass（BOMなしtest fileの新規commentを既存規約どおりASCII化。公式 support は `pwsh` 7+） |
+| 独立レビュー | 初回P2 1件（多重suffix負例不足）/ P3 1件（README indent）を修正。再reviewはP0〜P3 actionable findingなし |
+| repository marker scan | 変更中treeは PowerShell 7 / Windows PowerShell 5.1 ともindex/worktree snapshot合計42 files、exit 0 |
 | whitespace / encoding | `git diff --check` pass。変更7 files は strict UTF-8 / LF / NULなし。scanner本体だけ既存BOMを保持 |
 | Gitleaks | working directory / Git history とも `--redact` で exit 0 |
 | Semgrep | T-033時のdirect wrapperは実行policyにreject済み。同じ直接実行を再試行せず未確認を維持 |

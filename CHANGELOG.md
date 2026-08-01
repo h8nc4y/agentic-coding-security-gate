@@ -6,6 +6,7 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so case-insensitive compound sample names such as `*.md.example` reach the existing marker rules only when their inner extension is a known text type; bare unknown `.example` files remain skipped.
 - Fixed text-file selection so case-insensitive `.jsonl` JSON Lines files reach the existing marker rules with redacted findings.
 - Fixed text-file selection so case-insensitive `.sql` migration files reach the existing marker rules with redacted findings.
 - Fixed text-file selection so case-insensitive Windows `.bat` and `.cmd` scripts reach the existing marker rules with batch-aware `SET` parsing, recognized runtime placeholders, and redacted findings.

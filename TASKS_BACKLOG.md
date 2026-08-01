@@ -26,6 +26,7 @@
 | T-033 | `.bat` / `.cmd` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-034 | `.sql` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-035 | `.jsonl` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
+| T-036 | 既知 text 拡張子 + `.example` を既存 rule の走査対象にする | scanner compound-suffix coverage gap | 中 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 
