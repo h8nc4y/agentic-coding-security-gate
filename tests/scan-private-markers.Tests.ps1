@@ -654,6 +654,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive SQL files with existing rules' {
+        # SQL migration files are plain text. Route their assignments through
+        # the existing detector without adding SQL-specific secret semantics.
+        $syntheticValue = 'syntheticsqlfixturevalue'
+        $assignment = ('service_' + 'token' + ' = ''' + $syntheticValue + '''')
+        New-FixtureFile -RelativePath 'migrations/synthetic-schema.sql' -Content $assignment
+        New-FixtureFile -RelativePath 'migrations/synthetic-seed.SqL' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'SQL files with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-schema.sql' -Message 'Finding should include the lowercase SQL path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-seed.SqL' -Message 'Finding should include the mixed-case SQL path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both SQL extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'SQL findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'scans case-insensitive Windows batch files with existing rules' {
         # BAT and CMD use SET-specific quoting and chaining. Keep literals in
         # commands or comments visible while runtime, empty, and prompt stay safe.
