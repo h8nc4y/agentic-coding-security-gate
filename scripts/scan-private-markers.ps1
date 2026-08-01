@@ -302,7 +302,21 @@ function Test-IsTextFile {
         # Treat extensionless files as text.
         return $true
     }
-    return $textExtensionSet.Contains($extension)
+    if ($textExtensionSet.Contains($extension)) {
+        return $true
+    }
+    if ([string]::Equals(
+            $extension,
+            '.example',
+            [StringComparison]::OrdinalIgnoreCase
+        )) {
+        # `.example`を無条件にtext扱いせず、1層内側が既知text拡張子の
+        # compound sampleだけを既存detectorへ通す。
+        $sampleBaseName = [IO.Path]::GetFileNameWithoutExtension($fileName)
+        $sampleExtension = [IO.Path]::GetExtension($sampleBaseName)
+        return $textExtensionSet.Contains($sampleExtension)
+    }
+    return $false
 }
 
 function Test-BoundedProcessHealthy {
