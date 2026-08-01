@@ -634,6 +634,26 @@ Reach the demo bot at bot@example.com or maintainer@example.org for synthetic te
         Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
     }
 
+    Invoke-Test 'scans case-insensitive CONF files with existing rules' {
+        # CONF files are plain-text configuration like the already-routed CFG
+        # variant. Keep mixed-case suffixes on the existing detector path.
+        $syntheticValue = 'syntheticconffixturevalue'
+        $assignment = ('service_' + 'token' + '=' + $syntheticValue)
+        New-FixtureFile -RelativePath 'config/synthetic-server.conf' -Content $assignment
+        New-FixtureFile -RelativePath 'config/synthetic-proxy.CoNf' -Content $assignment
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'CONF files with literal secret assignments should fail.'
+        Assert-Contains -Text $result.Output -Needle 'secret-assignment' -Message 'Finding should use the existing assignment rule.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-server.conf' -Message 'Finding should include the lowercase CONF path.'
+        Assert-Contains -Text $result.Output -Needle 'synthetic-proxy.CoNf' -Message 'Finding should include the mixed-case CONF path.'
+        Assert-Contains -Text $result.Output -Needle '2 finding(s) across 2 scanned file(s).' -Message 'Both CONF extension variants should be scanned.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'CONF findings should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $assignment -Message 'Finding output should not replay the assignment.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticValue -Message 'Finding output should not replay the assigned value.'
+    }
+
     Invoke-Test 'skips binary-extension files instead of line-walking them' {
         # A .png whose bytes happen to contain a marker prefix must be skipped.
         $marker = ('s' + 'k-binary-should-be-skipped')

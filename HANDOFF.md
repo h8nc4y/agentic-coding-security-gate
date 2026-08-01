@@ -5,6 +5,10 @@
 
 ## 現在の状態
 
+- T-032 では大小文字が混在する `.conf` がtext-file routingから漏れる非対称を、
+  case-insensitiveなallowlistから既存ruleへ到達させて解消した。新しいrule、
+  redaction、placeholder判定、integrity semanticsは変更せず、assignment全文と
+  値単体の非再掲をsynthetic regressionで固定した。
 - T-031 では大小文字が混在する Java `.properties` がtext-file routingから
   漏れる非対称を、case-insensitiveなallowlistから既存ruleへ到達させて解消した。
   新しいrule、redaction、placeholder判定、integrity semanticsは変更せず、
@@ -37,23 +41,23 @@
   redaction、値非再掲を合成回帰で固定し、新しい検出 rule・実 private 値・
   要件変更は追加していない。
 - observableなGit / GitHub / CI状態は固定せず、各work unitの着手時に再計測する。
-- T-025〜T-027とT-029〜T-031は各source形式を既存ruleへ到達させ、T-028は
+- T-025〜T-027とT-029〜T-032は各source形式を既存ruleへ到達させ、T-028は
   scanner・secret-assignment・public form・Pester契約を変更していない。
 - T-023 では標準的な `.pem` text container を既存 `private-key-block` rule の走査対象へ追加した。大小混在拡張子、redaction、既存 binary skip を合成回帰で固定し、新しい検出 rule や実 private 値は追加していない。
-- T-001〜T-031、Pester 0-tests false green（PR #37）、secret-assignmentの
+- T-001〜T-032、Pester 0-tests false green（PR #37）、secret-assignmentの
   prefix / placeholder非対称、dotenv filename coverageを現行treeで完了。
 - Git tag / GitHub Release は未作成（初回 release はゲート①で owner 承認待ち、資料は `docs/release-readiness-brief.md` / `docs/release-notes-draft.md`）。
 - 要件正本は `docs/REQUIREMENTS.md`。現行の未決事項は同書 §10 Q1-Q9 と `TASKS_BACKLOG.md` の外部レビュー指摘。
 
-## 最終検証結果（2026/08/01、T-031 Java properties text coverage）
+## 最終検証結果（2026/08/01、T-032 CONF text coverage）
 
 | 種別 | コマンド | 結果 |
 | --- | --- | --- |
-| TDD RED | 既存scanner regression + properties case | 既存58 casesとboundary self-testはpassし、properties caseだけが`Expected '1' but got '0'`でfail |
-| PowerShell 7 | scanner regression / repository marker scan | 59 cases + boundary self-test、tracked 42 files scanがともにexit 0 |
-| Windows PowerShell 5.1 | scanner regression / repository marker scan | 59 cases + boundary self-test、tracked 42 files scanがともにexit 0（補助証跡） |
+| TDD RED | 既存scanner regression + CONF case | 既存59 casesとboundary self-testはpassし、CONF caseだけが`Expected '1' but got '0'`でfail |
+| PowerShell 7 | scanner regression / repository marker scan | 60 cases + boundary self-test、tracked 42 files scanがともにexit 0 |
+| Windows PowerShell 5.1 | scanner regression / repository marker scan | 60 cases + boundary self-test、tracked 42 files scanがともにexit 0（補助証跡） |
 | whitespace / encoding | `git diff --check`、変更7 filesのUTF-8 / BOM / LF / NUL | pass。scanner本体の既存BOMを保持し、test fileはBOMなし + ASCII commentを維持 |
-| Gitleaks | working directory / Git history | leak 0。historyは64 commitsをscan |
+| Gitleaks | working directory / Git history | leak 0。historyは65 commitsをscan |
 | Semgrep | `p/default`で変更7 paths / base同一7 paths | error 0。既存synthetic JWT fixtureの同一1件だけでdelta 0 |
 
 ## 次の一手（優先順）
@@ -75,3 +79,6 @@
 - CI の `actions/checkout` は公式 v4.4.0 tag のimmutable SHAへ固定し、
   credential非保持と25分timeoutを明示した。workflow変更はT-028の
   明示指示範囲だけに限定した。
+- GitHub-hosted runnerは現在、固定済みcheckout actionのNode.js 20非推奨を
+  warningとして報告し、Node.js 24で強制実行している。quality gateはpassするが、
+  workflow / action更新はゲート①のためowner判断なしに変更しない。

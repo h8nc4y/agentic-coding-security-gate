@@ -6,6 +6,7 @@ This project follows a lightweight, human-readable changelog format. Add entries
 
 ## Unreleased
 
+- Fixed text-file selection so case-insensitive `.conf` configuration files reach the existing marker rules with redacted findings.
 - Fixed text-file selection so case-insensitive Java `.properties` configuration files reach the existing marker rules with redacted findings.
 - Fixed text-file selection so case-insensitive `.hcl` configuration files reach the existing marker rules with redacted findings.
 - Fixed text-file selection so case-insensitive `.tf` and `.tfvars` Terraform sources reach the existing marker rules with redacted findings.
