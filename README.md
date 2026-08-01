@@ -145,7 +145,10 @@ Text-file selection routes case-insensitive `.jsx` / `.tsx`, module-specific
 `.astro` files through the same existing rules as `.js` / `.ts`. Terraform
 configuration and variable files with case-insensitive `.tf` / `.tfvars`
 extensions also reach the existing marker rules, as do generic `.hcl` / `.conf`
-and Java `.properties` configuration files. The selection includes
+and Java `.properties` configuration files. Windows `.bat` / `.cmd` scripts
+also use the existing rules; batch-aware `SET` parsing distinguishes quoted
+values, command separators, `SET /P` prompts, and `%VAR%` / `!VAR!` /
+positional runtime references. The selection includes
 case-insensitive `.pem` and `.key` private-key containers so the existing
 private-key marker rule reaches common key files. Unrelated binary extensions
 remain skipped.
