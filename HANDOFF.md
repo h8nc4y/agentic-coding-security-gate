@@ -1,32 +1,38 @@
 # HANDOFF
 
-最終更新: 2026/08/02（Codex）
+最終更新: 2026/08/03（Codex）
 役割: 現況と次の一手だけを持つ project brain。完了履歴は `CHANGELOG.md`・git log・マージ済み PR、要件は `docs/REQUIREMENTS.md`、タスクは `TASKS_BACKLOG.md`、運用契約は `AGENTS.md` が正本。
 
 ## 現在の状態
 
+- T-038 では既存 `private-inventory-repo` literal rule の大小文字variantによる
+  false negativeを解消した。実private値を複製しない固定synthetic test-only ruleを
+  worktree modeに限定し、対象ruleだけを `OrdinalIgnoreCase` で照合する。
+  token prefix等の他literalは `Ordinal`、redaction、extension inventory、実marker値、
+  外部レビューのowner裁定対象は変更していない。
 - T-037 では大小文字が混在する `.rules` policy file をtext-file routingへ追加し、既存detector・placeholder・redaction・integrity semanticsを変えずsilent skipを解消する。
 - 5-file synthetic fixture は通常／1層 `.example` の大小文字positive 4件と多重suffix negative 1件を固定し、既存 `email-address` finding、redaction、policy recordと値の非再掲を検証する。policy専用 ruleや実データは追加していない。
-- T-001〜T-037、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
+- T-001〜T-038、Pester 0-tests false green（PR #37）、secret-assignment の prefix / placeholder 非対称、dotenv filename coverage は現行 tree で完了。
 - observable な Git / GitHub / CI 状態は固定せず、各 work unit 着手時に再計測する。
 - Git tag / GitHub Release は未作成。初回 release、workflow 変更、`docs/REQUIREMENTS.md` §10 Q1-Q9 は owner gate を維持する。
 
-## 最終検証結果（2026/08/02、T-037 rules policy text coverage）
+## 最終検証結果（2026/08/03、T-038 private repository case variant）
 
 | 種別 | 結果 |
 | --- | --- |
-| TDD RED | 既存64 cases + boundary self-test は pass。追加 `.rules` case のみ exit 0 で期待 exit 1 に失敗 |
-| PowerShell 7 | scanner regression 65 cases + boundary self-test pass |
-| Windows PowerShell 5.1 | scanner regression 65 cases + boundary self-test pass（BOMなしtest fileの新規commentは既存規約どおりASCII。公式 support は `pwsh` 7+） |
-| 独立レビュー | 初回P2 3件（compound境界、policy sentinel、停止条件同期）を修正。再review P2 1件（Q4再開条件の曖昧さ）を修正。最終reviewはP0〜P3 actionable findingなし |
-| repository marker scan | 変更中treeは PowerShell 7 / Windows PowerShell 5.1 ともindex/worktree snapshot合計42 files、exit 0 |
-| whitespace / encoding | `git diff --check` pass。変更7 files は strict UTF-8 / LF / NULなし。scanner本体だけ既存BOMを保持 |
-| Gitleaks | working directory / Git history とも `--redact` で exit 0 |
+| TDD RED | 既存case・境界self-testはpass。追加private repository caseだけexit 0で期待exit 1に失敗 |
+| PowerShell 7 | scanner regression 67 cases + boundary self-test pass |
+| Windows PowerShell 5.1 | scanner regression 67 cases + boundary self-test pass（BOMなしtest fileの新規commentは既存規約どおりASCII。公式 support は `pwsh` 7+） |
+| Pester adapter | 1 test / 0 failed（Windows PowerShell 5.1） |
+| 独立レビュー | 実装前reviewは限定設計でowner gate / extension freeze対象外と判定。code reviewはP0〜P3なし。docs reviewのP2 1件（RED実測の過大記載）を修正し、再reviewはP0〜P3なし |
+| repository marker scan | 変更中treeは PowerShell 7 / Windows PowerShell 5.1 ともtracked snapshot 39 files、exit 0 |
+| whitespace / encoding | `git diff --check` pass。変更5 filesはstrict UTF-8 / LF / NULなし。scanner本体だけ既存BOMを保持 |
+| Gitleaks | staged 5 filesをglobal config / `--redact`で走査し、exit 0（0 leaks） |
 | Semgrep | T-033時のdirect wrapperは実行policyにreject済み。同じ直接実行を再試行せず未確認を維持 |
 
 ## 次の一手（優先順）
 
-1. 外部レビュー台帳の scanner 実 private 値指摘は owner 裁定待ち。裁定なしに要件・fixture 方針を変えない。
+1. 外部レビュー台帳の scanner 実 private 値指摘は owner 裁定待ち。裁定なしに実marker値・外部化方針を変えない。
 2. extension inventory 起点の拡充は T-037 で停止する。再現可能な false negative または明示的な正本driftは Q4 の判断材料として記録し、owner が Q4 で再開を認めるまで拡張子追加を再開しない。
 3. owner が `docs/REQUIREMENTS.md` §10 Q1-Q9 に回答する。
 4. release / tag / workflow 変更はゲート①。承認前は実行しない。

@@ -1,6 +1,6 @@
 # Tasks Backlog
 
-最終更新: 2026/08/02
+最終更新: 2026/08/03
 運用: 本ファイルはタスク状態の正本。完了タスクの詳細・経緯は `CHANGELOG.md`・git log・マージ済み PR を参照する（ここには履歴注記を蓄積しない）。要件と拡充方針は `docs/REQUIREMENTS.md` が正本。
 
 ## タスク
@@ -28,6 +28,7 @@
 | T-035 | `.jsonl` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
 | T-036 | 既知 text 拡張子 + `.example` を既存 rule の走査対象にする | scanner compound-suffix coverage gap | 中 | done |
 | T-037 | `.rules` を既存 text rule の走査対象にする | scanner text-file coverage gap | 中 | done |
+| T-038 | private repository literalを大小文字非依存で検出する | scanner false-negative audit | 高 | done |
 
 ## 新規候補（着手前に `docs/REQUIREMENTS.md` §5・§10 と突き合わせる）
 

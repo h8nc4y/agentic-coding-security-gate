@@ -10,7 +10,12 @@ param(
     # Boundary self-test専用。未知entryを作り、cleanupが再帰せず固定理由で
     # fail-closedになることを実測する。通常呼出しでは指定しない。
     [Parameter(DontShow = $true)]
-    [switch]$TestOnlyCreateCleanupUnknownEntry
+    [switch]$TestOnlyCreateCleanupUnknownEntry,
+
+    # 実private値をfixtureへ複製せず、同じrule identityとmatching loopを
+    # 固定synthetic literalで測る回帰test専用switch。
+    [Parameter(DontShow = $true)]
+    [switch]$TestOnlyAddSyntheticPrivateInventoryRule
 )
 
 Set-StrictMode -Version Latest
@@ -41,6 +46,12 @@ if ($ScanMode -notin @('auto', 'tracked', 'worktree') -or
     Stop-ScanIntegrityFailure -Reason 'argument-validation'
 }
 $ScanDeadlineMilliseconds = $parsedScanDeadlineMilliseconds
+
+# 合成ruleはfixture directoryの同じmatching loopを測る用途に限定する。
+# tracked/staged相当のproduction経路へtest-only ruleを混入させない。
+if ($TestOnlyAddSyntheticPrivateInventoryRule -and $ScanMode -ne 'worktree') {
+    Stop-ScanIntegrityFailure -Reason 'argument-validation'
+}
 
 $scriptRoot = $PSScriptRoot
 if ([string]::IsNullOrWhiteSpace($scriptRoot)) {
@@ -109,6 +120,16 @@ function Add-ScanRule {
         Pattern = $Pattern
         Kind = $Kind
         Allowlist = $Allowlist
+        # private repository名は表記caseを変えても同じprotected identity。
+        # token prefix等の他literalはprotocolどおりOrdinalを維持する。
+        LiteralComparison = if (
+            $Kind -eq 'literal' -and
+            $Name -eq 'private-inventory-repo'
+        ) {
+            [System.StringComparison]::OrdinalIgnoreCase
+        } else {
+            [System.StringComparison]::Ordinal
+        }
         Regex = if ($Kind -eq 'regex') {
             [regex]::new(
                 $Pattern,
@@ -156,6 +177,13 @@ Add-ScanRule -Name 'bearer-token-header' -Pattern ('Bearer' + ' [A-Za-z0-9._\-]{
 Add-ScanRule -Name 'private-inventory-repo' -Pattern ('h8nc4y' + '/codex-global-context') -Kind 'literal'
 Add-ScanRule -Name 'private-projects-path' -Pattern ('D:' + '\Agent\Codex\Projects') -Kind 'literal'
 Add-ScanRule -Name 'private-user-path' -Pattern ('C:' + '\Users\h8nc4') -Kind 'literal'
+
+if ($TestOnlyAddSyntheticPrivateInventoryRule) {
+    Add-ScanRule `
+        -Name 'private-inventory-repo' `
+        -Pattern ('synthetic-case-' + 'probe') `
+        -Kind 'literal'
+}
 
 # 安全なdocumentation placeholderだけをemail検出から除外する。
 $emailAllowlistPattern = '@(?:example\.(?:com|org|net)|test|localhost)$'
@@ -2626,7 +2654,10 @@ foreach ($target in $scanTargets) {
                 Assert-ScanDeadline
                 $matched = $false
                 if ($rule.Kind -eq 'literal') {
-                    $matched = $line.Contains($rule.Pattern)
+                    $matched = $line.IndexOf(
+                        $rule.Pattern,
+                        $rule.LiteralComparison
+                    ) -ge 0
                 } elseif ($rule.Name -eq 'secret-assignment') {
                     # BatchではSET構文だけを抽出し、quoted wrapper、command
                     # separator、`/p` promptをgeneric grammarから分離する。
