@@ -70,9 +70,17 @@ function New-FixtureFile {
 }
 
 function Invoke-Scanner {
+    param(
+        [string[]]$AdditionalArguments = @()
+    )
+
     # Fixture roots are temporary non-git directories; force worktree mode so
     # host-specific git stderr behavior does not mask scanner assertions.
-    $output = & $scannerPowerShell -NoProfile -ExecutionPolicy Bypass -File $scannerPath -Path $fixtureRoot -ScanMode worktree 2>&1
+    $output = & $scannerPowerShell -NoProfile -ExecutionPolicy Bypass `
+        -File $scannerPath `
+        -Path $fixtureRoot `
+        -ScanMode worktree `
+        @AdditionalArguments 2>&1
 
     return [pscustomobject]@{
         ExitCode = $LASTEXITCODE
@@ -170,6 +178,35 @@ Use synthetic examples only.
 
         Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Safe public fixture should pass.'
         Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Passing scan should report success.'
+    }
+
+    Invoke-Test 'flags private repository literals regardless of letter casing' {
+        # Keep real private values out of fixtures. A fixed synthetic rule and
+        # a case-only variant exercise the same production matching loop.
+        $syntheticPattern = ('synthetic-case-' + 'probe')
+        $caseVariant = 'sYNTHETIC-cASE-pROBE'
+        New-FixtureFile -RelativePath 'docs/leak.md' -Content $caseVariant
+
+        $result = Invoke-Scanner -AdditionalArguments @(
+            '-TestOnlyAddSyntheticPrivateInventoryRule'
+        )
+
+        Assert-Equal -Actual $result.ExitCode -Expected 1 -Message 'Private repository literals should be case-insensitive.'
+        Assert-Contains -Text $result.Output -Needle 'private-inventory-repo' -Message 'Finding should name the private repository rule.'
+        Assert-Contains -Text $result.Output -Needle '<redacted>' -Message 'Finding should remain redacted.'
+        Assert-NotContains -Text $result.Output -Needle $syntheticPattern -Message 'Finding output should not replay the configured marker.'
+        Assert-NotContains -Text $result.Output -Needle $caseVariant -Message 'Finding output should not replay the case variant.'
+    }
+
+    Invoke-Test 'keeps credential literal prefixes case-sensitive' {
+        # Keep the private-repository opt-in from changing every literal rule.
+        $caseChangedPrefix = ('GITHUB_' + 'PAT_synthetic-not-a-token')
+        New-FixtureFile -RelativePath 'docs/safe.md' -Content $caseChangedPrefix
+
+        $result = Invoke-Scanner
+
+        Assert-Equal -Actual $result.ExitCode -Expected 0 -Message 'Case-changed credential prefixes should remain non-matches.'
+        Assert-Contains -Text $result.Output -Needle 'Private marker scan passed' -Message 'Unrelated literal semantics should remain unchanged.'
     }
 
     Invoke-Test 'flags non-allowlisted GitHub repository URLs without leaking values' {
